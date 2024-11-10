@@ -1,4 +1,4 @@
-package boj.cote.graph.boj7569;
+package boj.graph.n7569;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -38,6 +38,7 @@ public class Main {
         while(!queue.isEmpty()) {
             int qSize = queue.size();
             for (int i = 0; i < qSize; i++) {
+                
                 int node = queue.poll();
                 for (int newNode : adjList.get(node)) {
                     if (!visited[newNode]) {
