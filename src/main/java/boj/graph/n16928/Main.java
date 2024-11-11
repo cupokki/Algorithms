@@ -24,7 +24,6 @@ public class Main {
 
     static int bfs(){
         int[] result = new int[size * size];
-        ㅑㅜㅅ
         visited[root] = true;
         queue.add(root);
         while(!queue.isEmpty()){
