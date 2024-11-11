@@ -11,7 +11,7 @@ public class Main {
     static Set<Integer> walls = new HashSet();
     static int[] dx = {0, 0, -1, 1};
     static int[] dy = {-1, 1, 0, 0};
-    static List<List<Integer>> adjList = new ArrayList();
+//    static List<List<Integer>> adjList = new ArrayList();
 
     static int n;
     static int m;
@@ -31,11 +31,16 @@ public class Main {
         result[root] = 0;
         while (!queue.isEmpty()) {
             int node = queue.poll();
-            for (int newNode : adjList.get(node)) {
-//                if (!visited[newNode] && !walls.contains(newNode)) { // 벽이 아니라면 간다.
+            int x = node / m;
+            int y = node % m;
+            for(int i = 0; i < 4; i++){
+                int vx = x + dx[i];
+                int vy = y + dy[i];
+                if (vx < 0 || vy < 0 || vx >= n || vy >= m)
+                    continue;
+                int newNode = toIndex(vx, vy);
                 if (!visited.contains(newNode) && !walls.contains(newNode)) { // 벽이 아니라면 간다.
                     visited.add(newNode);
-//                    visited[newNode] = true;
                     queue.add(newNode);
                     result[newNode] = result[node] + 1;
                     if (newNode == target) {
@@ -51,9 +56,9 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         n = sc.nextInt();
         m = sc.nextInt();
-        for (int i = 1; i <= n * m; i++) {
-            adjList.add(new ArrayList<>());
-        }
+//        for (int i = 1; i <= n * m; i++) {
+//            adjList.add(new ArrayList<>());
+//        }
 //        map = new boolean[n * m];
         for (int i = 0; i < n; i++) {
             String str = sc.next();
@@ -67,18 +72,18 @@ public class Main {
 //        map[0] = true;
 
         //간선추가
-        for (int u = 0; u < n * m; u++) {
-            int x = u / m;
-            int y = u % m;
-            for (int i = 0; i < 4; i++) {
-                int vx = x + dx[i];
-                int vy = y + dy[i];
-                if (vx < 0 || vy < 0 || vx >= n || vy >= m)
-                    continue;
-                int v = toIndex(vx, vy);
-                adjList.get(u).add(v);
-            }
-        }
+//        for (int u = 0; u < n * m; u++) {
+//            int x = u / m;
+//            int y = u % m;
+//            for (int i = 0; i < 4; i++) {
+//                int vx = x + dx[i];
+//                int vy = y + dy[i];
+//                if (vx < 0 || vy < 0 || vx >= n || vy >= m)
+//                    continue;
+//                int v = toIndex(vx, vy);
+//                adjList.get(u).add(v);
+//            }
+//        }
 
         // 모든 벽에서 출발해서 시작점과 타킷 두갈래로 찾아보자
         int min = Integer.MAX_VALUE;
