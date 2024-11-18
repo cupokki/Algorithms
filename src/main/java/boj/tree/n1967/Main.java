@@ -54,7 +54,10 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         int n = Integer.parseInt(br.readLine());
-
+        if(n == 1){
+            System.out.println(max);
+            return;
+        }
         for(int i = 1; i < n; i++){
             st = new StringTokenizer(br.readLine());
             int u = Integer.parseInt(st.nextToken());
