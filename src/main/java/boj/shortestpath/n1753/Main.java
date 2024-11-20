@@ -2,7 +2,6 @@ package boj.shortestpath.n1753;
 
 import java.io.*;
 import java.util.*;
-@SuppressWarnings()
 /**
  * https://www.acmicpc.net/problem/1753
  * 방향그래프, 시작점에서 모든정점까지 최단 경로를 구하라. 모든 가중치는 10이하
@@ -42,7 +41,7 @@ public class Main {
                 int w = e.weight;
                 if( distance[v] > distance[u] + w){
                     distance[v] = distance[u] + w;
-                    queue.offer(new Edge(v, distance[v]));
+                    queue.offer(new Edge(v, distance[v])); ///////////////////문제를 다시 이해 할 필요가 있음
                 }
 
             }
