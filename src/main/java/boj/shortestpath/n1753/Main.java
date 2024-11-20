@@ -39,9 +39,10 @@ public class Main {
             for(Edge e : graph.getOrDefault(u, new ArrayList<>())){
                 int v = e.node;
                 int w = e.weight;
-                if( distance[v] > distance[u] + w){
-                    distance[v] = distance[u] + w;
-                    queue.offer(new Edge(v, distance[v])); ///////////////////문제를 다시 이해 할 필요가 있음
+                int newDist = distance[u] + w;
+                if( distance[v] > newDist){
+                    distance[v] = newDist;
+                    queue.offer(new Edge(v, newDist)); ///////////////////문제를 다시 이해 할 필요가 있음
                 }
 
             }
