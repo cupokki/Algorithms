@@ -16,16 +16,16 @@ import java.util.*;
  *      - 01 BFS를 구현하자
  *      - dp도 가능?
  */
-class State {
-    int node;
-    int dist;
 
-    public State(int node, int dist) {
-        this.node = node;
-        this.dist = dist;
-    }
-}
-
+//class Path {
+//    int node;
+//    int dist;
+//
+//    public Path(int node, int dist) {
+//        this.node = node;
+//        this.dist = dist;
+//    }
+//}
 //public class Main {
 //    static final int INF = Integer.MAX_VALUE;
 //    static final int MAX_POSITION = 100001;
@@ -80,7 +80,15 @@ class State {
 //        return distance[target];
 //    }
 //}
-//
+class State {
+    int node;
+    int dist;
+
+    public State(int node, int dist) {
+        this.node = node;
+        this.dist = dist;
+    }
+}
 public class Main {
     static final int MAX = 100000;
     public static void main(String[] args) {
@@ -96,6 +104,7 @@ public class Main {
         Deque<State> dq = new LinkedList<>();
         dq.offer(new State(root, 0));
         time[root] = 0;
+
         while(!dq.isEmpty()) {
             State s = dq.pollFirst();
 
