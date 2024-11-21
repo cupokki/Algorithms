@@ -9,48 +9,48 @@ import java.util.*;
  * 정점의 개수 v와 간선의 대수 e 각 1부터 20,000 300,000이하
  * 1부터 V까지 번호를 가진 노드
  */
-class Edge implements Comparable<Edge> {
+class Path implements Comparable<Path> {
     int node;
-    int weight;
+    int dist;
 
-    Edge(int node, int weight) {
+    Path(int node, int dist) {
         this.node = node;
-        this.weight = weight;
+        this.dist = dist;
     }
 
     @Override
-    public int compareTo(Edge o) {
-        return Integer.compare(this.weight, o.weight);
+    public int compareTo(Path o) {
+        return Integer.compare(this.dist, o.dist);
     }
 }
 
 public class Main {
     static int V, E;
-    static List<Edge>[] graph;
+    static List<Path>[] graph;
     static int[] distance;
     static final int INF = Integer.MAX_VALUE;
 
     static void dijkstra(int start) {
-        PriorityQueue<Edge> pq = new PriorityQueue<>();
-        pq.offer(new Edge(start, 0));
+        PriorityQueue<Path> pq = new PriorityQueue<>();
+        pq.offer(new Path(start, 0));
         distance[start] = 0;
 
         while (!pq.isEmpty()) {
-            Edge current = pq.poll();
+            Path current = pq.poll();
             int u = current.node;
 
             // 큐에서 꺼낸 현재 노드의 거리가 이미 갱신된 거리보다 크면 무시
-            if (current.weight > distance[u]) continue;
+            if (current.dist > distance[u]) continue;
 
             // 인접한 노드 탐색
-            for (Edge edge : graph[u]) {
-                int v = edge.node;
-                int w = edge.weight;
+            for (Path path : graph[u]) {
+                int v = path.node;
+                int w = path.dist;
 
                 // 더 짧은 경로를 찾았을 경우
                 if (distance[v] > distance[u] + w) {
                     distance[v] = distance[u] + w; // newDist
-                    pq.offer(new Edge(v, distance[v]));
+                    pq.offer(new Path(v, distance[v]));
                 }
             }
         }
@@ -81,7 +81,7 @@ public class Main {
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
             int w = Integer.parseInt(st.nextToken());
-            graph[u].add(new Edge(v, w));
+            graph[u].add(new Path(v, w));
         }
 
         // 다익스트라 알고리즘 수행
