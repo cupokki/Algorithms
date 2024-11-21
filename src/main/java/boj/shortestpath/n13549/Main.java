@@ -59,7 +59,7 @@ public class Main {
 
             // branchs
             v = u * 2;
-            if(v < MAX_POSITION && distance[v] > curDist + 0) {
+            if(v < MAX_POSITION && distance[v] > curDist + 0) { //https://www.acmicpc.net/board/view/143652
                 distance[v] = curDist + 0;
                 pq.offer(new Path(v, distance[v]));
             }
