@@ -1,20 +1,15 @@
 package boj.shortestpath.n9370;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * https://www.acmicpc.net/problem/9370
  * 미확인 도착지
  * 예술가 한쌍이 도시의 거리를 이동한다.
- * s에서 출발해 무조건 E(g,h)or E(h,g)를 1번은 지나가야한다.
+ * s에서 출발해 무조건 E(g,h)를 1번은 지나가야한다.
  * 후보 목적지 중 가능한 경로만 오름차순으로 정렬하라
- * 예술가는 반드시 최단경로(특정 간선을 경유하여)로 이동한다. ----> 경유, 구간을 나눠야한다.
- * 더 알아보기 https://dragon-h.tistory.com/22
- *  모든 간선을 짝수로 만들고 해당 노드만 홀수로 만든다면 홀수인 x까지 최단 경로는 목적지가 될 수 있다.
+ * 예술가는 반드시 최단경로로 이동한다.
  */
 public class Main {
     static int N, M, T, S, G, H;
@@ -28,7 +23,7 @@ public class Main {
         for (int test = 0; test < TC; test++) {
             st = new StringTokenizer(br.readLine());
             //n m t, 각각 교차로, 도로, 목적지 후보 개수
-            N = Integer.parseInt(st.nextToken()); // [2,2000] // 노드 ----> 인접행렬가능
+            N = Integer.parseInt(st.nextToken()); // [2,2000] // 노드
             M = Integer.parseInt(st.nextToken()); // [1,50000] // 간선
             T = Integer.parseInt(st.nextToken()); // [1-100]
             int[][] graph = new int[N + 1][N + 1];
@@ -40,7 +35,6 @@ public class Main {
             G = Integer.parseInt(st.nextToken()); //[1,s,g,h,n]
             H = Integer.parseInt(st.nextToken()); // g != h
 
-            //간선추가
             for (int m = 0; m < M; m++) {
                 st = new StringTokenizer(br.readLine());
                 int u = Integer.parseInt(st.nextToken()); // a [1,a] (a,b) [b,n] [1,d,100]
@@ -49,7 +43,11 @@ public class Main {
 
                 graph[u][v] = w;
                 graph[v][u] = w;
+//                graph[u][v] = w * 2;
+//                graph[v][u] = w * 2;
             }
+//            graph[G][H] -= 1;
+//            graph[H][G] -= 1;
             for (int t = 0; t < T; t++) {
                 //목적지 후보, 모두 s와 같지 않다.
                 int x = Integer.parseInt(br.readLine());
@@ -57,22 +55,29 @@ public class Main {
             }
             Arrays.sort(candidates);
 
-            // GH와 HG를 경유하여 x까지가는 두 경로의 최단거리를 다익스트라로 계산해서
-            // 두 경로중 작은것이 진짜 x까지 최단 경로이다.
-            // 그리고 그 최솟값이 s에서 계산한 최단거리와 같다면 그 후보지는 목적지가 될 수 있다.
-            // 예술가는 최단거리만이동 하므로
+            // x까지 최단거리는 두 경로 GH와 HG를 경유하는 다익스트라로 계산해서
+            // 둘중 작은것이 진짜 x까지 최단 경로이다. 그리고 그 최솟값이
+            // s에서 계산한 최단거리와 같다면 그 후보지는 목적지가 될 수 있다.
             int[] distanceFromS = dijkstra(graph, S);
-            int[] distanceFromG = dijkstra(graph, G);
+            int[] distanceFromG = dijkstra(graph, G); // GH와 HG가 간선정렬이 없다면 결과가 같다.
             int[] distanceFromH = dijkstra(graph, H);
-            int pathGH = distanceFromS[G] + distanceFromG[H];// + distanceFromH[x_i];
-            int pathHG = distanceFromS[H] + distanceFromH[G];// + distanceFromG[x_i];
+            int path1 = distanceFromS[G] + distanceFromG[H];// + distanceFromH[x];
+            int path2 = distanceFromS[H] + distanceFromH[G];// + distanceFromG[x];
 
             for (int x : candidates) {
-                int minToX = Math.min(pathGH + distanceFromH[x], pathHG + distanceFromG[x]);
-                if (minToX != Integer.MAX_VALUE && minToX == distanceFromS[x]) {
+                int min = Math.min(path1 + distanceFromH[x], path2 + distanceFromG[x]);
+                if (min != Integer.MAX_VALUE && min == distanceFromS[x]) {
                     bw.write(x + " ");
                 }
             }
+
+//            int[] distance = dijkstra(graph, S);
+//            for (int x : candidates) {
+//                if (distance[x] % 2 == 1) {
+//                    bw.write(x + " ");
+//                }
+//            }
+
             bw.write("\n");
             bw.flush(); //TODO : 루프 밖으로 옮기기
         }
@@ -81,24 +86,27 @@ public class Main {
     }
 
     static int[] dijkstra(int[][] graph, int root) {
-        Queue<int[]> q = new LinkedList<>();
+
+        PriorityQueue<int[]> q = new PriorityQueue<>((a, b) -> a[1] - b[1]);
         int[] distance = new int[N + 1];
         Arrays.fill(distance, Integer.MAX_VALUE);
+        boolean[] visited = new boolean[N + 1];
         distance[root] = 0;
+        visited[root] = true;
         q.offer(new int[]{root, distance[root]});
         while (!q.isEmpty()) {
             int[] state = q.poll();
             int u = state[0];
             int curDist = state[1];
             for (int v = 1; v <= N; v++) {
-                if (graph[u][v] != 0) {
-                    if (distance[v] < curDist) {
-                        continue;
-                    }
-                    if (distance[v] > graph[u][v] + curDist) {
-                        distance[v] = graph[u][v] + curDist;
-                        q.offer(new int[]{v, distance[v]});
-                    }
+                if (graph[u][v] == 0)
+                    continue;
+                if (visited[v])
+                    continue;
+                visited[v] = true;
+                if (distance[v] > graph[u][v] + curDist) {
+                    distance[v] = graph[u][v] + curDist;
+                    q.offer(new int[]{v, distance[v]});
                 }
             }
         }
