@@ -7,6 +7,10 @@ import java.util.Scanner;
  * 1,2,3 더하기
  * 정수 4를 1, 2, 3의 합으로 나타내는 방법은 7가지
  * 정수를 n개 주어졌을 떄, n을 123합으로 나타내어라
+ * dp[1]의 경우에 3을 더하면 4
+ * dp[2]의 경우에 2를 더하면 4
+ * dp[3]의 경우에 1을 더하면 4
+ * dp[4] = dp[1] + dp[2] + dp[3];
  */
 public class Main {
     public static void main(String[] args) {
