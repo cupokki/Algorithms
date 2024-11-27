@@ -9,7 +9,7 @@ import java.io.*;
  * 아니다 메모이제이션으로 성능을 늘리는 문제는 아니고 dp 점화식을 구하고 값만 구하면 된다.
  */
 public class Main {
-    static int[] memo;
+    static long[] memo;
     static int[][] dp;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -32,18 +32,21 @@ public class Main {
         bw.close();
         br.close();
     }
-// 문제에서 주어진 코드
-//    static long fibonacci(long n) {
+//// 문제에서 주어진 코드
+//    static long fibonacci(int n) {
 //        if( n == 0){
-//            result[0]++;
-//            return 0;
+////            result[0]++;
+//            return memo[0];
 //        }
 //        else if (n == 1) {
-//            result[1]++;
-//            return 1;
+////            result[1]++;
+//            return memo[1] = 1;
+//        }else if (memo[n] != 0){
+//            return memo[n];
 //        }
 //        else {
-//            return fibonacci(n - 1) + fibonacci(n - 2);
+////            return fibonacci(n - 1) + fibonacci(n - 2);
+//            return memo[n] = memo[n-1] + memo[n-2];
 //        }
 //    }
 }
