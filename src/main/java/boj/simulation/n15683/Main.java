@@ -33,7 +33,7 @@ public class Main {
     static int[][][] camera = { // [type], [dir]
             {{0}, {1}, {2}, {3}},
             {{0, 1}, {2, 3}},
-            {{0, 2}, {1, 2}, {1, 3}, {0, 1}},
+            {{0, 2}, {1, 2}, {1, 3}, {0, 3}},
             {{0, 2, 3}, {0, 1, 2}, {0, 1, 3}, {1, 2, 3}},
             {{0, 1, 2, 3}}
 
@@ -76,21 +76,23 @@ public class Main {
 
         // cctv들 순회
 //        for (int i = 0; i < cctv.size(); i++ ){
-//
-//
-//        }
+
         int[] pos = cctv.get(depth);
         int type = room[pos[0]][pos[1]] - 1; // 인덱스값 때문에
 
         // cctv종류별 방향 순회
         for(int[] dirs : camera[type]) {
-            applyCCTVCoverage(pos, dirs, true);
+            List<int[]> covered = applyCCTVCoverage(pos, dirs); // 변경된 위치 저장
             backtracking(depth + 1);
-            applyCCTVCoverage(pos, dirs, false);
+            for(int[] p : covered){ // 복구
+                room[p[0]][p[1]] = 0;
+                blindspot++;
+            }
         }
     }
 
-    static void applyCCTVCoverage(int[] pos, int[] dirs, boolean b) {
+    static List<int[]> applyCCTVCoverage(int[] pos, int[] dirs) {
+        List<int[]> covered = new ArrayList<>();
         for(int dir : dirs) {
             int x = pos[0];
             int y = pos[1];
@@ -101,14 +103,13 @@ public class Main {
                     break;
                 if (room[x][y] == 6) //카메라도 되나? -> 벽취급x 라고 문제에 되어있음
                     break;
-                if (b && room[x][y] == 0) {
-                        room[x][y] = -1;
-                        blindspot--;
-                } else if(!b && room[x][y] == -1){
-                        room[x][y] = 0;
-                        blindspot++;
+                if (room[x][y] == 0) { //이미 -1인 건 건들면 안된다. 지우는 순서가 꼬일수도 있으니
+                    room[x][y] = -1;
+                    blindspot--;
+                    covered.add(new int[]{x, y});//복구용으로 보관
                 }
             }
         }
+        return covered;
     }
 }
