@@ -14,8 +14,8 @@ import java.util.*;
  * 적절히 배치하여 사각지대의 최솟값을 구한다.
  * 카메라는 벽 취급하지 않는다!!!
  *
- * 카메라의 방향별로 모두 확인해야한다.
- * dfs 백트래킹
+ *
+ * 시뮬레이션, 브루트포스 해법
  */
 public class Main {
     static int n;
@@ -57,59 +57,12 @@ public class Main {
                     blindspot++;
             }
         }
-        min = blindspot;
-        backtracking(0);
-        System.out.println(min);
-    }
+        /*
+
+        구현
 
 
-    static void backtracking(int depth){
-        //blindsopt이 0인 경우를 발견했다면 더이상 진행할 필요없음
-        if(blindspot == 0){
-            min = 0;
-            return;
-        }
-        if(depth == cctv.size()){
-            min = Math.min(min, blindspot);
-            return;
-        }
+         */
 
-        // cctv들 순회
-//        for (int i = 0; i < cctv.size(); i++ ){
-
-        int[] pos = cctv.get(depth);
-        int type = room[pos[0]][pos[1]] - 1; // 인덱스값 때문에
-
-        // cctv종류별 방향 순회
-        for(int[] dirs : camera[type]) {
-            List<int[]> covered = applyCCTVCoverage(pos, dirs); // 변경된 위치 저장
-            backtracking(depth + 1);
-            for(int[] p : covered){ // 복구
-                room[p[0]][p[1]] = 0;
-                blindspot++;
-            }
-        }
-    }
-
-    static List<int[]> applyCCTVCoverage(int[] pos, int[] dirs) {
-        List<int[]> covered = new ArrayList<>();
-        for(int dir : dirs) {
-            int x = pos[0];
-            int y = pos[1];
-            while (true) {
-                x += directions[dir][0];
-                y += directions[dir][1];
-                if (x < 0 || x >= n || y < 0 || y >= m)
-                    break;
-                if (room[x][y] == 6) //카메라도 되나? -> 벽취급x 라고 문제에 되어있음
-                    break;
-                if (room[x][y] == 0) { //이미 -1인 건 건들면 안된다. 지우는 순서가 꼬일수도 있으니
-                    room[x][y] = -1;
-                    blindspot--;
-                    covered.add(new int[]{x, y});//복구용으로 보관
-                }
-            }
-        }
-        return covered;
     }
 }
