@@ -3,8 +3,6 @@ package boj.simulation.n12100;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -35,8 +33,11 @@ public class Main {
             StringTokenizer st = new StringTokenizer(br.readLine());
             for (int j = 0; j < N; j++) {
                 board[i][j] = Integer.parseInt(st.nextToken());
+                maxNum = Math.max(board[i][j], maxNum);
             }
         }
+//        moveBlocks(3);
+
         dfs(MAX_MOVE);
         System.out.println(maxNum);
     }
@@ -52,54 +53,67 @@ public class Main {
             moveBlocks(dir);
             dfs(depth - 1);
             board = original;// restore
-
         }
     }
 
     static void moveBlocks(int dir) {
-        boolean moved = false;
-        if (dir == 0) { // 위로
-            for (int i = 0; i < N; i++)
-                moved = moveLine(dir, N - 1, i); // 아랫줄을 윗방향으로
-        } else if (dir == 1) {
-            for (int i = 0; i < N; i++)
-                moved = moveLine(dir, 0, i); // 윗 줄을 아래방향으로
-        } else if (dir == 2) {
-            for (int i = 0; i < N; i++)
-                moved = moveLine(dir, i, N - 1); // 오른쪽줄을 왼쪽으로
-        } else if (dir == 3) {
-            for (int i = 0; i < N; i++)
-                moved = moveLine(dir, i, 0); // 왼쪽줄을 오른쪽으로
-        }else {
-            return;
-        }
-        if(!moved)
-            moveBlocks(dir + 1);
+
     }
 
-    // {0, 4, 2, 2} 배열을 <- 방향으로 민다면?
-    // 2에서 시작하는게 아니라 0에서 시작해서 수를 당겨와야한다.
-    static boolean moveLine(int dir, int r, int c) {
+    static void mergeLine(int dir, int r, int c) {
         int nr = r, nc = c;
-        boolean moved = false;
-        while (true) {
-            nr += DIRECTIONS[dir][0];
-            nc += DIRECTIONS[dir][1];
-            if (nr < 0 || nc < 0 || nr >= N || nc >= N) {
-                break;
+        int dr = DIRECTIONS[dir][0];
+        int dc = DIRECTIONS[dir][1];
+
+        //merge
+        // 이동방향 역순으로 블록 병합
+        // 0 2 2 0 4
+        nr += dr;
+        nc += dc;
+        while (nr >= 0 && nc >= 0 && nr < N && nc < N) {
+            // 나와 같은것 못찾으면 포인터를 현재 탐색대상으로하고 다시 반복
+            if (board[nr][nc] != 0 && board[r][c] != board[nr][nc]) {
+                r = nr;
+                c = nc;
+            } else if (board[nr][nc] != 0 && board[r][c] == board[nr][nc]) { // 나와 같은거 찾으면 거기에 내 값 더함, 그리고 그거 다음으로 포인터 이동
+                board[r][c] += board[nr][nc];
+                board[nr][nc] = 0;
+                nr = r = nr + dr;
+                nc = c = nc = dc;
             }
-            if (board[nr][nc] == 0)
+
+            nr += dr;
+            nc += dc;
+        }
+
+    }
+
+    static boolean moveLine(int dir, int r, int c) {
+        boolean moved = false;
+        int nr = r, nc = c;
+        int dr = DIRECTIONS[dir][0];
+        int dc = DIRECTIONS[dir][1];
+        nr += dr;
+        nc += dc;
+        while (nr >= 0 && nc >= 0 && nr < N && nc < N) {
+            if(board[r][c] != 0) {
+                r += dr;
+                c += dc;
+                nr = r + dr;
+                nc = c + dc;
                 continue;
-
-            board[r][c] += board[nr][nc]; // merge and pull
-            maxNum = Math.max(maxNum, board[r][c]);
-            if(board[r][c] != 0) moved = true;
-            // 이미 한번 머지했거나, 끝까지 땡긴것일 경우
-                r += DIRECTIONS[dir][0];
-                c += DIRECTIONS[dir][1];
-
-            board[nr][nc] = 0;
+            }
+            if(board[nr][nc] != 0) {
+                moved = true;
+                board[r][c] = board[nr][nc];
+                board[nr][nc] = 0;
+                r += dr;
+                c += dc;
+            }
+            nr += dr;
+            nc += dc;
         }
         return moved;
     }
+
 }
