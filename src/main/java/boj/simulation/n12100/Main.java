@@ -3,6 +3,7 @@ package boj.simulation.n12100;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 /**
@@ -36,84 +37,97 @@ public class Main {
                 maxNum = Math.max(board[i][j], maxNum);
             }
         }
-//        moveBlocks(3);
-
-        dfs(MAX_MOVE);
+        dfs(MAX_MOVE, board);
         System.out.println(maxNum);
     }
 
-    static void dfs(int depth) {
+    static void dfs(int depth, int[][] board) {
         if (depth == 0) {
-            // 모든 방향 검토
+            for (int i = 0; i < N; i++){
+                for (int j = 0; j < N; j++) {
+                    maxNum = Math.max(maxNum, board[i][j]);
+                }
+            }
             return;
         }
 
+        // 4방향 검토
         for (int dir = 0; dir < 4; dir++) {
-            int[][] original = board.clone();
-            moveBlocks(dir);
-            dfs(depth - 1);
-            board = original;// restore
+            int[][] newBoard = moveBlocks(dir, board);
+            dfs(depth - 1, newBoard);
         }
     }
 
-    static void moveBlocks(int dir) {
-
-    }
-
-    static void mergeLine(int dir, int r, int c) {
-        int nr = r, nc = c;
+    static int[][] moveBlocks(int dir, int[][] currentBoard) {
+        int[][] newBoard = new int[N][N];
+        for (int i = 0; i < N; i++ ) {
+            newBoard[i] = Arrays.copyOf(currentBoard[i], N);
+        }
         int dr = DIRECTIONS[dir][0];
         int dc = DIRECTIONS[dir][1];
-
-        //merge
-        // 이동방향 역순으로 블록 병합
-        // 0 2 2 0 4
-        nr += dr;
-        nc += dc;
-        while (nr >= 0 && nc >= 0 && nr < N && nc < N) {
-            // 나와 같은것 못찾으면 포인터를 현재 탐색대상으로하고 다시 반복
-            if (board[nr][nc] != 0 && board[r][c] != board[nr][nc]) {
-                r = nr;
-                c = nc;
-            } else if (board[nr][nc] != 0 && board[r][c] == board[nr][nc]) { // 나와 같은거 찾으면 거기에 내 값 더함, 그리고 그거 다음으로 포인터 이동
-                board[r][c] += board[nr][nc];
-                board[nr][nc] = 0;
-                nr = r = nr + dr;
-                nc = c = nc = dc;
+        int sr, sc;
+        int r, c;
+        for (int i = 0; i < N; i++){ // N개의 라인
+            // get start index
+            switch (dir) {
+                case 0 : sr = N - 1; sc = i; break;   // 아래에서 위로 {-1, 0}
+                case 1 : sr = 0; sc = i; break;   // 위에서 아래로 {1, 0}
+                case 2 : sr = i; sc = N - 1; break;   // 오른쪽에서 왼쪽으로 {0, -1}
+                case 3 : sr = i; sc = 0; break;   // 왼쪽에서 오른쪽으로 {0, 1}
+                default: return null; // 예외 없음 가능성x
             }
 
-            nr += dr;
-            nc += dc;
+            //merge
+            r = sr;
+            c = sc;
+            int nr = r + dr;
+            int nc = c + dc;
+            while (nr >= 0 && nc >= 0 && nr < N && nc < N) {
+                if (newBoard[r][c] == 0) { // 현위치가 0이면 인덱스를 다음 위치로
+                    r += dr;
+                    c += dc;
+                    nr = r + dr;
+                    nc = c + dc;
+                }
+                if(newBoard[r][c] == newBoard[nr][nc]) { // 다음 위치와 같다면 합침
+                    newBoard[r][c] *= 2;
+                    newBoard[nr][nc] = 0;
+                    r += dr;
+                    c += dc;
+                    nr = r + dr;
+                    nc = c + dc;
+                } else if (newBoard[nr][nc] != 0 && newBoard[r][c] != newBoard[nr][nc]) {
+                    r += dr;
+                    c += dc;
+                    nr = r + dr;
+                    nc = c + dc;
+                }
+                nr += dr;
+                nc += dc;
+
+            }
+
+            //move
+            r = sr;
+            c = sc;
+            nr = r + dr;
+            nc = c + dc;
+            while (nr >= 0 && nc >= 0 && nr < N && nc < N) {
+                if (newBoard[r][c] != 0) {
+                    nr = r += dr;
+                    nc= c += dc; // 현위치 인덱스 다음으로
+                }
+                if (newBoard[r][c] == 0 && newBoard[nr][nc] != 0) { // 현위치가 0이라면 가장 앞에 것을 가져옴
+                    newBoard[r][c] = newBoard[nr][nc];
+                    newBoard[nr][nc] = 0;
+                    nr = r += dr;
+                    nc = c += dc; // 현위치 인덱스 다음으로
+                }
+                nr += dr;
+                nc += dc;
+            }
         }
-
+        return newBoard;
     }
-
-    static boolean moveLine(int dir, int r, int c) {
-        boolean moved = false;
-        int nr = r, nc = c;
-        int dr = DIRECTIONS[dir][0];
-        int dc = DIRECTIONS[dir][1];
-        nr += dr;
-        nc += dc;
-        while (nr >= 0 && nc >= 0 && nr < N && nc < N) {
-            if(board[r][c] != 0) {
-                r += dr;
-                c += dc;
-                nr = r + dr;
-                nc = c + dc;
-                continue;
-            }
-            if(board[nr][nc] != 0) {
-                moved = true;
-                board[r][c] = board[nr][nc];
-                board[nr][nc] = 0;
-                r += dr;
-                c += dc;
-            }
-            nr += dr;
-            nc += dc;
-        }
-        return moved;
-    }
-
 }
+
