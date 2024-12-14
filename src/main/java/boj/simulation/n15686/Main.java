@@ -67,8 +67,9 @@ public class Main {
                 int chickenDistance = Math.abs(h[0] - c[0]) + Math.abs(h[1] - c[1]);
                 // 집은 가게는 반드시 선택해야함
                 dfs(depth + 1, m + 1, cityChickenDistance + chickenDistance);
-                break;
+
             }
+            return;
         }
 
         //(2 * N) ^ 13???
