@@ -22,7 +22,7 @@ public class Main {
     static int[][] city;
     static List<int[]> houses = new ArrayList<>();
     static List<int[]> chickens = new ArrayList<>();
-    static Set<int[]> choosen = new HashSet<>();
+    static Set<int[]> chosen = new HashSet<>();
     static int min = Integer.MAX_VALUE;
 
     public static void main(String[] args) throws IOException {
@@ -51,7 +51,7 @@ public class Main {
             int cityChickenDistance = 0;
             for(int[] h : houses){
                 int minChickenDistance = Integer.MAX_VALUE;
-                for(int[] c : choosen){
+                for(int[] c : chosen){
                     // 집들이 한 c만 고르게 하면 안된다.
                     minChickenDistance = Math.min(Math.abs(h[0] - c[0]) + Math.abs(h[1] - c[1]), minChickenDistance);
                 }
@@ -64,9 +64,9 @@ public class Main {
         // 중복을 허용하지않고 고름, 사실 choosen은 set을 사용해서 중복이 있어도 됨
         // ㄴ 아님 각 분기의 크기를 줄여야함
         for (int i = start; i < chickens.size(); i++) { // 조합 백트래킹
-            choosen.add(chickens.get(i));
+            chosen.add(chickens.get(i));
             solve(i + 1, size + 1);
-            choosen.remove(chickens.get(i));
+            chosen.remove(chickens.get(i));
         }
     }
 }
@@ -83,8 +83,8 @@ public class Main {
 //
 //    // 집선택
 //    int[] h = houses.get(depth);
-//    if (choosen.size() == M) {
-//        for (int[] c : choosen) {
+//    if (chosen.size() == M) {
+//        for (int[] c : chosen) {
 //            int chickenDistance = Math.abs(h[0] - c[0]) + Math.abs(h[1] - c[1]);
 //            dfs(depth + 1, cityChickenDistance + chickenDistance);
 //        }
@@ -94,9 +94,9 @@ public class Main {
 //        // 치킨집을 m개 선택했다면 무조건 선택한 치킨집 안
 //        int[] c = chickens.get(ch);
 //        int chickenDistance = Math.abs(h[0] - c[0]) + Math.abs(h[1] - c[1]);
-//        choosen.add(c);
+//        chosen.add(c);
 //        dfs(depth + 1, cityChickenDistance + chickenDistance);
-//        choosen.remove(c);
+//        chosen.remove(c);
 //
 //    }
 //}
