@@ -53,6 +53,7 @@ public class Main {
         System.out.println(count);
 
     }
+
     // dfs
     static void cleanRoom(int r, int c, int dir) {
         // 현재 바닥 청소
