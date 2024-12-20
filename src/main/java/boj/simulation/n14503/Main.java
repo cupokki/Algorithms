@@ -28,60 +28,64 @@ public class Main {
             {1, 0}, // 남
             {0, -1} // 서
     };
+    static int N;
+    static int M;
+    static int[][] room;
     static int count = 0;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String[] tokens = br.readLine().split(" ");
-        final int N = Integer.parseInt(tokens[0]); // 3<= N, M <= 50
-        final int M = Integer.parseInt(tokens[1]);
+        N = Integer.parseInt(tokens[0]); // 3<= N, M <= 50
+        M = Integer.parseInt(tokens[1]);
+        room = new int[N][M]; // 1: 벽  / 0: 청소대상 / -1: 청소함
         tokens = br.readLine().split(" ");
         int r = Integer.parseInt(tokens[0]); // 3<= N, M <= 50
         int c = Integer.parseInt(tokens[1]);
         int dir = Integer.parseInt(tokens[2]);
 
         // 방 선언 및 초기화
-        int[][] room = new int[N][M]; // 1: 벽  / 0: 청소대상 / -1: 청소함
         for (int i = 0; i < N; i++) {
             room[i] = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
         }
 
-        cleanRoom(room, r, c, dir);
+        cleanRoom(r, c, dir);
 
         System.out.println(count);
 
     }
+    // dfs
+    static void cleanRoom(int r, int c, int dir) {
+        // 현재 바닥 청소
+        if(room[r][c] == 0 ) {
+            room[r][c] = -1;
+            count++;
+        }
 
+        // 4방향 탐색
+        int newDir;
+        for (int i = 0; i < 4; i++) {
+//            int newDir = (dir - i + delta.length - 1) % delta.length;
+            newDir = (dir + 3 - i) % 4;
+            int nr = r + delta[newDir][0];
+            int nc = c + delta[newDir][1];
 
-    static void cleanRoom(int[][] room, int r, int c, int dir) {
-        int nr;
-        int nc;
-        while (true) {
-            if(room[r][c] == 0) {
-                room[r][c] = -1;
-                count++;
-            }
-            int i = 0;
-            for (; i < 4; i++) {
-                // 반시계
-                int newDir = (dir - i + (delta.length - 1)) % delta.length;
-                nr = r + delta[newDir][0];
-                nc = c + delta[newDir][1];
-
-                if (nr < 0 || nc < 0 || nr >= room.length || nc >= room[0].length)
-                    continue;
-                if (room[nr][nc] == 0) {
-                    r = nr;
-                    c = nc;
-                    dir = newDir;
-                    break;
-                }
-            }
-            if (i >= 4) {
-                r -= delta[dir][0]; // 후진
-                c -= delta[dir][1];
-                if (r < 0 || c < 0 || r >= room.length || c >= room[0].length || room[r][c] == 1)
-                    return;
+            // 방 밖으로 이동하려고 한다면
+            if (nr < 0 || nc < 0 || nr >= N || nc >= M)
+                continue;
+            if (room[nr][nc] == 0) {
+                cleanRoom(nr, nc, newDir); // 다음위치로 탐색
+                return;
             }
         }
+
+        // 청소 할 곳이 없어 뒤로 후진
+        int nr = r - delta[dir][0];
+        int nc = c - delta[dir][1];
+        if (nr < 0 || nc < 0 || nr >= N || nc >= M)
+            return;
+        if(room[nr][nc] != 1){ // 청소대상이나, 청소한 바닥이면
+            cleanRoom(nr, nc, dir);
+        }
+        // 벽이면 종료됨
     }
 }
