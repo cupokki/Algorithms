@@ -17,71 +17,75 @@ import java.util.StringTokenizer;
  */
 public class Main {
     static int N, M;
-    static int redR, redC, blueR, blueC;
-    static char[][] board = new char[10][10];
+    static char[][] board;
     static int min = Integer.MAX_VALUE;
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 1; i < M - 1; j++) {
-//                board[i][j] =  == ? ;
-                if(board[i][j] == 'R') {
-                    redR = i;
-                    redC = j;
-                }
-                if(board[i][j] == 'B') {
-                    blueR = i;
-                    blueC = j;
-                }
-            }
-        }
-
-        dfs(0, board, redR, redC, blueR, blueC);
-
-        System.out.println(min != Integer.MAX_VALUE ? min : -1);
-    }
     static int[] dr = {0, 0, 1, -1};
     static int[] dc = {1, -1, 0, 0};
-    static void dfs(int depth, char[][] board, int rr, int rc, int br, int bc) {
-        // 빨간 공이 들어가고, 파란공이 안들어감
-        if(rr < 0 && br >= 0) {
-            min = Math.min(depth, min);
-            return;
-        }
-        // 최대깊이거나 파란공이 들어가면
-        if(depth == 10 || br < 0) {
-            return;
-        }
 
-        // 4^10
-        for(int d = 0; d < 4; d++) {
-            char[][] nextBoard = new char[N][M];
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < M; j++) {
-                    nextBoard[i][j] = board[i][j];
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(bufferedReader.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        board = new char[N][M];
+
+        int rr = 0, rc = 0, br = 0, bc = 0;
+        for (int i = 0; i < N; i++) {
+            String line = bufferedReader.readLine();
+            board[i] = line.toCharArray();
+            for (int j = 0; j < M; j++) {
+                if (board[i][j] == 'R') {
+                    rr = i;
+                    rc = j;
+                } else if (board[i][j] == 'B') {
+                    br = i;
+                    bc = j;
                 }
             }
-            tiltBoard(d, nextBoard, rr, rc, br, bc);
-            dfs(depth + 1, nextBoard, rr, rc, br, bc);
+        }
+
+        dfs(0, rr, rc, br, bc);
+        System.out.println(min != Integer.MAX_VALUE ? min : -1);
+    }
+
+    static void dfs(int depth, int rr, int rc, int br, int bc) {
+        if (depth >= 10 || depth >= min) return;
+
+        for (int d = 0; d < 4; d++) {
+            int[] nextRed = move(rr, rc, d);
+            int[] nextBlue = move(br, bc, d);
+
+            int nrr = nextRed[0], nrc = nextRed[1];
+            int nbr = nextBlue[0], nbc = nextBlue[1];
+
+            if (board[nbr][nbc] == 'O') continue; // 파란 구슬이 구멍에 빠지면 무효
+            if (board[nrr][nrc] == 'O') { // 빨간 구슬이 구멍에 빠지면 성공
+                min = Math.min(min, depth + 1);
+                return;
+            }
+
+            // 두 구슬이 같은 위치에 있을 경우
+            if (nrr == nbr && nrc == nbc) {
+                if (nextRed[2] > nextBlue[2]) { // 더 많이 이동한 구슬을 뒤로
+                    nrr -= dr[d];
+                    nrc -= dc[d];
+                } else {
+                    nbr -= dr[d];
+                    nbc -= dc[d];
+                }
+            }
+
+            dfs(depth + 1, nrr, nrc, nbr, nbc);
         }
     }
 
-    static void tiltBoard(int d, char[][] board, int rr, int rc, int br, int bc) {
-        // 라인을 옳길때 빨간공이 있는 라인, 파란공이 있는라인 모두 고려하고 수행한다.
-
-        // 라인 선택
-        int nrr = rr + dr[d];
-        int nrc = rc + dr[d];
-        while (true) {
-//            if (nrr )
-//            board[rr][0] = ' ';
+    static int[] move(int r, int c, int d) {
+        int steps = 0;
+        while (board[r + dr[d]][c + dc[d]] != '#' && board[r][c] != 'O') {
+            r += dr[d];
+            c += dc[d];
+            steps++;
         }
-
-
+        return new int[]{r, c, steps};
     }
 }
