@@ -22,18 +22,17 @@ public class Main {
         }
 
         dp[0] = 0;
-
-        int min = Integer.MIN_VALUE;
+        int max = Integer.MIN_VALUE;
         for (int i = 1; i <= N; i++) {
-            if (min <= arr[i]) { // 증가 수열이고
-                dp[i] = dp[i - 1] + arr[i];
-                min = arr[i];
-            } else if(dp[i - 1] > dp[i - 2] + arr[i]){ // 증가수열이 아닌데 arr[i]로 새로 시작하는게 크다면
-                dp[i] = arr[i];
-                min = arr[i];
+            dp[i] = arr[i];
+            for (int j = 0; j < i; j++) {
+                if (arr[j] < arr[i]) {
+                    dp[i] = Math.max(dp[j] + arr[i], dp[i]);
+                    max = Math.max(max, dp[i]);
+                }
             }
         }
 
-        System.out.println(dp[N]);
+        System.out.println(max);
     }
 }
