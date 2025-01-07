@@ -10,13 +10,7 @@ import java.util.StringTokenizer;
  * 퇴사
  *
  * 01냅색? 냅색은 무게제한이 있지만 이 문제는 무게 제한이 없다.
- * LIS 응용 문제이다. : 최대 길이 수열을 추출하는 문제
- *  아니다. 문제가 원하는 것은 최대 요금이기 때문에 별도 비교 로직이 필요하다.
- * dp 테이블에 들어가야하는 것은 무엇인가.
- *  i일까지 고려했을때 최대수익을 기록한다.
- *
- *  dp[N]까지 고려하여 최대수익을 계산하여 출력한다.
- *
+ * i일로 부터 Ti일 을 갱신한다.
  */
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -32,22 +26,16 @@ public class Main {
             fee[i] = Integer.parseInt(st.nextToken());
         }
 
-        int[][] dp = new int[N + 1][N + 1];
-
-        for (int i = 1; i <= N; i++) { // i일 까지 고려한다.
-            for (int j = 1; j <= i; j++) {
-                dp[i][j] = Math.maxfee[j]
-                if (dp[i][j] < period[j]) { // 남은 기간이 지금보는 것의 기간보다 작다면 비교
-                    dp[i][j] = Math.max(dp[i - 1][j] + fee[j - 1], dp[i][j]);
-                } else {
-                    //TODO : dp[i][i - period[j]]
-                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
-                }
+        int[] dp = new int[N + 2];
+        for (int i = 1; i <= N; i++) {
+            dp[i] = Math.max(dp[i], dp[i - 1]); // 이전 날까지의 최대 수익(오늘 상담이 잡혀 선택을 못하는 경우)
+            if (i + period[i] <= N + 1) { // i + period가 N일 이하라면 (N일전까지 끝낼 수 있다면) 마지막날에 하루가 걸리므로 + 1
+//                dp[i + period[i]] = dp[i] + fee[i];
+                dp[i + period[i]] = Math.max(dp[i] + fee[i], dp[i + period[i]]); // i일에 상담을 한 것과 안한 것 크기 비교
             }
         }
-
-        System.out.println(dp[N][N]);
+        int maxFee = Math.max(dp[N], dp[N + 1]);
+        System.out.println(maxFee);
     }
-
 
 }
