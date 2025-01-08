@@ -19,58 +19,46 @@ import java.util.*;
  */
 public class Main {
     static int min = Integer.MAX_VALUE;
-    static List<Integer> result;
+    static int[] result = new int[1000000]; // 실제로 다 쓸 일 없음
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int N = sc.nextInt();
 
-        List<Integer> list = new ArrayList<>();
-        dfs(N, list);
+        int[] list = new int[1000000];
+        dfs(N, list, 0 );
 
         System.out.println(min);
-        for(int i = 0; i < result.size(); i++ ) {
-            System.out.print(result.get(i) + " ");
+        for(int i = 0; i <= min; i++ ) {
+            System.out.print(result[i] + " ");
         }
         System.out.println();
     }
 
-    static void dfs(int depth, List<Integer> list) {
-        list.add(depth);
-
-        if (list.size() > min) {
+    static void dfs(int n, int[] list, int size) {
+        list[size++] = n;
+        if (size > min) {
             return;
         }
-        if (depth < 0) {
+        if (n <= 0) {
             return;
         }
-        if (depth == 1) {
-            if (min > list.size() - 1) {
-                min = list.size() - 1;
-                result = new ArrayList<>();
-                for(int i = 0; i < list.size(); i++) {
-                    result.add(list.get(i));
+        if (n == 1) {
+            if (min > size - 1) {
+                min = size - 1;
+                for (int i = 0; i <= min; i++) {
+                    result[i] = list[i];
                 }
             }
             return;
         }
 
-        if(depth % 3 == 0) {
-            List<Integer> newList = copyList(list);
-            dfs(depth / 3, newList);
+        if (n % 3 == 0) {
+            dfs(n / 3, list, size);
         }
-        if(depth % 2 == 0) {
-            List<Integer> newList = copyList(list);
-            dfs(depth / 2, newList);
+        if (n % 2 == 0) {
+            dfs(n / 2, list, size);
         }
-        List<Integer> newList = copyList(list);
-        dfs(depth - 1, newList);
-    }
-
-    private static List<Integer> copyList(List<Integer> list) {
-        List<Integer> newList = new ArrayList<>();
-        for(int i = 0; i < list.size(); i++) {
-            newList.add(list.get(i));
-        }
-        return newList;
+        dfs(n - 1, list, size);
     }
 }
+
