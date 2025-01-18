@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 /**
  * 카드 구매하기
  *
+ * https://www.acmicpc.net/problem/11052
  * 등급을 나타내는 색 8가지가 있다.
  * 카드팩을 구매할 때, 1개부터 N개가 들어있는 카드팩을 구매 할 수 있다.
  * 카드수가 적어도 비싼 카드팩이면 좋은 카드가 들어있을거라는 미신
