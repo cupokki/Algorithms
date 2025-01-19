@@ -36,21 +36,21 @@ public class Main {
 
             long[][] dp = new long[2][N + 1];
 
-            for (int i = 1; i <= N; i++) { // i열 까지 스티커를 고려했을때
+            dp[0][1] = stickers[0][1];
+            dp[1][1] = stickers[1][1];
+            // 이중첩을 할 필요x i-1, i-2 보다 더 멀리 볼 필요없음(그럼 최댓값일 수 없음)
+            // i열 스티커 중
+            //      1을 선택할지
+            //      2를 선택할 지
+
+            for (int i = 2; i <= N; i++) { // i열 까지 스티커를 고려했을때
                 dp[0][i] = dp[0][i - 1];
                 dp[1][i] = dp[1][i - 1];
 
                 dp[0][i] = Math.max(dp[0][i], dp[1][i - 1] + stickers[0][i]);
-                if(i != 1){
-                    dp[0][i] = Math.max(dp[0][i], dp[0][i - 2] + stickers[0][i]);
-                    dp[0][i] = Math.max(dp[0][i], dp[0][i - 2] + stickers[1][i]);
-                }
-
+                dp[0][i] = Math.max(dp[0][i], dp[0][i - 2] + stickers[0][i]);
                 dp[1][i] = Math.max(dp[1][i], dp[0][i - 1] + stickers[1][i]);
-                if(i != 1){
-                    dp[1][i] = Math.max(dp[1][i], dp[1][i - 2] + stickers[0][i]);
-                    dp[1][i] = Math.max(dp[1][i], dp[1][i - 2] + stickers[1][i]);
-                }
+                dp[1][i] = Math.max(dp[1][i], dp[1][i - 2] + stickers[1][i]);
 
 
             }
