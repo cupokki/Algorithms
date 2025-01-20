@@ -34,6 +34,7 @@ public class Main {
                 stickers[1][i] = Integer.parseInt(st.nextToken());
             }
 
+            //TODO : 배열을 모두 사용할 필요가 없다는 점을 주목하라
             int[][] dp = new int[2][N + 1];
 
             dp[0][1] = stickers[0][1];
