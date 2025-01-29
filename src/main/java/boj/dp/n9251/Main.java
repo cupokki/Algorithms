@@ -29,15 +29,15 @@ public class Main {
         }
         int length = cStr.length;
 
-        int[] dp = new int[length + 1];
+        int[][] dp = new int[length + 1][length + 1]; //i번재 문자까지 고려했을때 최대
         for (int i = 1; i <= length; i++) {
-            dp[i] = dp[i - 1];
             for (int j = 1; j <= i; j++) {
-                if (cStr1[i] == cStr2[j]) {
-                    dp[i] = Math.max(dp[i - 1] + 1, dp[i]);
-                }
+//                if (cStr1[] == cStr2[]) {
+
+//                }
+
             }
         }
-        System.out.println(dp[length]);
+        System.out.println(dp[length][length]);
     }
 }
