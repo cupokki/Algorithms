@@ -31,11 +31,13 @@ public class Main {
 
         int[][] dp = new int[length + 1][length + 1]; //i번재 문자까지 고려했을때 최대
         for (int i = 1; i <= length; i++) {
-            for (int j = 1; j <= i; j++) {
-//                if (cStr1[] == cStr2[]) {
+            for (int j = 1; j <= length; j++) {
+                for (int k = 1; j <= j; k++ ) {
+                    if (cStr1[j] == cStr2[k]) {
+                        dp[i][j] = dp[i] + dp[j];
 
-//                }
-
+                    }
+                }
             }
         }
         System.out.println(dp[length][length]);
