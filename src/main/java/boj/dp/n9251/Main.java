@@ -12,34 +12,26 @@ import java.util.Arrays;
  * 최장 공통 부분 수열 문제는 두 수열이 주어졌을 떄, 모두의 부분 수열이 되는 수열 중 가장 긴 것을 찾는 문제이다.
  * 첫째 줄과 둘째 줄에 두 문자열이 주어진다. 문자열의 길이는 1000이며 알파벳대문자만 사용
  * LCS길이를 출력하라
+ *
  */
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        char[] cStr;
-        cStr = br.readLine().toCharArray();
-        char[] cStr1 = new char[cStr.length + 1];
-        for (int i = 1; i <= cStr.length; i++ ){
-            cStr1[i] = cStr[i - 1];
-        }
-        cStr = br.readLine().toCharArray();
-        char[] cStr2 = new char[cStr.length + 1];
-        for (int i = 1; i <= cStr.length; i++ ){
-            cStr2[i] = cStr[i - 1];
-        }
-        int length = cStr.length;
+        char[] cStr1 = (" " + br.readLine()).toCharArray();
+        char[] cStr2 = (" " + br.readLine()).toCharArray(); // idx 한칸 늘릴려고
+        int n = cStr1.length;
+        int m = cStr2.length;
 
-        int[][] dp = new int[length + 1][length + 1]; //i번재 문자까지 고려했을때 최대
-        for (int i = 1; i <= length; i++) {
-            for (int j = 1; j <= length; j++) {
-                for (int k = 1; j <= j; k++ ) {
-                    if (cStr1[j] == cStr2[k]) {
-                        dp[i][j] = dp[i] + dp[j];
+        int[][] dp = new int[n][m]; //i번째 문자까지 고려하여 j번째 열의 최댓값
 
-                    }
-                }
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j < m; j++) {
+                if (cStr1[i] == cStr2[j])
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                else
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
-        System.out.println(dp[length][length]);
+        System.out.println(dp[n - 1][m - 1]);
     }
 }
