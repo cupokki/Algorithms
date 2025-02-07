@@ -1,7 +1,6 @@
 package boj.dp.n9655;
 
 import java.util.Scanner;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * 돌 게임
