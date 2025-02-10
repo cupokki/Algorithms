@@ -33,13 +33,20 @@ public class Main {
         int[][] dp = new int[N + 1][K + 1];
         for (int i = 0; i <= N; i++) {
             Arrays.fill(dp[i], -1);
+            dp[i][0] = 0; // 0원을 만드는 최소 동전개수 0개
         }
 
         for (int i = 1; i <= N; i++) {
             for (int j = 1; j <= K; j++) { // 1번째 동전을 쓰고 j원을 만드는 최소 경우의 수
-
-
-
+                // j원을 못만들면 continue;
+                if (j >= coins[i] && dp[i][j - coins[i]] != -1) {
+                    if(dp[i][j] == -1) {
+                        dp[i][j] = dp[i][j - coins[i]] + 1;
+                    }
+                    else {
+                        dp[i][j] = Math.min(dp[i][j - coins[i]] + 1, dp[i][j]);
+                    }
+                }
             }
         }
 
