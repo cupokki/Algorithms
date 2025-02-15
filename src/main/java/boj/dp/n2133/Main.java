@@ -20,20 +20,15 @@ public class Main {
         dp[0] = 1; // 아무것도 놓지않는 경우
         if (n >= 1) dp[1] = 0; // 불가능
         if (n >= 2) dp[2] = 3;
-        if (n >= 3) dp[3] = 0; // 불가능
-
 
         for (int i = 4; i <= n; i += 2) { // 홀수일때는 경우의 수가 무조건 0
-
+            // dp[i] = 3 * dp[i - 2] + 2 * (dp[i - 4] + dp[i - 6] + .... dp[i - i])
             dp[i] = dp[i - 2] * 3;
-            int sum = 0;
-            for (int j = 4; j < i; j += 2)
-//            if (i % 2 == 0)
-                 sum += dp[i - j] ;
-            dp[i] += sum * 2 + 2;
+            for (int j = 4 ; j <= i; j += 2) // 4 부터 i까지
+                 dp[i] += dp[i - j] * 2;
         }
 
         sb.append(dp[n]);
-        System.out.println(sb.toString());
+        System.out.println(sb);
     }
 }
