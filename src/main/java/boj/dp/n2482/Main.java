@@ -5,13 +5,14 @@ import java.io.*;
 /**
  * 색상환
  * https://www.acmicpc.net/problem/2482
- *
- *  색을 고리모양으로 표현, N색 색상환
- *  색상환의 인접한 두 색을 동시에 사용하지 않도록 K개의 색을 선택하는 경우의 수를 구하라.
+ * <p>
+ * 색을 고리모양으로 표현, N색 색상환
+ * 색상환의 인접한 두 색을 동시에 사용하지 않도록 K개의 색을 선택하는 경우의 수를 구하라.
  */
 public class Main {
     static final int MOD = 1_000_000_003;
-    public static void main(String[] args) throws IOException{
+
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
         int n = Integer.parseInt(br.readLine()); // [4, 1000]
@@ -19,47 +20,35 @@ public class Main {
 
         int[][] dp = new int[n + 1][k + 1]; // n개의 색에서 k개의 색깔을 뽑는 경우의 수
 
-        //ex) dp[20][1] = 20;
-        //ex) dp[20][2] = ;
-        //ex) dp[20][10] = 2;
-        //ex) dp[20][11] = 0; // 조건에 해당하는 경우의 수는 없다.
+        // base condition
+        dp[1][0] = 1;
+        dp[1][1] = 1;
+        dp[2][0] = 1;
+        dp[2][1] = 2;
+        dp[3][0] = 1;
+        dp[3][1] = 3;
 
-        // dp[4][1] = 4; // A, B, C, D
-        // dp[4][2] = 2; // AC, BD
-
-        // dp[5][1] = 5; // A/B/C/D/E
-        // dp[5][2] = 10; // count({AC, AD}) * 5
-        // dp[5][2] = 0;
-
-        // dp[6][1] = 6; // A/B/C/D/E/F
-        // dp[6][2] = 18; // AC, AD, AE, * 6
-        // dp[6][3] = 2; // ACE, BDF
-
-        // dp[7][1] = 7; // A/B/C/D/E/F/G
-        // dp[7][2] = 28; // AC, AD, AE, AF * 7
-        // dp[7][3] = 21; //ACE, ACF, ADF, * 7
-        // dp[7][4] = 0;
-
-
-        for (int i = 1; i <= n; i++) {
-            // base condition
-            dp[i][0] = 1; // 0개를 뽑는 경우
-            dp[i][1] = i; // 한개 선택하는 경우
-            for (int j = 2; j <= i / 2; j++) { // n/2 이하만 가능하다.
-                if (i > 3){
-                    // 하나를 뽑으면 그와 인접한 두개 모두 사용 불가, 따라서 i-3
-                    // 먼저 첫번째 i를 선택한다.
-                    // 다음 i - 3개 중에 j - 1개를 고르는 경우의 수를 구한다. => dp[i - 3][j - 1]?
-                    if(dp[i - 3][j - 1] == 0) {
-                        dp[i][j] = i / 2;
-                    }
-                    else
-                        dp[i][j] = i * dp[i - 3][j - 1];
-                }
-
+        for (int i = 4; i <= n; i++) {
+            dp[i][0] = 1; // base condition
+            dp[i][1] = i;
+            for (int j = 2; j <= k; j++) { // n/2 이하만 가능하다.
+                // 먼저 첫번째 i를 선택한다.
+                // 다음 i - 3(선택한 하나와 인접한 두개, 총 3개를 다음 선택에서 사용할 수 없다.)개 중에 j - 1개를 고르는 경우의 수를 구한다. => dp[i - 3][j - 1].
+                // 중복 제거 1/2
+                    /*
+                    AC, AD, AE, AF
+                    BD, BE, BF, BG
+                    CE, CF, CG, *CA
+                    DF, DG, *DA, *DB
+                    EG, *EA, *EB, *EC - > 14개
+                     */
+                if (j * 2 == i) {
+                    dp[i][j] = i / j % MOD;
+                    break;
+                } else
+                    dp[i][j] = i * dp[i - 3][j - 1] % MOD; // 소숫점에 대해 어떻게?
             }
         }
-
 
         sb.append(dp[n][k]);
         System.out.println(sb);
