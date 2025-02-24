@@ -14,44 +14,22 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        int n = Integer.parseInt(br.readLine()); // [4, 1000]
-        int k = Integer.parseInt(br.readLine()); // [1, N]
+        int N = Integer.parseInt(br.readLine()); // [4, 1000]
+        int K = Integer.parseInt(br.readLine()); // [1, N]
 
-        int[][] dp = new int[n + 1][k + 1]; // n개의 색에서 k개의 색깔을 뽑는 경우의 수
+        int[][] dp = new int[N + 1][K + 1]; // n개의 색에서 k개의 색깔을 뽑는 경우의 수
 
-        // base condition
-        dp[1][0] = 1;
-        dp[1][1] = 1;
-        dp[2][0] = 1;
-        dp[2][1] = 2;
-        dp[3][0] = 1;
-        dp[3][1] = 3;
-
-        for (int i = 4; i <= n; i++) {
-            dp[i][0] = 1; // base condition
+        dp[0][0] = 1;
+        for (int i = 1; i <= N; i++ ) {
+            dp[i][0] = 1;
             dp[i][1] = i;
-            for (int j = 2; j <= k; j++) { // n/2 이하만 가능하다.
-                // 먼저 첫번째 i를 선택한다.
-                // 다음 i - 3(선택한 하나와 인접한 두개, 총 3개를 다음 선택에서 사용할 수 없다.)개 중에 j - 1개를 고르는 경우의 수를 구한다. => dp[i - 3][j - 1].
-                // 중복 제거 1/2
-                    /*
-                    AC, AD, AE, AF
-                    BD, BE, BF, BG
-                    CE, CF, CG, *CA
-                    DF, DG, *DA, *DB
-                    EG, *EA, *EB, *EC - > 14개
-                     */
-                if (j * 2 == i) {
-                    dp[i][j] = i / j % MOD;
-                    break;
-                } else
-                    dp[i][j] = i * dp[i - 3][j - 1] % MOD; // 소숫점에 대해 어떻게?
+            for (int j = 1; j <= K; j++) {
+                if(i >= 3)
+                    dp[i][j] = (dp[i - 1][j] + dp[i - 2][j - 1]) % MOD;
             }
         }
-
-        sb.append(dp[n][k]);
-        System.out.println(sb);
+        int result = (dp[N - 1][K] + dp[N - 3][K - 1]) % MOD;
+        System.out.println(result);
     }
 }
 
