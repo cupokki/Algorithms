@@ -28,8 +28,8 @@ public class Main {
 
         for (int i = 0; i < K; i++) {
             int[] pos = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            for (int r = pos[0]; r < pos[3]; r++) {
-                for (int c = pos[2]; c < pos[4]; c++) {
+            for (int r = pos[1]; r < pos[3]; r++) {
+                for (int c = pos[0]; c < pos[2]; c++) {
                     if(!grid[r][c]) grid[r][c] = true;
                 }
             }
@@ -37,8 +37,8 @@ public class Main {
 
         List<Integer> result = new ArrayList<>();
 
-        for (int r = 0; r <= M; r++) {
-            for (int c = 0; c <= N; c++) {
+        for (int r = 0; r < M; r++) {
+            for (int c = 0; c < N; c++) {
                 if(!grid[r][c]) {
                     result.add(bfs(r, c));
                 }
@@ -65,8 +65,9 @@ public class Main {
             for (int d = 0; d < 4; d++) {
                 int nr = pos[0] + dr[d];
                 int nc = pos[1] + dc[d];
-                if (nr >= 0 && nr <= M && nc >= 0 && nc <= N && !grid[nr][nc]) {
+                if (nr >= 0 && nr < M && nc >= 0 && nc < N && !grid[nr][nc]) {
                     size++;
+                    grid[nr][nc] = true;
                     q.offer(new int[]{nr, nc});
                 }
 
