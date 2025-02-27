@@ -54,6 +54,7 @@ public class Main {
             }
             return;
         }
+
         pw[i] = charset[i];
         int m = 0;
         int j = 0;
@@ -68,11 +69,6 @@ public class Main {
         solve(i + 1, mo, ja ); // 선택하지 않음
     }
     static boolean isMoeum(char c) {
-        char[] mo = new char[]{'a','e','i','o','u'};
-        for (char m : mo) {
-            if (c == m)
-                return true;
-        }
-        return false;
+        return "aeiou".indexOf(c) >= 0;
     }
 }
