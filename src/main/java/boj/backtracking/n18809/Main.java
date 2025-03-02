@@ -57,11 +57,19 @@ public class Main {
         solve(0, 0, 0);
 
         System.out.println(flowerCnt);
+
     }
+    static int[][] red;
+    static int[][] green;
+
+
     // O(10^3)
     static void solve(int i, int r, int g) {
         if (i == lands.size()) {
             // r,g 번갈아가며 bfs?
+            //deepcopy // ->
+            spread(); // ->  2500
+            //rebase -> 2500
 
             return;
         }
@@ -84,9 +92,21 @@ public class Main {
     static void spread() {
         Queue<int[]> rq = new LinkedList<>();
         Queue<int[]> gq = new LinkedList<>();
+        int[][] rvisited = new int[N][M];
+        int[][] gvisited = new int[N][M];
 
         while(!rq.isEmpty() && !gq.isEmpty()) {
+            int[] p = rq.poll();
+            int rr = p[0];
+            int rc = p[1];
+            for (int d = 0; d < 4; d++) {
+                int rnr = rr + dr[d];
+                int rnc = rc + dc[d];
 
+                if (rnr >= 0 && rnr < N && rnc >= 0 && rnc < M && rvisited[rnr][rnc] == 0) {
+
+                }
+            }
         }
     }
 }
