@@ -52,7 +52,7 @@ public class Main {
                 // 0: 호수, 1: 배양액 가능, 2: 배양액 불가
             }
         }
-
+        arr = new int[lands.size()];
         // 뿌리기,
         solve(0, 0, 0);
 
@@ -63,11 +63,14 @@ public class Main {
     static int[][] green;
 
 
+    static int[] arr;
     // O(10^3)
     static void solve(int i, int r, int g) {
         if (i == lands.size()) {
             // r,g 번갈아가며 bfs?
             //deepcopy // ->
+//            List.;
+
             spread(); // ->  2500
             //rebase -> 2500
 
@@ -104,7 +107,7 @@ public class Main {
                 int rnc = rc + dc[d];
 
                 if (rnr >= 0 && rnr < N && rnc >= 0 && rnc < M && rvisited[rnr][rnc] == 0) {
-
+//                    rvisited[rnr][rnc] =
                 }
             }
         }
