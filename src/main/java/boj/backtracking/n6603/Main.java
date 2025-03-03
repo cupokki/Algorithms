@@ -3,12 +3,11 @@ package boj.backtracking.n6603;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * 로또
+ * https://www.acmicpc.net/problem/6603
  * [1,49] 6개의 수를 고른다.
  * 49가지 수 중 k개(k > 6)의 수를 골라 집합S를 만들고 그 수만 가지고 번호를 선택한다.
  * 집합S와 k개가 주어질때, 수를 고르는 모든 방법을 사전순으로 출력하라.
