@@ -31,24 +31,22 @@ public class Main {
 
         Arrays.sort(arr);
 
-        solve(0);
+        solve(0, 0);
 
         System.out.print(sb);
     }
-    static void solve(int size) {
+    static void solve(int start, int size) {
         if (size == M) {
             for (int n : result) {
-                sb.append(n + " ");
+                sb.append(n).append(" ");
             }
             sb.append("\n");
             return;
         }
 
-        for (int i = 0; i < N; i++) {
-            if (size >= 1 && arr[i] < result[size - 1])
-                continue;
+        for (int i = start; i < N; i++) {
             result[size] = arr[i];
-            solve(size + 1);
+            solve(i, size + 1);
         }
 
     }
