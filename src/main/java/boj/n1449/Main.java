@@ -14,7 +14,7 @@ public class Main {
     static int N;
     static int L;
     static int[] pos;
-    static int[] taped;
+    static boolean[] taped;
     static int min = Integer.MAX_VALUE;
     public static void main (String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -24,13 +24,7 @@ public class Main {
 
         pos = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
         Arrays.sort(pos);
-        int pipeSize = pos[N - 1];
-        taped = new int[pipeSize + 1 + L + 1];
-        Arrays.fill(taped, 1);
-
-        for (int i : pos) {
-            taped[i] = 0;
-        }
+        taped = new boolean[N];
 
         backtrack(0, 0, 0);
 
@@ -42,40 +36,40 @@ public class Main {
         if (cnt >= min) {
             return;
         }
-        //TODO : 이게 문제다
-        if (depth == N) {
-            if (check()){
-                min = Math.min(min, cnt);
-            }
-            // 모두 보수했다면
-            // min cnt compare
 
+        // 모두 보수했다면
+        // min cnt compare
+        if (check()){
+            min = Math.min(min, cnt);
             return;
         }
+
         for (int i = start; i < N; i++) {
-            if (taped[pos[i]] == 0) {
-                tape(pos[i], L);
+            if (!taped[i]) {
+                tape(i, L);
                 backtrack(depth + 1, start + 1, cnt + 1);
-                untape(pos[i], L);
+                untape(i, L);
                 backtrack(depth + 1, start + 1, cnt);
             }
         }
     }
     static boolean check() {
-        for (int p : pos) {
-            if (taped[p] == 0)
+        for (boolean p : taped) {
+            if (!p)
                 return false;
         }
         return true;
     }
-    static void tape(int pos, int length) {
+    static void tape(int idx, int length) {
         for (int i = 0; i < length; i++) {
-            taped[pos + i] += 1;
+            if (idx + i < N && pos[idx] + length >= pos[idx + i])
+                taped[idx + i] = true;
         }
     }
-    static void untape(int pos, int length) {
+    static void untape(int idx, int length) {
         for (int i = 0; i < length; i++) {
-            taped[pos + i] -= 1;
+            if (idx + i < N && pos[idx] + length >= pos[idx + i])
+                taped[idx + i] = false;
         }
     }
 }
