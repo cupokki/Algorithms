@@ -15,7 +15,7 @@ public class Main {
     static int L;
     static int[] pos;
     static boolean[] taped;
-    static int min = Integer.MAX_VALUE;
+
     public static void main (String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -24,52 +24,21 @@ public class Main {
 
         pos = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
         Arrays.sort(pos);
-        taped = new boolean[N];
-
-        backtrack(0, 0, 0);
-
-        System.out.println(min);
-
-    }
-    static void backtrack(int depth, int start, int cnt) {
-
-        if (cnt >= min) {
-            return;
+        taped = new boolean[pos[N - 1] + L];
+        for (int p : pos) {
+            taped[p] = true;
         }
-
-        // 모두 보수했다면
-        // min cnt compare
-        if (check()){
-            min = Math.min(min, cnt);
-            return;
-        }
-
-        for (int i = start; i < N; i++) {
-            if (!taped[i]) {
-                tape(i, L);
-                backtrack(depth + 1, start + 1, cnt + 1);
-                untape(i, L);
-                backtrack(depth + 1, start + 1, cnt);
+        int cnt = 0;
+        for (int i = 1; i < taped.length; i++) {
+            if (!taped[i])
+                continue;
+            cnt++;
+            for (int j = 0; j < L; j++) {
+                taped[i + j] = false;
             }
         }
-    }
-    static boolean check() {
-        for (boolean p : taped) {
-            if (!p)
-                return false;
-        }
-        return true;
-    }
-    static void tape(int idx, int length) {
-        for (int i = 0; i < length; i++) {
-            if (idx + i < N && pos[idx] + length >= pos[idx + i])
-                taped[idx + i] = true;
-        }
-    }
-    static void untape(int idx, int length) {
-        for (int i = 0; i < length; i++) {
-            if (idx + i < N && pos[idx] + length >= pos[idx + i])
-                taped[idx + i] = false;
-        }
+
+        System.out.println(cnt);
+
     }
 }
