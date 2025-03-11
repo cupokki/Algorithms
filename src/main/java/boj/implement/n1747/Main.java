@@ -1,4 +1,4 @@
-package boj.implement.n1652.n1747;
+package boj.implement.n1747;
 
 import java.io.*;
 import java.util.*;
