@@ -12,7 +12,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         int N = sc.nextInt();
 
-        while (!(isPelindrome(N) && isPrime(N)) {
+        while (!(isPelindrome(N) && isPrime(N))) {
             N++;
         }
         System.out.println(N);
