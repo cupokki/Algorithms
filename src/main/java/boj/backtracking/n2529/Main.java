@@ -1,11 +1,9 @@
-package boj.n2529;
+package boj.backtracking.n2529;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * 부등호
@@ -20,10 +18,7 @@ public class Main {
     static long[] arr;
     static boolean[] visited;
     static char[] cstr;
-    static long min = Integer.MAX_VALUE;
-    static long max = Integer.MIN_VALUE;
-    static String minStr;
-    static String maxStr;
+    static List<String> result = new ArrayList<>();
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         K = Integer.parseInt(br.readLine());
@@ -37,8 +32,8 @@ public class Main {
         }
 
         backtrack(0);
-        System.out.println(maxStr);
-        System.out.println(minStr);
+        Collections.sort(result);
+        System.out.println(result.get(result.size() - 1) + "\n" + result.get(0));
     }
     static void backtrack(int idx) {
         if (idx == K + 1) {
@@ -47,17 +42,7 @@ public class Main {
                 for (int i = 0; i <= K; i++) {
                     sb.append(arr[i]);
                 }
-                String str = sb.toString();
-                Long n = Long.parseLong(str);
-
-                if (n > max) {
-                    max = n;
-                    maxStr = str;
-                }
-                if (n < min) {
-                    min = n;
-                    minStr = str;
-                }
+                result.add(sb.toString());
 
             }
             return;
