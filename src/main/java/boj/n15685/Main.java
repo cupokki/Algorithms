@@ -3,9 +3,7 @@ package boj.n15685;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * 드래곤 커브
@@ -14,6 +12,7 @@ import java.util.StringTokenizer;
  *  1. 시작점
  *  2. 시작방향
  *  3. 세대
+ *  (드래곤 커브의 세대의 길이는 1)
  *
  *  세대간 끝점을 축으로 90도 회전하여 연결
  *  100x100의 격자 위에 드래곤 커브가 N개 있다
@@ -36,50 +35,41 @@ import java.util.StringTokenizer;
  *  끝점을 스택에 담는다.
  */
 public class Main {
+    static int[] dx = {1, 0, -1, 0};
+    static int[] dy = {0, -1, 0, 1};
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
-        boolean[][] map = new boolean[100][100];
+        boolean[][] map = new boolean[101][101];
         Stack<int[]> stack = new Stack<>();
+
         for (int i = 0; i < N; i++) {
-            int[] attibutes = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-            int[] zeroCurve = Arrays.copyOf(attibutes, 3);
-
-            int gen = 0;
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+            int d = Integer.parseInt(st.nextToken());
+            int G = Integer.parseInt(st.nextToken());
+            map[x][y] = true;
+            Queue<Integer> directions = new LinkedList<>();
+            directions.offer(d);
             // 0세대
-            stack.push(attibutes);
-            int[] nextCurve = getNextCurveByCurCurve(zeroCurve[0], zeroCurve[1], (zeroCurve[2] * gen) % 4);
-            drawLine(map, attibutes[0], attibutes[1], nextCurve[0], nextCurve[1]);
-            while (attibutes[3] > gen) {
-                int[] curCurve = stack.pop();
-//                int[] nextCurve = getNextCurveByCurCurve(curCurve[0], curCurve[1], (curCurve[2] * gen) % 4);
-                drawLine(map, curCurve[0], curCurve[1], nextCurve[0], nextCurve[1]);
+            int gen = 1; // 현재
 
+            while (G > gen) { // == directions.size() == gen
+                int curD = (directions.poll() - gen + 4) % 4;
+                x += dx[curD];
+                y += dy[curD];
+                map[x][y] = true;
+                directions.offer(curD);
                 gen++;
             }
         }
 
         System.out.println(calcSquareUnitCnt(map));
     }
-    static int[] getNextCurveByCurCurve(int x, int y, int d) {
-        if (d == 0) {
 
-        } else if (d == 1) {
-
-        } else if (d == 2) {
-
-        } else {
-
-        }
-    }
-    static void drawLine(boolean[][] map, int sx, int sy, int ex, int ey) {
-        if (sx == ex) {
-            for (int y = sy; y <= ey; y++)
-                map[sx][y] = true;
-        }else {
-            for (int x = sx; x <= ex; x++)
-                map[x][sy] = true;
-        }
+    static void drawLine(boolean[][] map, int x, int y, int d) {
+        map[x + dx[d]][y + dy[d]] = true;
     }
 
     static int calcSquareUnitCnt(boolean[][] map) {
