@@ -104,22 +104,9 @@ public class Main {
         if (result.isEmpty())
             return null;
         result.sort((a, b) -> {
-            if (a[2] == b[2]) {
-                if (a[0] == b[0]) {
-                    return a[1] - b[1];
-                }
-                return a[0] - b[0];
-            }
-            return a[2] - b[2];
-        });
-        result.sort((a, b) -> {
-            if (a[2] == b[2]) {
-                if (a[0] == b[0]) {
-                    return a[1] - b[1];
-                }
-                return a[0] - b[0];
-            }
-            return a[2] - b[2];
+            if (a[2] != b[2]) return a[2] - b[2];
+            if (a[0] != b[0]) return a[0] - b[0];
+            return a[1] - b[1];
         });
         return result.get(0);
     }
