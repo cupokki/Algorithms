@@ -3,7 +3,7 @@ package boj.n17114;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+
 import java.util.StringTokenizer;
 
 /**
@@ -56,17 +56,38 @@ public class Main {
         }
         System.out.println(getDustAmount());
     }
+    static int[] dr = {0, 0, -1, 1};
+    static int[] dc = {-1, 1, 0, 0};
     static void diffuseDust() {
-        boolean[][] origin = new boolean[R][C]; // 확산 근원지
+        int[][] diffused = new int[R][C]; // 확산 된 것
+
         for (int i = 0; i < R; i++) {
             for (int j = 0; j < C; j++) {
-                if (grid[i][j] > 0 )
-                    origin[i][j] = true;
+                if (grid[i][j] != 0) {
+                    int dirCnt = 0;
+                    for (int d = 0; d < 4; d++) {
+                        int r = i + dr[d];
+                        int c = j + dc[d];
+                        if (r < 0 || r >= R || c < 0 || c >= C)
+                            continue;
+                        diffused[r][c] = grid[i][j] / 5;
+                        dirCnt++;
+                    }
+                    grid[i][j] -= (grid[i][j] / 5) * dirCnt;
+                }
             }
         }
+        // 확산된 것 반영
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+
+            }
+        }
+
     }
 
     static void circulateAir(int pr, int pc, boolean isTop) { // purifier_r, c, isTop
+
         int[] clockwise = {};
     }
 
