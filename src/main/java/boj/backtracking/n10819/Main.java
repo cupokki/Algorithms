@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 /**
  * 차이를 최대로
- * https:www.acmicpc.net/problem/10819
+ * https://www.acmicpc.net/problem/10819
  *
  * N개의 정수 배열 A
  * 배열의 순서를 적절히 바꾸어 다음 식의 최댓값을 구하라.
