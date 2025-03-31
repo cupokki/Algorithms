@@ -1,4 +1,4 @@
-package boj.n1347;
+package boj.simulation.n1347;
 
 import java.io.BufferedReader;
 import java.io.IOException;
