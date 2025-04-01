@@ -1,4 +1,4 @@
-package boj.n1074;
+package boj.implement.n1074;
 
 /**
  * Z
