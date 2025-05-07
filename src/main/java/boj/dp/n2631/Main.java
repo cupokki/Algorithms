@@ -26,15 +26,6 @@ public class Main {
 
         int maxLength = 1;
 
-        // LIS 알고리즘 (O(N^2))
-        for (int i = 1; i < N; i++) {
-            for (int j = 0; j < i; j++) {
-                if (arr[j] < arr[i]) {
-                    dp[i] = Math.max(dp[i], dp[j] + 1);
-                }
-            }
-            maxLength = Math.max(maxLength, dp[i]);
-        }
 
         System.out.println(N - maxLength); // 옮겨야 하는 학생 수
     }
