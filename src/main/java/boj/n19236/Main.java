@@ -43,13 +43,7 @@ public class Main {
 
         while(true) {
             // 물고기 움직이기
-            for (int i = 1; i <= 16; i++) {
 
-                for (int j = 0; j < 8; j++) {
-                    int nextDir = fishState[i];
-                }
-
-            }
 
             // 샤크 움직이기
 
