@@ -31,14 +31,18 @@ public class Main {
         }
 
 
-        dfs(0, 0);
+        for (int i = 0; i < 3; i++) {
+            dfs(1, costs[0][i], i, i);
+        }
 
         System.out.println(min);
     }
 
-    static void dfs(int depth, int sum) {
+    static void dfs(int depth, int sum, int first, int before) {
         if (depth == N) {
-            min = Math.min(min, sum);
+            if (first != before){
+                min = Math.min(min, sum);
+            }
             return;
         }
 
@@ -47,7 +51,8 @@ public class Main {
         }
 
         for (int i = 0; i < 3; i++) {
-            dfs(depth + 1, sum + costs[depth][i]);
+            if (i == before) continue;
+            dfs(depth + 1, sum + costs[depth][i], first, i);
         }
     }
 }
