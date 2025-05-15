@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class Main {
     static int N;
     static int[][] costs;
-    static int min = Integer.MAX_VALUE;
+    static int min = 1000001;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -26,13 +26,13 @@ public class Main {
         for (int i = 0; i < N; i++) {
             costs[i] = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
         }
-        // 첫 번째 집의 색을 각각 R, G, B로 고정하고 DP 수행
-        for (int firstColor = 0; firstColor < 3; firstColor++) {
+
+        for (int first = 0; first < 3; first++) {
             int[][] dp = new int[N][3];
 
-            // 첫 번째 집의 색 설정
+            // 첫 집의 색 설정
             for (int i = 0; i < 3; i++) {
-                dp[0][i] = (i == firstColor) ? costs[0][i] : Integer.MAX_VALUE;
+                dp[0][i] = (i == first) ? costs[0][i] : 1000001;
             }
 
             // DP 진행
@@ -42,10 +42,10 @@ public class Main {
                 dp[i][2] = Math.min(dp[i - 1][0], dp[i - 1][1]) + costs[i][2];
             }
 
-            // 마지막 집의 색이 첫 번째 집의 색과 달라야 하므로 체크
-            for (int lastColor = 0; lastColor < 3; lastColor++) {
-                if (lastColor != firstColor) {
-                    min = Math.min(min, dp[N - 1][lastColor]);
+            // 마지막과 첫 집의 색이 다름
+            for (int last = 0; last < 3; last++) {
+                if (last != first) {
+                    min = Math.min(min, dp[N - 1][last]);
                 }
             }
         }
