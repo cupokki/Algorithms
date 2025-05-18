@@ -30,17 +30,24 @@ public class Main {
         // 시작점
         for (int s = 0; s < 3; s++) {
             int[][] dp = new int[N][3];
+
+            for (int i = 0; i < 3 ; i++) {
+                dp[0][i] = 1000001;
+            }
             dp[0][s] = costs[0][s];
 
             for (int i = 1; i < N; i++) {
-//                dp[i][0] = Math.min(dp[i][1]) + costs[i][0];
+                dp[i][0] = Math.min(dp[i - 1][1], dp[i - 1][2]) + costs[i][0];
+                dp[i][1] = Math.min(dp[i - 1][0], dp[i - 1][2]) + costs[i][1];
+                dp[i][2] = Math.min(dp[i - 1][0], dp[i - 1][1]) + costs[i][2];
             }
 
             for (int e = 0; e < 3; e++) {
-                Math.min(dp[3][e], min);
+                if(s == e) continue;
+                min = Math.min(dp[N - 1][e], min);
             }
 
-            System.out.println(min);
         }
+        System.out.println(min);
     }
 }
