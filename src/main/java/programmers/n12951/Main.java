@@ -10,7 +10,7 @@ public class Main {
      * @return String
      */
     static String solution(String s) {
-        var carr = s.toCharArray();
+        var carr = s.toLowerCase().toCharArray();
         if (carr[0] >= 'a' && carr[0] <= 'z') {
             carr[0] += (char) ('A' -'a');
         }
