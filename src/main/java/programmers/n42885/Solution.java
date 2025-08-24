@@ -10,27 +10,16 @@ public class Solution {
     // 완전탐색으론 시간 초과 예상 불가
     // 백트래킹역시 한 레이어에서
     static int solution(int[] people, int limit) {
-        List<Integer> sorted = Arrays.stream(people)
-                .boxed()
-                .sorted(Collections.reverseOrder())
-                .collect(Collectors.toList());
-
+        Arrays.sort(people);
+        int start = 0;
+        int end = people.length - 1;
         int result = 0;
-        while(!sorted.isEmpty()) {
-            int remain = limit;
-            List<Integer> chosen = new ArrayList<>();
-            for (int w : sorted) {
-                if (chosen.size() == 2) {
-                    break;
-                }
-                if (remain >= w) {
-                    remain -=w;
-                    chosen.add(w);
-                }
+
+        while (start < end) {
+            if (people[start] + people[end] <= limit) {
+                end--;
             }
-            for(Integer w : chosen) {
-                sorted.remove(w);
-            }
+            start++;
             result++;
         }
 
