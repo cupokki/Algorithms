@@ -8,6 +8,15 @@ public class Solution {
         Set<Integer> set = new HashSet<>();
         int n = elements.length;
 
+        for (int idx = 0; idx < n; idx++) {
+            for(int i = 0; i < n; i++) {
+                int sum = 0;
+                for (int j = 0; j <= i; j++) {
+                    sum += elements[(idx + j) % n];
+                }
+                set.add(sum);
+            }
+        }
 
         return set.size();
     }
