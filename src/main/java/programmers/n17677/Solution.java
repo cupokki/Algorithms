@@ -35,31 +35,31 @@ public class Solution {
         int intersectCount = 0;
         int unionCount = 0;
 
-        var large = a.size() > b.size() ? a : b;
-        var small = a.size() <= b.size() ? a : b;
-
         // calculate intersectCount
-        for (String s : small.keySet()) {
-            if (large.containsKey(s)) {
-                intersectCount += small.get(s);
+        for (String s : a.keySet()) {
+            if (b.containsKey(s)) {
+                intersectCount += Math.min(a.get(s), b.get(s));
             }
         }
 
         // calculate unionCount
-        for (String s : large.keySet()) {
-            unionCount += large.get(s);
+        for (String s : a.keySet()) {
+            if (b.containsKey(s)) {
+                unionCount += Math.max(a.get(s), b.get(s));
+            } else {
+                unionCount += a.get(s);
+            }
         }
-
-        for (String s : small.keySet()) {
-            if (!large.containsKey(s)) {
-                unionCount += small.get(s);
+        for (String s : b.keySet()) {
+            if (!a.containsKey(s)) {
+                unionCount += b.get(s);
             }
         }
 
         if (unionCount == 0) {
             similarity = 1.0;
         } else {
-            similarity = (double)intersectCount / (double) unionCount;
+            similarity = (double) intersectCount / (double) unionCount;
         }
         return (int) Math.floor(similarity * 65536);
     }
