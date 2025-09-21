@@ -26,16 +26,17 @@ public class Solution {
                     break;
                 case 'R':
                     nc += 1;
+                    break;
                 case 'L':
                     nc -= 1;
                     break;
                 default:
                     break;
             }
-            if (nr < 0 || nc < 0 || nr > 10 || nc > 10) {
+            if (nr < 0 || nc < 0 || nr >= 11 || nc >= 11) {
                 continue;
             }
-            if (!visited[r * 11 + c][nr * 11 + nc]) {
+            if (!visited[r * 11 + c][nr * 11 + nc] || !visited[nr * 11 + nc][r * 11 + c]) {
                 visited[r * 11 + c][nr * 11 + nc] = true;
                 visited[nr * 11 + nc][r * 11 + c] = true;
                 answer ++;
