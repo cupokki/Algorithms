@@ -13,14 +13,13 @@ public class Solution {
                 int n = stack.pop();
                 result[n] = numbers[i];
             }
-            stack.push(i);
+            stack.push(i); // 인덱스가 i일때 뒷큰수를 찾지 못함.
+            // top 인덱스의 요소는 i일때 numbers[i]값과 비교했을때 작다면 top의 뒷큰수는 numbers[i]
         }
         // 반복이 끝나고 스택이 비어있지않다면 계산하지 못한 인덱스는 -1
         while(!stack.isEmpty()) {
             result[stack.pop()] = -1;
         }
-
-
 
         return result;
     }
