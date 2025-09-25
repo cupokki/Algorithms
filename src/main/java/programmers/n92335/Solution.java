@@ -17,7 +17,9 @@ public class Solution {
         String[] numbers = bin.split("[0]+");
         for (int i = 0; i < numbers.length; i++) {
 //            int num = Integer.parseInt(numbers[i], k); // 문제에 나옴. K진법으로 하지말라고
-            int num = Integer.parseInt(numbers[i]);
+            if (numbers[i].equals("")) // 1000 같이 끝자리가 0이면 ""발생하므로
+                continue;
+            long num = Long.parseLong(numbers[i]);// 2진수로 처리한다면 111....111 같이 큰수는 10의 자리로 변환할때 int값에 담지 못할수도
             if (isPrime(num)) {
                 answer++;
             }
@@ -25,7 +27,7 @@ public class Solution {
         return answer;
     }
 
-    public static boolean isPrime(int n) {
+    public static boolean isPrime(long n) {
         if (n <= 1)
             return false;
         if (n == 2)
