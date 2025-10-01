@@ -13,28 +13,26 @@ public class Solution {
         Stack<Integer> stack = new Stack<>(); // 보조 컨베이어
 
         int boxNum = 0; // 상자 번호
-        for (int i = 0; i < order.length; i++ ) {
-            if (!stack.isEmpty() && stack.peek() == order[boxNum]) {
+        for (int i = 1; i <= order.length; i++ ) {
+            while(!stack.isEmpty() && stack.peek() == order[boxNum]) {
                 stack.pop();
                 boxNum++;
-                answer++;
+            }
+
+            if (i == order[boxNum]) {
+                boxNum++; // 상차 하나 완료
                 continue;
             }
-            if (i + 1 == order[boxNum]) {
-                answer++;
-                boxNum++;
-                continue;
-            }
-            stack.push(i + 1);
+
+            stack.push(i);
         }
 
         while(!stack.isEmpty() && stack.peek() == order[boxNum]) {
             stack.pop();
-            answer++;
             boxNum++;
         }
 
-        return answer;
+        return boxNum;
     }
 
     public static void main(String[] args) {
