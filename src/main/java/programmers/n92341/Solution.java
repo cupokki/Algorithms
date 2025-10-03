@@ -30,23 +30,33 @@ public class Solution {
                 timeMap.merge(k, minute, Integer::sum);
             }
         }
-        Map<String, Integer> feeMap = new HashMap<>();
-        timeMap.entrySet().forEach(e -> {
-            int total = fees[1];
-            if (e.getValue() <= fees[0]) {
-                feeMap.put(e.getKey(), total);
-                return;
-            }
-            total += (int) Math.ceil(((e.getValue() - fees[0] * 1.0)) / fees[2]) * fees[3];
-            feeMap.put(e.getKey(), total);
-        });
+//        Map<String, Integer> feeMap = new HashMap<>();
+//        timeMap.entrySet().forEach(e -> {
+//            int total = fees[1];
+//            if (e.getValue() <= fees[0]) {
+//                feeMap.put(e.getKey(), total);
+////
+//            }
+//            total += (int) Math.ceil(((e.getValue() - fees[0] * 1.0)) / fees[2]) * fees[3];
+//            feeMap.put(e.getKey(), total);
+//        });
+//
+//
+//        var result= feeMap.keySet().stream().sorted().mapToInt(
+//                k ->feeMap.get(k))
+//                .toArray();
+//        return result;
 
-
-        var result= feeMap.keySet().stream().sorted().mapToInt(
-                k ->feeMap.get(k))
-                .toArray();
-
-        return result;
+        return timeMap.entrySet().stream()
+                .sorted((a, b) -> a.getKey().compareTo(b.getKey()))
+                .mapToInt(e -> {
+                    int total = fees[1];
+                    if (e.getValue() <= fees[0]) {
+                        return total;
+                    }
+                    total += (int) Math.ceil(((e.getValue() - fees[0] * 1.0)) / fees[2]) * fees[3];
+                    return total;
+                }).toArray();
     }
 
 
