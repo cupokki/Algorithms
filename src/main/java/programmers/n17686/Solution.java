@@ -15,7 +15,7 @@ public class Solution {
             String[] tempA = parseTitle(a);
             String[] tempB = parseTitle(b);
 
-            if (!tempA[0].equals(tempB[0]) || tempA[1] == null || tempB[1] == null) {
+            if (!tempA[0].equals(tempB[0])) {
                 return tempA[0].compareTo(tempB[0]);
             }
 
@@ -24,31 +24,12 @@ public class Solution {
         }).toArray(String[]::new);
     }
     static String[] parseTitle(String name) {
-        String[] temp = new String[3];
-        int part = 0;
-        char current = name.charAt(0);
-        int index = 0;
 
-        while(!(current >= '0' && current <= '9') && index < name.length() - 1) {
-            index++;
-            current = name.charAt(index);
-        }
+        String[] temp = new String[2];
 
-        temp[part] = name.substring(0, index).toUpperCase();
-        part++;
-
-        while(current >= '0' && current <= '9') {
-            index++;
-            if (index >= name.length()) {
-                break;
-            }
-            current = name.charAt(index);
-        }
-
-        temp[part] = name.substring(temp[0].length(), index);
-        part++;
-
-        temp[part] = name.substring(index); //useless
+        temp[0] = name.split("[0-9]")[0].toUpperCase();
+//        temp[1] = name.replaceAll(".*?([0-9]+).*","$1");
+        temp[1] = name.replaceAll(".*?(\\d+).*","$1"); // 전체를 $1으로 치환
 
         return temp;
     }
