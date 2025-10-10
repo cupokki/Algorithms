@@ -11,21 +11,7 @@ public class Solution {
      */
     public static String solution(int[] numbers) {
         String[] sorted = Arrays.stream(numbers).mapToObj(Integer::toString)
-                .sorted((a, b) -> {
-                    int idx = 0;
-                    while(idx < a.length() || idx < b.length()) {
-                        if (idx >= a.length()) {
-                            return b.charAt(idx) - '0';
-                        } else if (idx >= b.length()) {
-                            return '0' - a.charAt(idx);
-                        }
-                        if (a.charAt(idx) != b.charAt(idx)) {
-                            return b.charAt(idx) - a.charAt(idx);
-                        }
-                        idx++;
-                    }
-                    return 0;
-                })
+                .sorted((b, a) -> (a + b).compareTo(b + a))
                 .toArray(String[]::new);
         StringBuilder sb = new StringBuilder();
         Arrays.stream(sorted).forEach(sb::append);
@@ -33,8 +19,9 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-//        System.out.println(solution(new int[]{3, 30}));
-        System.out.println(solution(new int[]{3, 30, 34}));
+        System.out.println(solution(new int[]{3, 30}));
+        System.out.println(solution(new int[]{0, 300, 3, 34, 32}));
+        System.out.println(solution(new int[]{100, 1}));
         System.out.println(solution(new int[]{3, 30, 34, 5, 9}));
         System.out.println(solution(new int[]{6, 10, 2}));
     }
