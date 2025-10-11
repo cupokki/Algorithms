@@ -15,31 +15,21 @@ public class Solution {
         answer = new int[]{0, 0};
         matrix = arr;
         int len = arr.length;
-        compression(len /2 , 0, 0);
+        compression(len, 0, 0);
         System.out.println(answer[0] + " " + answer[1]);
         return answer;
     }
     static void compression(int len, int r, int c) {
-        if (len == 1) {
-            for (int i = 0; i < 2; i++) {
-                for (int j = 0; j < 2; j++) {
-                    answer[matrix[r + i][c + j]]++;
-                }
-            }
+        if (validate(len, r, c)) {
+            answer[matrix[r][c]]++;
             return;
         }
 
-        for (int i = 0; i < 2; i++) {
-            int nr = r + len * i;
-            for (int j = 0; j < 2; j++) {
-                int nc = c + len * j;
-                if(validate(len, nr, nc)) {
-                    answer[matrix[nr][nc]]++;
-                } else {
-                    compression(len / 2, nr, nc);
-                }
-            }
-        }
+        len /= 2;
+        compression(len, r, c); // 반복문 보단 4개정도면 그냥 풀어서 쓰는것도 ㄱㅊ
+        compression(len, r, c + len);
+        compression(len, r + len, c);
+        compression(len, r + len, c + len);
     }
     static boolean validate(int len, int r, int c) {
         int temp = matrix[r][c];
@@ -60,6 +50,12 @@ public class Solution {
                 {1,0,0,1},
                 {1,1,1,1}
         };
+        int[][] input3 = {
+                {1,1,1,1},
+                {1,1,1,1},
+                {1,1,1,1},
+                {1,1,1,1}
+        };
 
         int[][] input2 = {
                 {1,1,1,1,1,1,1,1},
@@ -73,5 +69,6 @@ public class Solution {
         };
         solution(input1);
         solution(input2);
+        solution(input3);
     }
 }
