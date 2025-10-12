@@ -11,30 +11,38 @@ public class Solution {
     문자를 조합하여 만들 수 있는 소수 개수의 최댓값을 구하라
      */
     static int len;
-    static int[] result;
+    static char[] result;
     static boolean[] used;
     static String str;
-    static Set<Integer> set = new HashSet<>();
+    static Set<String> set;
     static int answer;
     public static int solution(String numbers) {
         len = numbers.length();
-        result = new int[len];
+        result = new char[len];
+        Arrays.fill(result, ' ');
         used = new boolean[len];
         str = numbers;
+        set = new HashSet<>();
         answer = 0;
         dfs(0);
         return answer;
     }
     static void dfs(int depth) {
         if (depth == len) {
-            int n = 0;
+            String s = "";
             for (int i = 0; i < len; i++) {
-                n += Math.pow(10, i) * result[len - 1 - i];
+                if (result[i] != ' ') s += result[i];
             }
-            if (!set.contains(n) && isPrime(n)) {
+            if (s.equals("")) {
+                return;
+            }
+            int n = Integer.parseInt(s);
+
+            if (!set.contains(s) && isPrime(n)) {
+                System.out.println(n);
                 answer++;
             }
-            set.add(n);
+            set.add(s);
             return;
         }
 
@@ -44,15 +52,16 @@ public class Solution {
                 continue;
             }
             used[i] = true;
-            result[depth] = str.charAt(i) - '0';
+            result[depth] = str.charAt(i);
             dfs(depth + 1);
             used[i] = false;
-            result[depth] = 0;
+            result[depth] = ' ';
         }
     }
     static boolean isPrime(int n) {
         if (n == 0) return false;
         if (n == 1) return false;
+        if (n == 2) return true;
         if (n % 2 == 0) return false;
         for (int i = 3; i <= Math.sqrt(n); i += 2) {
             if (n % i == 0) {
@@ -63,7 +72,10 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("17"));
-        System.out.println(solution("011"));
+        System.out.println( 111 % 3);
+//        System.out.println(solution("17"));
+//        System.out.println(solution("011"));
+        System.out.println(solution("10101"));
+//        System.out.println(solution("110"));
     }
 }
