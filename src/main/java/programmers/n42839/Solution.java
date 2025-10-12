@@ -14,7 +14,7 @@ public class Solution {
     static char[] result;
     static boolean[] used;
     static String str;
-    static Set<String> set;
+    static Set<Integer> set;
     static int answer;
     public static int solution(String numbers) {
         len = numbers.length();
@@ -24,40 +24,30 @@ public class Solution {
         str = numbers;
         set = new HashSet<>();
         answer = 0;
-        dfs(0);
+        dfs("");
         return answer;
     }
-    static void dfs(int depth) {
-        if (depth == len) {
-            String s = "";
-            for (int i = 0; i < len; i++) {
-                if (result[i] != ' ') s += result[i];
-            }
-            if (s.equals("")) {
-                return;
-            }
-            int n = Integer.parseInt(s);
-
-            if (!set.contains(s) && isPrime(n)) {
-                System.out.println(n);
+    static void dfs(String current) {
+        if (!current.equals("")) {
+            int n = Integer.parseInt(current);
+            if (!set.contains(n) && isPrime(n)) {
+                System.out.println(current);
                 answer++;
             }
-            set.add(s);
-            return;
+            set.add(n);
         }
 
-        dfs(depth + 1);
+        if (current.length() == len) return;
+
         for (int i = 0; i < len; i++) {
-            if (used[i]) {
-                continue;
+            if (!used[i]) {
+                used[i] = true;
+                dfs(current + str.charAt(i));
+                used[i] = false;
             }
-            used[i] = true;
-            result[depth] = str.charAt(i);
-            dfs(depth + 1);
-            used[i] = false;
-            result[depth] = ' ';
         }
     }
+
     static boolean isPrime(int n) {
         if (n == 0) return false;
         if (n == 1) return false;
@@ -72,10 +62,9 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        System.out.println( 111 % 3);
-//        System.out.println(solution("17"));
+        System.out.println(solution("17"));
 //        System.out.println(solution("011"));
-        System.out.println(solution("10101"));
+//        System.out.println(solution("10101"));
 //        System.out.println(solution("110"));
     }
 }
