@@ -1,8 +1,7 @@
 package programmers.n118667;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.stream.IntStream;
 
 public class Solution {
     /*
@@ -10,80 +9,36 @@ public class Solution {
     프로세스 수행으로 각 큐의 원소 합이 같아지는 최소의 수
     불가능하다면 -1을 반환한다.
 
-    깊이가 정해지지않음 얼마나 걸릴지 모르니까 dfs는 무리
-    깊이가... 알수있나? 두 입력의 길이 합만큼 수행하면 불가능한것으로
-    12
-    34
-    ---
-    123
-    4
-    --
-    1234
-    x
-    ---
-    234
-    1
-    ---
-    34
-    21
-    ---
-    4
-    321
-    ---
-    x
-    4321
-    ---
-    1
-    432
-    ---
-    x
-    1432
-    ---
-    2
-    143
-    ---
-    23
-    14
-    ---
-    3
-    214
-    ---
-    4
-    321
-
-
+    두 큐를 연결한다면 슬라이딩 윈도우 적용이 가능하다?
      */
     public static int solution(int[] queue1, int[] queue2) {
-        Queue<Integer> qa = new LinkedList<>();
-        for (int n : queue1) {
-            qa.add(n);
+        int aLen = queue1.length;
+        int bLen = queue2.length;
+        int len = aLen + bLen;
+        int aSum = IntStream.range(0, queue1.length).map(i->queue1[i]).sum();
+        int bSum = IntStream.range(0, queue2.length).map(i->queue2[i]).sum();
+
+
+
+        int totalSum = aSum + bSum;
+        int[] arr = new int[aLen + bLen];
+
+        for (int i = 0; i < aLen; i++) {
+            arr[i] = queue1[i];
         }
-        Queue<Integer> qb = new LinkedList<>();
-        for (int n : queue2) {
-            qb.add(n);
+        for (int i = 0; i < bLen; i++) {
+            arr[i + aLen] = queue2[i];
         }
 
-        int cnt = 0;
-        long aSum = qa.stream().mapToInt(i->i).sum();
-        long bSum = qb.stream().mapToInt(i->i).sum();
-
-        while (aSum != bSum) {
-            if (aSum > bSum) {
-                int temp = qa.poll();
-                qb.offer(temp);
-                aSum -= temp;
-                bSum += temp;
+        int temp = aSum;
+        for(int i = 0; i < len; i++) {
+            if (totalSum == temp * 2) {
+                return i;
             }
-            else {
-                int temp = qb.poll();
-                qa.offer(temp);
-                bSum -= temp;
-                aSum += temp;
-            }
-            cnt++;
+            temp -= arr[i]; // 길이가 가변적이라 이런식으론 안된다.
+            temp += arr[(i + aLen) % len];
         }
-
-        return cnt;
+        return -1;
     }
 
     public static void main(String[] args) {
