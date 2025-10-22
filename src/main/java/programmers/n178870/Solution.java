@@ -37,19 +37,20 @@ public class Solution {
         int temp = 0;
         int s = 0;
         int e = 1;
-        while(e <= len && s <= len) {
-            if (temp < k) { // 예외 케이스는 주어지지않으므로 경계조건 x
-                e++;
-            }
-            else if (temp > k){
-                s++;
-            }
+        while(e < prefixSum.length && s < prefixSum.length) {
             temp = prefixSum[e] - prefixSum[s];
-
             if (temp == k && e - 1 - s < answer[1] - answer[0]) {
                 answer[0] = s;
                 answer[1] = e - 1;
             }
+
+            if (temp < k) { // 예외 케이스는 주어지지않으므로 경계조건 x
+                e++;
+            }
+            else {// if (temp >= k){
+                s++;
+            }
+
         }
 
 
