@@ -10,6 +10,8 @@ public class Solution {
     불가능하다면 -1을 반환한다.
 
     두 큐를 연결한다면 슬라이딩 윈도우 적용이 가능하다?
+
+    -> ->
      */
     public static int solution(int[] queue1, int[] queue2) {
         int aLen = queue1.length;
@@ -27,16 +29,37 @@ public class Solution {
             arr[i] = queue1[i];
         }
         for (int i = 0; i < bLen; i++) {
-            arr[i + aLen] = queue2[i];
+            arr[i + aLen] = queue2[aLen - 1 - i];
         }
 
-        int temp = aSum;
-        for(int i = 0; i < len; i++) {
-            if (totalSum == temp * 2) {
-                return i;
+        int min = Integer.MAX_VALUE;
+        int cnt = 0;
+        char prev = '.';
+        char cur = ' ';
+        int al = 0;
+        int ar = aLen - 1;
+        int bl = aLen;
+        int br = len - 1;
+        while(prev != cur) {
+            if (aSum < bSum) {
+                ar = (ar + 1) % len;
+                aSum += arr[ar];
+                bSum -= arr[bl];
+                bl = (bl + 1) % len;
+                cur = '1';
             }
-            temp -= arr[i]; // 길이가 가변적이라 이런식으론 안된다.
-            temp += arr[(i + aLen) % len];
+            else if (aSum > bSum) {
+                aSum -= arr[al];
+                al = (al + 1) % len;
+                br = (br + 1) % len;
+                bSum += arr[br];
+                cur = '2';
+            }
+            cnt++;
+            if (aSum == bSum) {
+                return cnt; // 같은경우
+            }
+            prev = cur;
         }
         return -1;
     }
