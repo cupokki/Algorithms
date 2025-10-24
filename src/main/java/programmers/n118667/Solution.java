@@ -17,49 +17,34 @@ public class Solution {
         int aLen = queue1.length;
         int bLen = queue2.length;
         int len = aLen + bLen;
-        int aSum = IntStream.range(0, queue1.length).map(i->queue1[i]).sum();
-        int bSum = IntStream.range(0, queue2.length).map(i->queue2[i]).sum();
+        long aSum = Arrays.stream(queue1).asLongStream().sum();
+        long bSum = Arrays.stream(queue2).asLongStream().sum();
+        long totalSum = aSum + bSum;
 
+        if (totalSum % 2 != 0)
+            return -1;
 
+        int[] arr = new int[len];
+        System.arraycopy(queue1, 0, arr, 0, aLen);
+        System.arraycopy(queue2, 0, arr, aLen, bLen);
 
-        int totalSum = aSum + bSum;
-        int[] arr = new int[aLen + bLen];
-
-        for (int i = 0; i < aLen; i++) {
-            arr[i] = queue1[i];
-        }
-        for (int i = 0; i < bLen; i++) {
-            arr[i + aLen] = queue2[aLen - 1 - i];
-        }
-
-        int min = Integer.MAX_VALUE;
+        long temp = aSum;
+        int s = 0;
+        int e = aLen - 1;
         int cnt = 0;
-        char prev = '.';
-        char cur = ' ';
-        int al = 0;
-        int ar = aLen - 1;
-        int bl = aLen;
-        int br = len - 1;
-        while(prev != cur) {
-            if (aSum < bSum) {
-                ar = (ar + 1) % len;
-                aSum += arr[ar];
-                bSum -= arr[bl];
-                bl = (bl + 1) % len;
-                cur = '1';
+        while (cnt <= len * 2) {
+            if (temp * 2 == totalSum) {
+                return cnt;
             }
-            else if (aSum > bSum) {
-                aSum -= arr[al];
-                al = (al + 1) % len;
-                br = (br + 1) % len;
-                bSum += arr[br];
-                cur = '2';
+            if (temp * 2 < totalSum) {
+                e = (e + 1) % len;
+                temp += arr[e];
+            }
+            else{
+                temp -= arr[s];
+                s = (s + 1) % len;
             }
             cnt++;
-            if (aSum == bSum) {
-                return cnt; // 같은경우
-            }
-            prev = cur;
         }
         return -1;
     }
