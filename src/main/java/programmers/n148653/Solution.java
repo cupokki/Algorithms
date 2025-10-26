@@ -12,13 +12,22 @@ public class Solution {
         int answer = 0;
         while (storey != 0) {
             int current = storey % 10;
-            if (current < 5) {
+            int next = (storey / 10) % 10;
+
+            if (current > 5) {
+                answer += 10 - current;
+                storey = (storey / 10) + 1;
+            } else if (current < 5) {
                 answer += current;
                 storey /= 10;
-            } else {
-                answer += 10 - current;
-                storey /= 10;
-                storey += 1;
+            } else { // current == 5
+                if (next >= 5) { // 다음 자리도 5 이상이면 올리기
+                    answer += 5;
+                    storey = (storey / 10) + 1;
+                } else {
+                    answer += 5;
+                    storey /= 10;
+                }
             }
         }
 
@@ -26,7 +35,10 @@ public class Solution {
     }
 
     public static void main(String[] args) {
+        System.out.println(solution(1495));
         System.out.println(solution(16));
         System.out.println(solution(2554));
+        System.out.println(solution(54));
+        System.out.println(solution(65));
     }
 }
