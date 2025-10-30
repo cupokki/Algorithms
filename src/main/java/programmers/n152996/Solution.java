@@ -25,14 +25,15 @@ public class Solution {
 //        double[] ratio = {3.0/2, 4.0/2, 4.0/3}; // 같은것 미포함
         int[][] ratio = {{3, 2}, {4, 2}, {4, 3}};
         for (int w : map.keySet()) {
-            if (map.get(w) > 1) { // 예외발생
-                cnt += (map.get(w) * (map.get(w) - 1)) / 2; // (C(n, 2))
+            int cntW = map.get(w);
+            if (cntW > 1) { // 예외발생
+                cnt += (long) cntW * ((long)cntW - 1) / 2; // (C(n, 2))
             }
             for (int[] r : ratio) {
                 if ((w * r[0]) % r[1] != 0) continue;
                 int target = (w * r[0]) / r[1];
                 if (w < target && map.containsKey(target)) { // 중복방지
-                    cnt += (long) map.get(target) * (long) map.get(w);
+                    cnt += (long) map.get(target) * (long) cntW;
                 }
             }
         }
