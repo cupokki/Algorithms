@@ -1,5 +1,9 @@
 package programmers.n155651;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Solution {
     /*
     최소한의 객실로 대실예약을 받는다.
@@ -9,20 +13,40 @@ public class Solution {
     public static int solution(String[][] book_time) {
         int len = book_time.length;
         int[][] sheet = new int[len][2];
+
         for (int i = 0; i < len; i++) {
             String[] s = book_time[i][0].split(":");
             sheet[i][0] = Integer.parseInt(s[0]) * 60 + Integer.parseInt(s[1]);
             s = book_time[i][1].split(":");
             sheet[i][1] = Integer.parseInt(s[0]) * 60 + Integer.parseInt(s[1]);
-            if (s[0].equals("23") && Integer.parseInt(s[1]) <= 50) {
+//            if (s[0].equals("23") && Integer.parseInt(s[1]) <= 50) {
                 sheet[i][1] += 10;
+//            }
+        }
+
+        Arrays.sort(sheet, (a, b) -> {
+            if (a[0] == b[0]) {
+                return a[1] - b[1];
             }
-        }
+            return a[0] - b[0];
+        });
+        Map<Integer, Integer> map = new HashMap<>(); // room num - cleaned up time
+        map.put(0, sheet[0][1]);
         int answer = 1;
-        for (int i = 0; i < len; i++) {
-
+        for (int i = 1; i < len; i++) {
+            boolean done = false;
+            for (var e : map.entrySet()) {
+                if (e.getValue() <= sheet[i][0]) { // 현 시작시간이 대상종료보다 이후
+                    map.put(e.getKey(), sheet[i][1]);
+                    done = true;
+                    break;
+                }
+            }
+            if (!done)
+                map.put(map.size(), sheet[i][1]);
         }
 
+        answer = map.size();
         return answer;
     }
 
