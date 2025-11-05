@@ -22,28 +22,47 @@ public class Solution {
         // A의 GCD의 약수를 순회(A의 공통된 약수)하며, B의 모든 집합을 나눌수 없는 수를 찾는다.
 
         int len = arrayA.length;
-        int max = Math.max(arrayA[len - 1], arrayB[len] - 1);
 
         int[] gcdA = gcdArray(arrayA);
         int[] gcdB = gcdArray(arrayB);
 
         int answer = 0;
-        boolean done = false;
-        for (int i = gcdA.length - 1; i >= 0; i++) {
-            for (int j = 0; j < len; i++) {
+        boolean done = true;
+        for (int i = gcdA.length - 1; i >= 0; i--) {
+            for (int j = 0; j < len; j++) {
+                if (gcdA[i] < answer) {
+                    done = false;
+                    break;
+                }
+                if (arrayB[j] % gcdA[i] == 0) { // 나눠지면,
+                    done = false; // 이 뒤의 약수는 볼 필요 엾음
+                    break;
+                }
             }
             if (!done) {
-                answer = Math.max(answer, gcdA[i]);
+                break;
             }
-
+            answer = Math.max(answer, gcdA[i]);
         }
+        done = true;
+        for (int i = gcdB.length - 1; i >= 0; i--) {
+            for (int j = 0; j < len; j++) {
+                if (gcdB[i] < answer) {
+                    done = false;
+                    break;
+                }
+                if (arrayB[j] % gcdB[i] == 0) {
+                    done = false;
+                    break;
+                }
+            }
+            if (!done) {
+                break;
+            }
+            answer = Math.max(answer, gcdB[i]);
+        }
+
         return answer;
-    }
-    static int[] commonGcd() {
-        List<Integer> list = new ArrayList<>();
-
-
-        return list.stream().mapToInt(Integer::intValue).toArray();
     }
 
     static int gcd(int a, int b) {
