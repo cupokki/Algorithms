@@ -51,7 +51,7 @@ public class Solution {
                     done = false;
                     break;
                 }
-                if (arrayB[j] % gcdB[i] == 0) {
+                if (arrayA[j] % gcdB[i] == 0) {
                     done = false;
                     break;
                 }
@@ -93,6 +93,7 @@ public class Solution {
 
 
     public static void main(String[] args) {
+//        System.out.println(solution(new int[]{2, 4, 6}, new int[]{1, 11, 13}));
         System.out.println(solution(new int[]{10, 17}, new int[]{5, 20}));
         System.out.println(solution(new int[]{10, 20}, new int[]{5, 17}));
         System.out.println(solution(new int[]{14,35, 119}, new int[]{18, 30, 102}));
