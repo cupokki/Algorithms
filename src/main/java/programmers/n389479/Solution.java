@@ -17,21 +17,24 @@ public class Solution {
     public static int solution(int[] players, int m, int k) {
         int answer = 0;
 
-        Queue<Integer> pq = new LinkedList<>();
+//        Queue<Integer> pq = new LinkedList<>();
+        int[] expire = new int[players.length + k];
         int scale = 1;
         for (int t = 0; t < players.length; t++) {
-            while(!pq.isEmpty() && pq.peek() < t) {
-                scale--;
-                pq.poll();
-            }
+//            while(!pq.isEmpty() && pq.peek() < t) {
+//                scale--;
+//                pq.poll();
+//            }
+            scale -= expire[t];
 
             if (players[t] >= scale * m) {
                 int n = ((players[t] + m) / m) - scale;
                 answer += n;
                 scale += n;
-                for (int i = 0; i < n; i++) {
-                    pq.offer(t + k - 1);
-                }
+//                for (int i = 0; i < n; i++) {
+//                    pq.offer(t + k - 1);
+//                }
+                expire[t + k] = n;
             }
 
         }
