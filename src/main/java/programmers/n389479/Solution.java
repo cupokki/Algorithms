@@ -17,7 +17,7 @@ public class Solution {
     public static int solution(int[] players, int m, int k) {
         int answer = 0;
 
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        Queue<Integer> pq = new LinkedList<>();
         int scale = 1;
         for (int t = 0; t < players.length; t++) {
             while(!pq.isEmpty() && pq.peek() < t) {
