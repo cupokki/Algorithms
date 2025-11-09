@@ -1,6 +1,7 @@
 package programmers.n389479;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class Solution {
@@ -16,21 +17,20 @@ public class Solution {
     public static int solution(int[] players, int m, int k) {
         int answer = 0;
 
-        Queue<Integer> pq = new LinkedList<>();
-        int scale = 0;
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        int scale = 1;
         for (int t = 0; t < players.length; t++) {
-            while(!pq.isEmpty() && pq.peek() <= t) {
+            while(!pq.isEmpty() && pq.peek() < t) {
                 scale--;
                 pq.poll();
             }
-            int need = (players[t] + m - 1) / m;
 
-            if (need > scale) {
-                int n = need - scale;
+            if (players[t] >= scale * m) {
+                int n = ((players[t] + m) / m) - scale;
+                answer += n;
+                scale += n;
                 for (int i = 0; i < n; i++) {
-                    answer++;
-                    scale++;
-                    pq.offer(t + k);
+                    pq.offer(t + k - 1);
                 }
             }
 
