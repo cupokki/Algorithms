@@ -16,6 +16,8 @@ public class Solution {
     n(n - 1)/2 -> O(n^2)
 
     길이가 짧은것부터하면 성능 최적화 가능할듯.
+
+    course[i]가 보다 메뉴가짓수가 적다면 해당 주문은 고려대상이 아님
      */
 //    static int[][] adjMatrix;
 //    static Set<String> set;
@@ -92,21 +94,47 @@ public class Solution {
 //    }
 
     public static String[] solution(String[] orders, int[] course) {
-        String[] answer = {};
-
-        int[] cnt = new int[26];
-        for (String s: orders) {
-            for (char c: s.toCharArray()) {
-                cnt[c - 'A']++;
-            }
-        }
+        map = new HashMap<>();
 
         for (int n : course) {
-            for (int i = 0; i < 26; i++) {
+            result  = new char[n];
+            for (String s : orders) {
+                result = new char[n];
+                char[] cStr = s.toCharArray();
+                Arrays.sort(cStr);
+                dfs(cStr, n, 0, 0);
             }
         }
+        List<String> temp = new ArrayList<>();
+        for (Map.Entry<String, Integer> e : map.entrySet()) {
+            if (e.getValue() >= 2) {
+                temp.add(e.getKey());
+            }
+        }
+        String[] answer = temp.stream()
+                .sorted()
+                .toArray(String[]::new);
 
+        for (String s : answer) {
+            System.out.print(s + " ");
+        }
+        System.out.println();
         return answer;
+    }
+    static Map<String, Integer> map;
+    static char[] result;
+    static void dfs(char[] cStr, int len, int depth, int start) {
+        if (depth == len) {
+            // map에 추가
+            map.merge(String.valueOf(result), 1, Integer::sum);
+            return;
+        }
+
+        for (int i = start; i < cStr.length; i++) {
+            result[depth] = cStr[i];
+            dfs(cStr, len, depth + 1, i + 1);
+//            result[i] = ' ';
+        }
     }
 
     public static void main(String[] args) {
@@ -117,8 +145,8 @@ public class Solution {
         String[] orders3 = {"XYZ", "XWY", "WXA"};
         int[] course3 = {2, 3, 4};
 
-//        System.out.println(solution(orders1, course1));
-//        System.out.println(solution(orders2, course2));
+        System.out.println(solution(orders1, course1));
+        System.out.println(solution(orders2, course2));
         System.out.println(solution(orders3, course3));
     }
 }
