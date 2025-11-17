@@ -105,9 +105,11 @@ public class Solution {
                 Arrays.sort(cStr);
                 dfs(cStr, n, 0, 0);
             }
+            var max = map.entrySet().stream()
+                    .max((a, b)-> a.getValue() - b.getValue());
+
             map.entrySet().stream()
-                    .sorted((a, b) -> a.getValue() - b.getValue())
-                    .filter(e -> e.getValue() >= 2)
+                    .filter(e -> e.getValue() >= 2 && e.getValue() == max.get().getValue())
                     .forEach(e -> temp.add(e.getKey()));
         }
 
@@ -134,7 +136,6 @@ public class Solution {
         for (int i = start; i < cStr.length; i++) {
             result[depth] = cStr[i];
             dfs(cStr, len, depth + 1, i + 1);
-//            result[i] = ' ';
         }
     }
 
