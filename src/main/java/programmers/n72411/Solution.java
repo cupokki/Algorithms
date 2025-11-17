@@ -94,9 +94,10 @@ public class Solution {
 //    }
 
     public static String[] solution(String[] orders, int[] course) {
-        map = new HashMap<>();
+        List<String> temp = new ArrayList<>();
 
         for (int n : course) {
+            map = new HashMap<>();
             result  = new char[n];
             for (String s : orders) {
                 result = new char[n];
@@ -104,13 +105,12 @@ public class Solution {
                 Arrays.sort(cStr);
                 dfs(cStr, n, 0, 0);
             }
+            map.entrySet().stream()
+                    .sorted((a, b) -> a.getValue() - b.getValue())
+                    .filter(e -> e.getValue() >= 2)
+                    .forEach(e -> temp.add(e.getKey()));
         }
-        List<String> temp = new ArrayList<>();
-        for (Map.Entry<String, Integer> e : map.entrySet()) {
-            if (e.getValue() >= 2) {
-                temp.add(e.getKey());
-            }
-        }
+
         String[] answer = temp.stream()
                 .sorted()
                 .toArray(String[]::new);
@@ -118,6 +118,7 @@ public class Solution {
         for (String s : answer) {
             System.out.print(s + " ");
         }
+
         System.out.println();
         return answer;
     }
