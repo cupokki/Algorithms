@@ -32,22 +32,26 @@ public class Solution {
     1121,
      */
     public static String solution(int n) {
-        int[] dp = new int[n + 1];
+        StringBuilder sb = new StringBuilder();
+        while(n > 0) {
+            int r = n % 3;
+            switch (r) {
+                case 0:
+                    sb.append("4");
+                    n--;
+                    break;
+                case 1:
+                    sb.append("1");
+                    break;
+                case 2:
+                    sb.append("2");
+                    break;
 
-        dp[0] = 4;
-        if (n >= 1) dp[1] = 1;
-        if (n >= 2) dp[2] = 2;
-        if (n >= 3) dp[3] = 4;
-        int idx = 3;
-        for (int i = 4; i <= n; i++) {
-            dp[i] = dp[i - idx] * 10 + dp[i % 3];
-            if (i % 3 != 0) {
-                idx++;
             }
+            n/=3;
         }
 
-        String answer = String.valueOf(dp[n]);
-        return answer;
+        return sb.reverse().toString();
     }
 
     public static void main(String[] args) {
