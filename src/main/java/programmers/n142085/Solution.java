@@ -24,15 +24,11 @@ public class Solution {
 
         int steps = 0;
         for (; steps < enemy.length; steps++) {
-            if (n == 0 && k == 0) {
+            if (k == 0) {
                 break;
             }
-            if (n >= enemy[steps]) {
-                pq.offer(enemy[steps]);
-                sum += enemy[steps];
-                n -= enemy[steps];
-            } else {
-                int temp = 0;;
+            if (n < enemy[steps]){
+                int temp = 0;
                 if (!pq.isEmpty()) {
                     temp = pq.poll();
                 }
@@ -40,6 +36,12 @@ public class Solution {
                 n += temp;
                 k--;
             }
+            if (n >= enemy[steps]) {
+                pq.offer(enemy[steps]);
+                sum += enemy[steps];
+                n -= enemy[steps];
+            }
+
         }
 
         return steps;
