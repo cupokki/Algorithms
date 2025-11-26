@@ -1,8 +1,6 @@
 package programmers.n142085;
 
-import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class Solution {
     /*
@@ -17,34 +15,38 @@ public class Solution {
 
      */
     public static int solution(int n, int k, int[] enemy) {
-        int answer = 0;
+        int life = n;
+        int shield = k;
 
-        int sum = 0;
+        // 무적권을 쓰지 않은 라운드
         PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> b - a); // 역숙
 
-        int steps = 0;
-        for (; steps < enemy.length; steps++) {
-            if (k == 0) {
+        int rounds = 0;
+        for (; rounds < enemy.length; rounds++) {
+
+            // 해치운 라운드가 없고 무적권을 쓸수 있다면
+            if (life < enemy[rounds] && pq.isEmpty() && shield > 0) {
+                shield--;
+                continue;
+            }
+
+            // 현재 것을 막을 수 없을시 지금까지 중 가장 큰 웨이브에 무적권 계속 적용
+            while (life < enemy[rounds] && shield > 0) { //남은 라이프로 적을 해치울수 없다면
+                life += pq.poll(); // 지금까지 최대웨이브에 무적권 적용(없다면 그냥)
+                shield--; // 무적권 소모
+            }
+
+            // 무적권도 없고 라이프도 적다면
+            if (shield == 0 && life < enemy[rounds]) {
                 break;
             }
-            if (n < enemy[steps]){
-                int temp = 0;
-                if (!pq.isEmpty()) {
-                    temp = pq.poll();
-                }
-                sum -= temp;
-                n += temp;
-                k--;
-            }
-            if (n >= enemy[steps]) {
-                pq.offer(enemy[steps]);
-                sum += enemy[steps];
-                n -= enemy[steps];
-            }
 
+            // 현재 라이프로 웨이브 가능시
+            pq.offer(enemy[rounds]);
+            life -= enemy[rounds];
         }
 
-        return steps;
+        return rounds;
     }
 
     public static void main(String[] args) {
