@@ -22,28 +22,24 @@ public class Solution {
         PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> b - a); // 역숙
 
         int rounds = 0;
-        for (; rounds < enemy.length; rounds++) {
-
-            // 해치운 라운드가 없고 무적권을 쓸수 있다면
-            if (life < enemy[rounds] && pq.isEmpty() && shield > 0) {
-                shield--;
-                continue;
-            }
-
-            // 현재 것을 막을 수 없을시 지금까지 중 가장 큰 웨이브에 무적권 계속 적용
-            while (life < enemy[rounds] && shield > 0) { //남은 라이프로 적을 해치울수 없다면
-                life += pq.poll(); // 지금까지 최대웨이브에 무적권 적용(없다면 그냥)
-                shield--; // 무적권 소모
-            }
-
-            // 무적권도 없고 라이프도 적다면
-            if (shield == 0 && life < enemy[rounds]) {
-                break;
+        while(rounds < enemy.length) {
+            if (!pq.isEmpty() && life < enemy[rounds] && shield > 0) {
+                if (life + pq.peek() >= enemy[rounds]) {
+                    life += pq.poll(); // 지금까지 최대웨이브에 무적권 적용(없다면 그냥)
+                    shield--; // 무적권 소모
+                }
             }
 
             // 현재 라이프로 웨이브 가능시
-            pq.offer(enemy[rounds]);
-            life -= enemy[rounds];
+            if (life >= enemy[rounds]) {
+                pq.offer(enemy[rounds]);
+                life -= enemy[rounds];
+            } else if (shield > 0) {
+                shield--;
+            } else {
+                break;
+            }
+            rounds++;
         }
 
         return rounds;
