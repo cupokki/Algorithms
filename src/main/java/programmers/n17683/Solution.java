@@ -19,9 +19,9 @@ class Solution {
         String answer = "(None)";
         PriorityQueue<String[]> pq = new PriorityQueue<>((a, b) -> {
             if (a[0].equals(b[0])) {
-                return Integer.parseInt(a[1]) - Integer.parseInt(b[1]);
+                return a[1].compareTo(b[1]);
             }
-            return a[0].compareTo(b[0]);
+            return Integer.parseInt(a[0]) - Integer.parseInt(b[0]);
         });
         for(String s : musicinfos) {
             String[] token = s.split(",");
@@ -63,8 +63,8 @@ class Solution {
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("ABCDEFG", new String[]{"12:00,12:14,HELLO,CDEFGAB", "13:00,13:05,WORLD,ABCDEF"}));
-        System.out.println(solution("CC#BCC#BCC#BCC#B", new String[]{"03:00,03:30,FOO,CC#B", "04:00,04:08,BAR,CC#BCC#BCC#B"}));
+//        System.out.println(solution("ABCDEFG", new String[]{"12:00,12:14,HELLO,CDEFGAB", "13:00,13:05,WORLD,ABCDEF"}));
+//        System.out.println(solution("CC#BCC#BCC#BCC#B", new String[]{"03:00,03:30,FOO,CC#B", "04:00,04:08,BAR,CC#BCC#BCC#B"}));
         System.out.println(solution("ABC", new String[]{"12:00,12:14,HELLO,C#DEFGAB", "13:00,13:05,WORLD,ABCDEF"}));
     }
 }
