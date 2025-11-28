@@ -20,10 +20,7 @@ class Solution {
     public static String solution(String m, String[] musicinfos) {
         String answer = "(None)";
         PriorityQueue<String[]> pq = new PriorityQueue<>((a, b) -> {
-            if (a[0].equals(b[0])) {
-                return a[1].compareTo(b[1]);
-            }
-            return Integer.parseInt(a[0]) - Integer.parseInt(b[0]);
+            return Integer.parseInt(b[0]) - Integer.parseInt(a[0]); // 긴 순
         });
         for(String s : musicinfos) {
             String[] token = s.split(",");
@@ -31,8 +28,6 @@ class Solution {
             String runningMin = String.valueOf(duration);
             String title = token[2];
             String convertedMelody = convertString(token[3], duration);
-
-
             pq.offer(new String[]{runningMin, title, convertedMelody});
         }
 
