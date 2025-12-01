@@ -50,8 +50,15 @@ public class Solution {
 //        }
 //    }
     static int[] solution(int n, int k) {
-        int[] answer = {};
+        int len = n;
+        int[] answer = new int[len];
 
+        int idx = 0;
+        while(idx < len) {
+            answer[idx++] = (k + n) / n;
+            k = k % n;
+            n--;
+        }
 
         Arrays.stream(answer).forEach(i -> System.out.print(i + " "));
         System.out.println();
