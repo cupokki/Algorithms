@@ -9,6 +9,7 @@ public class Solution {
     k번째 수열을 출력하라.
 
     깊이가 20인 dfs로 모든 수열을 만들면... 완전그래프
+    순열로 풀어야하나
      */
 //    static int N;
 //    static long K;
@@ -49,24 +50,35 @@ public class Solution {
 //            }
 //        }
 //    }
-    static int[] solution(int n, int k) {
+    static int[] solution(int n, long k) {
         int len = n;
         int[] answer = new int[len];
 
         int idx = 0;
         while(idx < len) {
-            answer[idx++] = (k + n) / n;
-            k = k % n;
+            int fac = fac(n - 1);
+            answer[idx] = (int) ((k - 1) / fac);
+            System.out.print(answer[idx] + " ");
+            k = (k - 1) % fac + 1;
             n--;
+            idx++;
         }
+        System.out.println();
 
         Arrays.stream(answer).forEach(i -> System.out.print(i + " "));
         System.out.println();
 
         return answer;
     }
+    static int fac(int n) {
+        if (n == 1) {
+            return 1;
+        }
+        return n * fac(n - 1);
+    }
 
     public static void main(String[] args) {
         solution(3, 5);
+//        solution(3, 2);
     }
 }
