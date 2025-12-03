@@ -13,6 +13,9 @@ public class Solution {
 
     깊이가 20인 dfs로 모든 수열을 만들면... 완전그래프
     순열로 풀어야하나
+    P(n, k) = n! / (n - k)!
+
+    k는 전체 구간중에 몇번째 파트(=> (n-r)!)에 위치하는가를 일반화한다.
      */
 //    static int N;
 //    static long K;
@@ -66,15 +69,13 @@ public class Solution {
             fac[i] = fac[i - 1] * i;
         }
         int idx = 0;
-        k--;
+        k--; // 0인덱스
         while(idx < len) {
             int pos = (int) (k / fac[n - 1 - idx]);
             answer[idx] = numbers.remove(pos);
-//            System.out.print(answer[idx] + " ");
-            k %= fac[n - 1 - idx];
+            k %= fac[n - 1 - idx]; // 나눠진 파트안세서 새 위치 k
             idx++;
         }
-//        System.out.println();
 //
 //        Arrays.stream(answer).forEach(i -> System.out.print(i + " "));
 //        System.out.println();
