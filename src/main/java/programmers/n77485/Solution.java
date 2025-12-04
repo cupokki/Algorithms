@@ -30,41 +30,35 @@ public class Solution {
     static int[][] matrix;
     static int R, C;
     static int rotateMatrix(int sr, int sc, int er, int ec) {
-        int min = R * C + 1; // 가능한 최대값
+        int prev = matrix[sr][sc];
+        int min = prev;
 
-        int[][] temps = {
-                {sr + 1, ec, matrix[sr][ec]},
-                {er, ec - 1, matrix[er][ec]},
-                {er - 1, sc, matrix[er][sc]},
-                {sr, sc + 1, matrix[sr][sc]},
-
-        };
-        for (int[] temp: temps) {
-            min = Math.min(min,temp[2]);
+        for (int c = sc + 1; c <= ec; c++) {
+            int cur = matrix[sr][c];
+            matrix[sr][c] = prev;
+            prev = cur;
+            min = Math.min(min, prev);
         }
 
-        for (int c = ec; c > sc; c--) {
-            matrix[sr][c] = matrix[sr][c - 1];
-            min = Math.min(min, matrix[sr][c]);
+        for (int r = sr + 1; r <= er; r++) {
+            int cur = matrix[r][ec];
+            matrix[r][ec] = prev;
+            prev = cur;
+            min = Math.min(min, prev);
         }
 
-        for (int r = er ; r > sr; r--) {
-            matrix[r][ec] = matrix[r - 1][ec];
-            min = Math.min(min, matrix[r][ec]);
+        for (int c = ec - 1; c >= sc; c--) {
+            int cur = matrix[er][c];
+            matrix[er][c] = prev;
+            prev = cur;
+            min = Math.min(min, prev);
         }
 
-        for (int c = sc; c < ec; c++) {
-            matrix[er][c] = matrix[er][c + 1];
-            min = Math.min(min, matrix[er][c]);
-        }
-
-        for (int r = sr; r < er; r++) {
-            matrix[r][sc] = matrix[r + 1][sc];
-            min = Math.min(min, matrix[r][sc]);
-        }
-
-        for (int[] temp: temps) {
-            matrix[temp[0]][temp[1]] = temp[2];
+        for (int r = er - 1; r >= sr; r--) {
+            int cur = matrix[r][sc];
+            matrix[r][sc] = prev;
+            prev = cur;
+            min = Math.min(min, prev);
         }
 
         return min;
