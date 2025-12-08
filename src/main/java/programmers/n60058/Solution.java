@@ -10,6 +10,9 @@ public class Solution {
     v에 대해 분할을 또 수행한다.
      */
     public static String solution(String p) {
+        if (checkBracket(p, 0, p.length())){
+            return p;
+        }
         String answer = divide(p, 0, p.length());
         return answer;
     }
@@ -36,9 +39,14 @@ public class Solution {
             // 완전 문자열 일시 u부분은 넘긴다.
             return p.substring(r, m) + divide(p, m, l);
         }
-        String perfect = "(" + p.substring(m, l) + ")" + invert(p, r + 1, m - 1);
-        return perfect;
+        StringBuilder sb = new StringBuilder();
+        sb.append("(")
+                .append(divide(p, m, l))
+                .append(")")
+                .append(invert(p, r + 1, m - 1));
+        return sb.toString();
     }
+
     static boolean checkBracket(String p, int r, int l) {
         int openCnt = 0;
         for (int i = r; i < l ;i++) {
@@ -66,6 +74,7 @@ public class Solution {
     }
 
     public static void main(String[] args) {
+        System.out.println(solution("))()(("));
         System.out.println(solution("(()())()"));
         System.out.println(solution(")("));
         System.out.println(solution("()))((()"));
