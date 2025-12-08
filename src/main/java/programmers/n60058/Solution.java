@@ -15,26 +15,59 @@ public class Solution {
     }
 
     static String divide(String p, int r, int l) {
-
-        Stack<String> bracket = new Stack<>();
-
-        String perfect = "(";
-        // 둘을 균형잡힌 문자열로 분할한다.
-        for (int m = r; m < l; m += 2) {
-            if (true) {
-                // 완전 문자열 일시 u부분은 넘긴다.
-                r = m;
-            } else {
-                perfect = divide(p, r, m) + divide(p, m, l);
-            }
+        if (r == l) {
+            return "";
         }
 
+        // 둘을 균형잡힌 문자열로 분할한다.
+        // u는 분리할 수 없는 균형잡힌 문자열이다. ->
+        int m = r + 2;
+        int[] temp = new int[2]; // 괄호 개수
+        temp[p.charAt(r) - '(']++;
+        temp[p.charAt(r + 1) - '(']++;
+        while(m < l && temp[0] != temp[1]) { // u,v를 구하는 로직
+            temp[p.charAt(m) - '(']++;
+            temp[p.charAt(m + 1) - '(']++;
+            m += 2;
+        } // 최적화를 위해서라면 여기서 하는게 맞겠지
 
 
+        if (checkBracket(p, r, m)) { // u가 완전 문자열이라면
+            // 완전 문자열 일시 u부분은 넘긴다.
+            return p.substring(r, m) + divide(p, m, l);
+        }
+        String perfect = "(" + p.substring(m, l) + ")" + invert(p, r + 1, m - 1);
         return perfect;
+    }
+    static boolean checkBracket(String p, int r, int l) {
+        int openCnt = 0;
+        for (int i = r; i < l ;i++) {
+            if (p.charAt(i) == '(') {
+                openCnt++;
+            } else if (openCnt != 0 && p.charAt(i) == ')') {
+                openCnt--;
+            } else {
+                return false;
+            }
+        }
+        return openCnt == 0;
+    }
+    static String invert(String p, int r, int l) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = r; i < l; i++) {
+            char c = p.charAt(i);
+            if (c == ')') {
+                sb.append('(');
+            } else {
+                sb.append(')');
+            }
+        }
+        return sb.toString();
     }
 
     public static void main(String[] args) {
         System.out.println(solution("(()())()"));
+        System.out.println(solution(")("));
+        System.out.println(solution("()))((()"));
     }
 }
