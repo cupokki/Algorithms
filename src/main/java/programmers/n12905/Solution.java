@@ -14,26 +14,44 @@ public class Solution {
         visited = new boolean[R][C];
         int answer = 0;
 
-        for (int r = 0; r < R; r++) {
-            for (int c = 0; c < C; c++) {
-                if (!visited[r][c] && Board[r][c] == 1) {
-                    int h = 0;
-                    int w = 0;
-                    while(r + h < R && Board[r + h][c] == 1) h++;
-                    while(c + w < C && Board[r][c + w] == 1) w++;
-                    int len = Math.min(h, w);
-                    if (check(r, c, len)) {
-                        answer = Math.max(answer, len * len);
+        boolean check = false;
+        while (!check) {
+            check = true;
+            for (int r = 0; r < R; r++) {
+                for (int c = 0; c < C; c++) {
+//                if (!visited[r][c] && Board[r][c] == 1) {
+//                    int h = 0;
+//                    int w = 0;
+//                    while(r + h < R && Board[r + h][c] == 1) h++;
+//                    while(c + w < C && Board[r][c + w] == 1) w++;
+//                    int len = Math.min(h, w);
+//                    if (check(r, c, len)) {
+//                        answer = Math.max(answer, len * len);
+//                    }
+//
+//
+////                    answer = Math.max(answer, bfs(r, c));
+//                }
+                    answer = Math.max(board[r][c] * board[r][c], answer);
+                    if (board[r][c] != 0 && func(board, r, c)) {
+                        board[r][c]++;
+                        check = false;
                     }
-
-
-//                    answer = Math.max(answer, bfs(r, c));
-
                 }
             }
         }
 
+
         return answer;
+    }
+    static boolean func(int[][] board, int r, int c) {
+        int num = board[r][c];
+        if (r + 1>= R || c + 1>= C) {
+            return false;
+        }
+        return num == board[r][c + 1]
+                && num == board[r + 1][c]
+                && num == board[r + 1][c + 1];
     }
     static boolean check(int r, int c, int len) {
         for (int i = r; i < r + len; i++) {
@@ -81,6 +99,22 @@ public class Solution {
         }));
         System.out.println(solution(new int[][] {
                 {0, 0, 1, 1},
+                {1, 1, 1, 1}
+        }));
+        System.out.println(solution(new int[][] {
+                {0, 0, 0, 0},
+                {0, 0, 0, 1}
+        }));
+        System.out.println(solution(new int[][] {
+                {1, 0, 1, 0},
+                {0, 1, 0, 1},
+                {1, 0, 1, 0},
+                {0, 1, 0, 1}
+        }));
+        System.out.println(solution(new int[][] {
+                {1, 1, 1, 1},
+                {1, 1, 1, 1},
+                {1, 1, 0, 1},
                 {1, 1, 1, 1}
         }));
     }
