@@ -26,15 +26,16 @@ public class Solution {
 
         for (int r = 1; r < R; r++) {
             for (int c = 1; c < C; c++) {
+                dp[r][c] = board[r][c];
                 if (board[r][c] != 0
                         && dp[r][c - 1] != 0
                         && dp[r - 1][c] != 0
                         && dp[r - 1][ c- 1] != 0
                 ) {
 
-                    dp[r][c] = Math.min(dp[r][c - 1], Math.min(dp[r -  1][c], dp[r - 1][c - 1]));
-                    Math.max(dp[r][c], answer);
+                    dp[r][c] = Math.min(dp[r][c - 1], Math.min(dp[r -  1][c], dp[r - 1][c - 1])) + 1;
                 }
+                answer = Math.max(dp[r][c] * dp[r][c], answer);
             }
         }
 
