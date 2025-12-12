@@ -18,10 +18,12 @@ public class Solution {
 
         for (int r = 0; r < R; r++) {
             dp[r][0] = board[r][0];
+            answer = Math.max(dp[r][0] * dp[r][0], answer);
         }
 
         for (int c = 0; c < C; c++) {
             dp[0][c] = board[0][c];
+            answer = Math.max(dp[0][c] * dp[0][c], answer);
         }
 
         for (int r = 1; r < R; r++) {
