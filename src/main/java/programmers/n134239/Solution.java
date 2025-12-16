@@ -1,6 +1,7 @@
 package programmers.n134239;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Solution {
@@ -15,17 +16,17 @@ public class Solution {
         int[] arr = woobak(k);
         int n = arr.length;
 
-        double[] prefixSum = new double[n + 1];
+        double[] prefixSum = new double[n];
 
-        for (int i = 1 ; i <= n; i++) {
-            double current = (arr[i - 1] + arr[i]) * 1 / 2;
+        for (int i = 1 ; i < prefixSum.length; i++) {
+            double current = (arr[i - 1] + arr[i]) * 1 / 2.0;
             prefixSum[i] = prefixSum[i - 1] + current;
         }
 
         double[] answer = new double[ranges.length];
         for (int i = 0; i < ranges.length; i++) {
             int a = ranges[i][0];
-            int b = n - ranges[i][1];
+            int b = n + ranges[i][1] - 1;
 
             if (a > b) {
                 answer[i] = -1;
@@ -46,10 +47,15 @@ public class Solution {
                 k = (k * 3) + 1;
             }
         }
+        list.add(1);
         return list.stream().mapToInt(Integer::intValue).toArray();
     }
 
     public static void main(String[] args) {
-
+        Arrays.stream(solution(5, new int[][]{{0, 0}, {0, -1}, {2, -3}, {3, -3}}))
+                .forEach(d -> System.out.print(d + " "));
+        System.out.println();
+        Arrays.stream(solution(3, new int[][]{{0,0}, {1, -2}, {3, -3}}))
+                .forEach(d -> System.out.print(d + " "));
     }
 }
