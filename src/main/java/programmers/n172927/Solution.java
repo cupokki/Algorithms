@@ -28,20 +28,37 @@ public class Solution {
 
         int len = minerals.length;
         int[] state = new int[3];
-        int[] dp = new int[len + 1];
 
-        for (int i = 0; i < 3; i++) {
-            // 직전의 값을 가져온다.
-            for (int j = 0; j < len; j++) {
-                // 곡괭이를 빼고, 현재것을 썼을때와 비교하여 작은 것을 선택
-                if (state[i] < picks[i]) {
-                    int n = MINERALS.valueOf(minerals[j]).ordinal();
+        int pickCnt = picks[0] + picks[1] + picks[2];
 
+        // 곡괭이 수대로? 광물 수대로?
+        int[][] chunk = new int[len / 5][3];
+
+        for (int i = 0; i < chunk.length; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (i * 5 + j >= len) {
+                    break;
                 }
-
+                int mineral = MINERALS.valueOf(minerals[i * 5 + j]).ordinal();
+                chunk[i][mineral]++;
             }
         }
 
+        Arrays.sort(chunk, (a, b) -> {
+            if (a[0] == b[0]) {
+                if (a[1] == b[1]) {
+                    return b[2] - a[2];
+                }
+                return b[1] - a[1];
+            }
+            return b[0] - a[0];
+        });
+
+        // 좋은 곡갱이를 먼저 소모하며 피로도 계산
+
+        int idx = 0;
+//        while(pickCnt > 0) {
+//        }
 
         return answer;
     }
