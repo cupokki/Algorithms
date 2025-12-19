@@ -13,12 +13,13 @@ public class Solution {
     
     picks 배열은 차례대로 다이아, 철, 돌 곡괭이 수를 의미한다.
     */
+    enum MINERALS {
+        diamond,
+        iron,
+        stone;
+    }
     public static int solution(int[] picks, String[] minerals) {
-        enum MINERALS {
-            diamonds,
-            iron,
-            stone;
-        }
+
         int answer = 0;
         int[][] energy = {
                 {1, 1, 1},
@@ -27,12 +28,12 @@ public class Solution {
         };
 
         int len = minerals.length;
-        int[] state = new int[3];
 
+
+        //
         int pickCnt = picks[0] + picks[1] + picks[2];
-
-        // 곡괭이 수대로? 광물 수대로?
-        int[][] chunk = new int[len / 5][3];
+//        int[][] chunk = new int[(len + 5) / 5][3];
+        int[][] chunk = new int[pickCnt][3];
 
         for (int i = 0; i < chunk.length; i++) {
             for (int j = 0; j < 5; j++) {
@@ -57,14 +58,25 @@ public class Solution {
         // 좋은 곡갱이를 먼저 소모하며 피로도 계산
 
         int idx = 0;
-//        while(pickCnt > 0) {
-//        }
+        int pIdx = 0;
+        while(pIdx < 3 && idx < chunk.length) {
+            if (picks[pIdx] == 0) {
+                pIdx++;
+                continue;
+            }
+            picks[pIdx]--;
+            for (int i = 0 ; i < 3; i++) {
+                answer += energy[pIdx][i] * chunk[idx][i];
+            }
+            idx++;
+        }
 
         return answer;
     }
 
-    // public static void main(String[] args) {
-    //     System.out.println(solution(new int[]{1, 3, 2}, new String[]{"diamond", "diamond", "diamond", "iron", "iron", "diamond", "iron", "stone"})); // 12
-    //     System.out.println(solution(new int[]{0, 1, 1}, new String[]{"diamond", "diamond", "diamond", "diamond", "diamond", "iron", "iron", "iron", "iron", "iron", "diamond"})); // 50
-    // }
+     public static void main(String[] args) {
+         System.out.println(solution(new int[]{1, 3, 2}, new String[]{"diamond", "diamond", "diamond", "iron", "iron", "diamond", "iron", "stone"})); // 12
+         System.out.println(solution(new int[]{0, 1, 1}, new String[]{"diamond", "diamond", "diamond", "diamond", "diamond", "iron", "iron", "iron", "iron", "iron", "diamond"})); // 50
+         System.out.println(solution(new int[]{1, 0, 0}, new String[]{"iron", "iron", "iron", "iron", "iron", "diamond"}));
+     }
 }
