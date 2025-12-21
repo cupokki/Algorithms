@@ -16,9 +16,15 @@ class Solution {
         int level = 1;
         int len = diffs.length;
 
+        long[] prefixSum = new long[len + 1];
+        for (int i = 1; i <= len; i++) {
+            prefixSum[i] += prefixSum[i - 1] + times[i - 1];
+        }
 
+        boolean done = true;
         while(true) {
             long t = times[0];
+            done = true;
             for (int i = 1; i < len; i++) {
                 int gap = diffs[i] - level;
                 if (gap > 0)  {
@@ -27,12 +33,14 @@ class Solution {
                     t += times[i];
                 }
 
-                if (t > limit) {
+//                if (t > limit || prefixSum[len] - prefixSum[i] > limit - t) { //
+                if (t > limit || i != len - 1 && prefixSum[len] - prefixSum[i] > limit - t) { // 앞으로 최소 소요시간보다 남은 시간이 적다면
                     level++;
+                    done = false;
                     break;
                 }
             }
-            if (t <= limit) {
+            if (done) {
                 break;
             }
         }
@@ -40,6 +48,7 @@ class Solution {
     }
 
      public static void main(String[] args) {
-         System.out.println(solution(new int[]{1, 5, 3}, new int[]{2, 4, 7}, 30));
+//         System.out.println(solution(new int[]{1, 5, 3}, new int[]{2, 4, 7}, 30));
+         System.out.println(solution(new int[]{1, 4, 4, 2}, new int[]{6, 3, 8, 2}, 59));
      }
 }
