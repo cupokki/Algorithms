@@ -13,7 +13,7 @@ class Solution {
     제한시간 내에 모두 풀기위한 최소 레벨을 출력하라.
     */
     public static int solution(int[] diffs, int[] times, long limit) {
-        int level = 1;
+        int level = 9032;
         int len = diffs.length;
 
         long[] prefixSum = new long[len + 1];
@@ -34,7 +34,9 @@ class Solution {
                 }
 
 //                if (t > limit || prefixSum[len] - prefixSum[i] > limit - t) { //
-                if (t > limit || i != len - 1 && prefixSum[len] - prefixSum[i] > limit - t) { // 앞으로 최소 소요시간보다 남은 시간이 적다면
+                long a = limit - t; // 남은 시간
+                long b = prefixSum[len] - prefixSum[i + 1]; // 남은 최소 소요시간
+                if (i < len - 1 && (a < 0 || a < b)) { // 남은 시간이 최소소요시간보다 작다면
                     level++;
                     done = false;
                     break;
@@ -49,6 +51,7 @@ class Solution {
 
      public static void main(String[] args) {
 //         System.out.println(solution(new int[]{1, 5, 3}, new int[]{2, 4, 7}, 30));
-         System.out.println(solution(new int[]{1, 4, 4, 2}, new int[]{6, 3, 8, 2}, 59));
+//         System.out.println(solution(new int[]{1, 4, 4, 2}, new int[]{6, 3, 8, 2}, 59));
+         System.out.println(solution(new int[]{1, 99999, 100000, 99995}, new int[]{9999, 9001, 9999, 9001}, 3456789012L));
      }
 }
