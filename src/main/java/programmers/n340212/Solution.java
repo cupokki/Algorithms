@@ -42,6 +42,7 @@ class Solution {
                     break;
                 }
             }
+
             if (done) {
                 break;
             }
