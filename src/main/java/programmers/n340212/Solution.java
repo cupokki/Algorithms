@@ -44,8 +44,8 @@ class Solution {
         if (t <= Limit) {
             level = Math.min(m, level);
         }
+
         if (l == m || m == r) {
-            level = Math.min(m, level);
             return;
         }
 
@@ -58,9 +58,9 @@ class Solution {
     }
 
      public static void main(String[] args) {
-//         System.out.println(solution(new int[]{1, 5, 3}, new int[]{2, 4, 7}, 30));
-//         System.out.println(solution(new int[]{1, 4, 4, 2}, new int[]{6, 3, 8, 2}, 59));
+         System.out.println(solution(new int[]{1, 5, 3}, new int[]{2, 4, 7}, 30));
+         System.out.println(solution(new int[]{1, 4, 4, 2}, new int[]{6, 3, 8, 2}, 59));
          System.out.println(solution(new int[]{1, 328, 467, 209, 54}, new int[]{2, 7, 1, 4, 3}, 1723));
-//         System.out.println(solution(new int[]{1, 99999, 100000, 99995}, new int[]{9999, 9001, 9999, 9001}, 3456789012L));
+         System.out.println(solution(new int[]{1, 99999, 100000, 99995}, new int[]{9999, 9001, 9999, 9001}, 3456789012L));
      }
 }
