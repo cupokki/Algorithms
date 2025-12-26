@@ -26,13 +26,14 @@ class Solution {
         Diffs = diffs;
         Times = times;
         Limit = limit;
-        search(0, level);
+        search(1, level); // diffs[0]은 항상 1임, 최소도 level도 1임
 
         return level;
     }
     static void search(int l, int r) {
         int m = (l + r) / 2; // current level;
-        long t = Times[0];
+
+        long t = Times[0]; //
         for (int i = 1; i < len; i++) {
             if (Diffs[i] > m) {
                 t += (Times[i] + Times[i - 1]) * (Diffs[i] - m) + Times[i];
