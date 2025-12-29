@@ -14,34 +14,34 @@ public class Solution {
     
     이분탐색 -> n개로 나눈다고 할때, n이 커지고 작아짐에 따라 해가 가까워지는 것을 보장할 수 없음.
     n그램인가? 길이가 1000문자열의 부분문자열은 총 몇개인가? Sig(1000) = 1000 * 1001 / 2 = 500500;
-    
+    아니 연속된 것만 압축되므로 의미없어보인다.
+    우선 완전탐색으로...
     */
     static String compressed;
     public static int solution(String s) {
-        compressed = "";
+        int answer = s.length();
         int len = s.length();
-        for (int n = 1; n <= len; n++) {
-            Set<String> subs = new HashSet<>();
-            for (int i = 0; i < len; i++) {
-                for (int j = i; j < len; j++) {
-                    subs.add(s.substring(i, j));
-                }
+        int max = len / 2;
+        for (int i = 1; i <= max; i++) {
+            List<String> tokens = new ArrayList<>();
+            int prev = 0;
+            for (int j = i; j < len; j += i) {
+                tokens.add(s.substring(prev, j));
+                prev = j;
             }
+
+            // 계산
         }
 
-        int answer = compressed.length();
         return answer;
     }
 
-    static int compress(String s) {
-        return 0;
-    }
 
-    // public static void main(String[] args) {
-    //     System.out.println(solution("aabbaccc")); //7
-    //     System.out.println(solution("ababcdcdababcdcd")); //9
-    //     System.out.println(solution("abcabcdede")); //8
-    //     System.out.println(solution("abcabcabcabcdededededede")); //14
-    //     System.out.println(solution("xababcdcdababcdcd")); //17
-    // }
+     public static void main(String[] args) {
+         System.out.println(solution("aabbaccc")); //7
+         System.out.println(solution("ababcdcdababcdcd")); //9
+         System.out.println(solution("abcabcdede")); //8
+         System.out.println(solution("abcabcabcabcdededededede")); //14
+         System.out.println(solution("xababcdcdababcdcd")); //17
+     }
 }
