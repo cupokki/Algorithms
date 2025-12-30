@@ -24,14 +24,34 @@ public class Solution {
         int max = len / 2;
         for (int i = 1; i <= max; i++) {
             List<String> tokens = new ArrayList<>();
-            int prev = 0;
-            for (int j = i; j < len; j += i) {
-                tokens.add(s.substring(prev, j));
-                prev = j;
+            int start = 0;
+            for (int end = i; end < len; end += i) {
+                tokens.add(s.substring(start, end));
+                start = end;
             }
+            tokens.add(s.substring(start));
 
-            // 계산
+            int idx = 0;
+            int size = 0;
+            while(idx < tokens.size() - 1) {
+                String current = tokens.get(idx);
+                if (!current.equals(tokens.get(idx + 1))) {
+                    size += i;
+
+                } else {
+                    while(idx < tokens.size() - 1 && current.equals(tokens.get(idx + 1))) {
+                        tokens.remove(idx + 1);
+                    }
+                    size += i + 1;
+                }
+                idx++;
+            }
+            answer = Math.min(answer, size);
+
+
         }
+
+
 
         return answer;
     }
