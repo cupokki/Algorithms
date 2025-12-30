@@ -30,28 +30,26 @@ public class Solution {
                 start = end;
             }
             tokens.add(s.substring(start));
-
+            tokens.add("");
             int idx = 0;
             int size = 0;
             while(idx < tokens.size() - 1) {
                 String current = tokens.get(idx);
                 if (!current.equals(tokens.get(idx + 1))) {
-                    size += i;
+                    size += current.length();
 
                 } else {
-                    while(idx < tokens.size() - 1 && current.equals(tokens.get(idx + 1))) {
+                    while(current.equals(tokens.get(idx + 1))) {
                         tokens.remove(idx + 1);
                     }
-                    size += i + 1;
+                    size += current.length() + 1;
                 }
                 idx++;
             }
+
             answer = Math.min(answer, size);
 
-
         }
-
-
 
         return answer;
     }
