@@ -17,43 +17,81 @@ public class Solution {
     아니 연속된 것만 압축되므로 의미없어보인다.
     우선 완전탐색으로...
     */
-    static String compressed;
     public static int solution(String s) {
         int answer = s.length();
         int len = s.length();
         int max = len / 2;
         for (int i = 1; i <= max; i++) {
-            List<String> tokens = new ArrayList<>();
+//            List<String> tokens = new ArrayList<>();
+//            int start = 0;
+//            for (int end = i; end < len; end += i) {
+//                tokens.add(s.substring(start, end));
+//                start = end;
+//            }
+//            tokens.add(s.substring(start));
+//            tokens.add("");
+//            int idx = 0;
+//            int size = 0;
+//            while(idx < tokens.size() - 1) {
+//                String current = tokens.get(idx);
+//                if (!current.equals(tokens.get(idx + 1))) {
+//                    size += current.length();
+//
+//                } else {
+//                    while(current.equals(tokens.get(idx + 1))) {
+//                        tokens.remove(idx + 1);
+//                    }
+//                    size += current.length() + 1;
+//                }
+//                idx++;
+//            }
+//
+//            answer = Math.min(answer, size);
+
+            List<Token> tokens = new LinkedList<>();
             int start = 0;
             for (int end = i; end < len; end += i) {
-                tokens.add(s.substring(start, end));
+                tokens.add(new Token(1, s.substring(start, end)));
                 start = end;
             }
-            tokens.add(s.substring(start));
-            tokens.add("");
-            int idx = 0;
-            int size = 0;
-            while(idx < tokens.size() - 1) {
-                String current = tokens.get(idx);
-                if (!current.equals(tokens.get(idx + 1))) {
-                    size += current.length();
+            tokens.add(new Token(1, s.substring(start)));
 
-                } else {
-                    while(current.equals(tokens.get(idx + 1))) {
-                        tokens.remove(idx + 1);
+            int idx = 1;
+            while(idx < tokens.size()) {
+                Token prev = tokens.get(idx - 1);
+                Token current = tokens.get(idx);
+                while(prev.str.equals(current.str)) {
+                    tokens.remove(idx);
+                    prev.count++;
+                    if (idx >= tokens.size()) {
+                        break;
                     }
-                    size += current.length() + 1;
+                    current = tokens.get(idx);
                 }
                 idx++;
             }
-
-            answer = Math.min(answer, size);
-
+            StringBuilder sb = new StringBuilder();
+            while(!tokens.isEmpty()) {
+                Token t = tokens.remove(0);
+                if (t.count != 1) {
+                    sb.append(t.count);
+                }
+                sb.append(t.str);
+            }
+            String compressed = sb.toString();
+            answer = Math.min(answer, compressed.length());
         }
 
         return answer;
     }
-
+    static class Token {
+        int count;
+        String str;
+        Token(int count, String str) {
+            this.count = count;
+            this.str = str;
+        }
+    }
 
      public static void main(String[] args) {
          System.out.println(solution("aabbaccc")); //7
