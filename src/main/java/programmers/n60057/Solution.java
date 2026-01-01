@@ -22,31 +22,6 @@ public class Solution {
         int len = s.length();
         int max = len / 2;
         for (int i = 1; i <= max; i++) {
-//            List<String> tokens = new ArrayList<>();
-//            int start = 0;
-//            for (int end = i; end < len; end += i) {
-//                tokens.add(s.substring(start, end));
-//                start = end;
-//            }
-//            tokens.add(s.substring(start));
-//            tokens.add("");
-//            int idx = 0;
-//            int size = 0;
-//            while(idx < tokens.size() - 1) {
-//                String current = tokens.get(idx);
-//                if (!current.equals(tokens.get(idx + 1))) {
-//                    size += current.length();
-//
-//                } else {
-//                    while(current.equals(tokens.get(idx + 1))) {
-//                        tokens.remove(idx + 1);
-//                    }
-//                    size += current.length() + 1;
-//                }
-//                idx++;
-//            }
-//
-//            answer = Math.min(answer, size);
 
             List<Token> tokens = new LinkedList<>();
             int start = 0;
