@@ -20,41 +20,48 @@ public class Solution {
     이를 응용하면 될 듯 하다.
 
     아니다 f(3, 4)는 이런 식으로 자르면 다음 f()가 대칭이 안된다.
+    두 좌표가 정수인 두점을 지나는 대각선으로 나누는데 만약 변의 길이가 1억까지 범위라면
+    이 최소 F()가 너무 크다.
+    내 이론은 이렇게 쪼개서 최소 f()를 계산하는건데 이 최소 F()또한 부동소수점 오차가 발생하 것이다.
+
+
+    대각선은 각 가로선 세로선을 각각 w개 h개를 지난다. 하지만 교차점을 지난다면 중복이 발생하므로 뺀다.
+    교차점은 어떻게 찾는다. y = (h/w)x
+    x, y가 정수가 되게하는 h와 w보다 작은 수의 개수는 w, h의 최대공약수이다.
     */
+
 //    public static long solution(int w, int h) {
-//        long answer = w * h;
-//        double slope = (double) h / w;
-//
-//        for (int x = 1; x <= w; x++) {
-//            double a = Math.floor(slope * (x - 1));
-//            double b = Math.ceil(slope * x);
-//            answer -= b - a;
+//        if (w == h) {
+//            return w; // 정사각형이라면 대각선으로 점유되는 단위정사각형의 개수는 변의 길이와 같다.
 //        }
-//        return answer;
+//
+//        return w * h - func(w, h);
+//    }
+//    static long func (int w, int h) {
+//        if (w == 1 || h == 1) {
+//            return w * h;
+//        }
+//
+//        int nw = w % 2 == 0 ? w / 2 : w / 2 + 1;
+//        int nh = h % 2 == 0 ? h / 2 : h / 2 + 1;
+//
+//        if (nw % 2 != 0 && nh % 2 != 0) { // 둘다 홀수
+//            return 2 * func(nw, nh) - 1;
+//        } else {
+//            return 2 * func(nw, nh);
+//        }
 //    }
 
     public static long solution(int w, int h) {
-        if (w == h) {
-            return w; // 정사각형이라면 대각선으로 점유되는 단위정사각형의 개수는 변의 길이와 같다.
-        }
-
-        return w * h - func(w, h);
-    }
-    static long func (int w, int h) {
-        if (w == 1 || h == 1) {
-            return w * h;
-        }
-
-        int nw = w % 2 == 0 ? w / 2 : w / 2 + 1;
-        int nh = h % 2 == 0 ? h / 2 : h / 2 + 1;
-
-        if (nw % 2 != 0 && nh % 2 != 0) { // 둘다 홀수
-            return 2 * func(nw, nh) - 1;
-        } else {
-            return 2 * func(nw, nh);
-        }
+        return (long) w * h - (w + h - gcd(w, h));
     }
 
+    static int gcd(int a, int b) {
+        if (b == 0) {
+            return a;
+        }
+        return gcd(b, a % b);
+    }
 
     public static void main(String[] args) {
 //        System.out.println(solution(3, 5));
