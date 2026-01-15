@@ -1,6 +1,7 @@
 package programmers.n150368;
 
 import java.util.Arrays;
+import java.util.PriorityQueue;
 
 public class Solution {
     /*
@@ -12,13 +13,49 @@ public class Solution {
     - 할인율은 10 20 30 40% 중 하나
     - 각 사용자는 자신의 기준에 따라 일정 비율 할인 하는 이모티콘 모두 구매
     - 결과 금액 초과시에 플러스 가입(이모티콘 모두 취소)
+
+    최대 100명의 유저, 7개의 이모티콘 충분히 시뮬레이션 가능한거 아닌가
+
      */
+    static int[] promo = new int[]{40, 30, 20, 10};
+    static int[][] Users;
+    static int[] Emoticons;
+    static int[] arr;
     public static int[] solution(int[][] users, int[] emoticons) {
-        int[] answer = {};
+        Users = users;
+        Emoticons = emoticons;
+        arr = new int[Emoticons.length];
+        dfs(0);
+        return q.peek();
+    }
+    static PriorityQueue<int[]> q = new PriorityQueue<>((a, b) -> b[0] == a[0] ? b[1] - a[1] : b[0] - a[0]);
+    static void dfs(int d) {
+        int[] result = new int[2];
+        if (d == Emoticons.length) {
+            for (int i = 0; i < Users.length; i++) {
+                int total = 0;
+                for (int j = 0; j < Emoticons.length; j++) {
+                    if (Users[i][0] <= arr[j] ){
+                        int price = Emoticons[j] * ( 100 - arr[j]) / 100;
+                        if (total + price >= Users[i][1]) {
+                            result[0]++;
+                            total = 0;
+                            break;
+                        } else {
+                            total += price;
+                        }
+                    }
+                }
+                result[1] += total;
+            }
+            q.offer(result);
+            return;
+        }
 
-
-
-        return answer;
+        for (int i = 0; i < promo.length; i++) {
+            arr[d] = promo[i];
+            dfs(d + 1);
+        }
     }
 
     public static void main(String[] args) {
