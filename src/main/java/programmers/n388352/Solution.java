@@ -18,52 +18,44 @@ public class Solution {
      C(30, 5)는 약 14만? 가능한가 -> 길이가 5로 제한되니까 dfs 불가능하진 않겠네
      n이하의 자연수 5개를 선택하는 dfs돌려서 q와 ans 조건에 만족하는 것의 개수를 직접 세는 방식?
      */
-    static int[][] query;
     static int[] answer;
     static int N, M;
     static int result;
-
+    static int[] qMask;
     public static int solution(int n, int[][] q, int[] ans) {
         N = n;
         M = q.length;
-        query = q;
         answer = ans;
         result = 0;
-        selected = new int[5];
-        dfs(0, 1);
+
+        qMask = new int[M];
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < 5; j++) {
+                qMask[i] |= 1 << q[i][j];
+            }
+        }
+
+        dfs(0, 1, 0);
 
         return result;
     }
 
-    static int[] selected;
-
-    static void dfs(int depth, int start) {
+    static void dfs(int depth, int start, int bitmask) {
         if (depth == 5) {
-            // q의 모든 수와 비교
             for (int i = 0; i < M; i++) {
-                int cnt = 0;
-                for (int j = 0; j < 5; j++) {
-                    for (int k = 0; k < 5; k++) {
-                        if (selected[j] == query[i][k]) {
-                            cnt++;
-                        }
-                    }
-                }
-                if (cnt != answer[i]) {
+                if (Integer.bitCount(bitmask & qMask[i]) != answer[i])
                     return;
-                }
             }
             result++;
-            for (int i = 0; i < 5; i++) {
-                System.out.print(String.format("%3d", selected[i]));
-            }
-            System.out.println();
+//            for (int i = 0; i < 5; i++) {
+//                System.out.print(String.format("%3d", selected[i]));
+//            }
+//            System.out.println();
             return;
         }
 
         for (int i = start; i <= N; i++) {
-            selected[depth] = i;
-            dfs(depth + 1, i + 1);
+            dfs(depth + 1, i + 1, bitmask | (1 << i));
         }
     }
 
