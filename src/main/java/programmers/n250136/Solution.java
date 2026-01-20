@@ -1,7 +1,6 @@
 package programmers.n250136;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class Solution {
     /*
@@ -19,26 +18,45 @@ public class Solution {
         N = land.length;
         M = land[0].length;
 
+        int id = -1;
+        Map<Integer, Integer> sizeMap = new HashMap<>();
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (land[i][j] == 1) {
+                    sizeMap.put(id, bfs(land, i, j, id));
+                    id--;
+                }
+            }
+        }
         for (int i = 0; i < M; i++) {
-            boolean[][] visited = new boolean[N][M];
             int amount = 0;
+            Set<Integer> set = new HashSet<>();
             for (int j = 0; j < N; j++) {
-                if (land[j][i] == 1 && !visited[j][i]) {
-                    amount += bfs(land, visited, j, i);
+                int num = land[j][i];
+                if (num == 0) continue;
+                if (!set.contains(num)) {
+                    amount += sizeMap.get(num);
+                    set.add(num);
                 }
             }
             answer = Math.max(amount, answer);
         }
+
         return answer;
     }
     static final int[] dr = {0, 0, 1, -1};
     static final int[] dc = {1, -1, 0, 0};
-    static int bfs(int[][] land, boolean[][] visited, int sr, int sc) {
-        int amount = 1;
+    static int bfs(int[][] land, int sr, int sc, int id) {
+//        boolean[][] visited = new boolean[N][M];
+//        visited[sr][sc] = true;
 
+        List<int[]> visited = new ArrayList<>();
+
+        int[] s = new int[]{sr, sc};
         Queue<int[]> q = new LinkedList<>();
-        visited[sr][sc] = true;
-        q.offer(new int[]{sr, sc});
+        q.offer(s);
+        visited.add(s);
+        land[sr][sc] = 0;
 
         while(!q.isEmpty()) {
             int[] pos = q.poll();
@@ -46,22 +64,34 @@ public class Solution {
                 int nr = pos[0] + dr[d];
                 int nc = pos[1] + dc[d];
                 if (nr < 0 || nc < 0 || nr >= N || nc >= M) continue;
-                if (land[nr][nc] == 1 && !visited[nr][nc]) {
-                    q.offer(new int[]{nr, nc});
-                    amount++;
-                    visited[nr][nc] = true;
+                if (land[nr][nc] == 1 ) {
+                    int[] next = new int[]{nr, nc};
+                    q.offer(next);
+                    visited.add(next);
+                    land[nr][nc] = 0;
                 }
             }
         }
 
+//        for (int i = 0; i < N; i++) {
+//            for (int j = 0; j < M; j++) {
+//                if (visited[i][j]) {
+//                    land[i][j] = amount;
+//                }
+//            }
+//        }
+        int amount = visited.size();
+        for (int[] pos : visited) {
+            land[pos[0]][pos[1]] = id;
+        }
         return amount;
     }
 
     public static void main(String[] args) {
-        var i1 = new int[][]{
-                {0, 0, 0, 1, 1, 1, 0, 0}, {0, 0, 0, 0, 1, 1, 0, 0}, {1, 1, 0, 0, 0, 1, 1, 0}, {1, 1, 1, 0, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0, 1, 1}
-        };
-        System.out.println(solution(i1));
+//        var i1 = new int[][]{
+//                {0, 0, 0, 1, 1, 1, 0, 0}, {0, 0, 0, 0, 1, 1, 0, 0}, {1, 1, 0, 0, 0, 1, 1, 0}, {1, 1, 1, 0, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0, 1, 1}
+//        };
+//        System.out.println(solution(i1));
 
         var i2 = new int[][]{
                 {1, 0, 1, 0, 1, 1}, {1, 0, 1, 0, 0, 0}, {1, 0, 1, 0, 0, 1}, {1, 0, 0, 1, 0, 0}, {1, 0, 0, 1, 0, 1}, {1, 0, 0, 0, 0, 0}, {1, 1, 1, 1, 1, 1}
