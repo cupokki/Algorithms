@@ -46,28 +46,29 @@ class Solution {
         Stack<Plan> onHold = new Stack<>();
         int idx = 0;
         Plan cur = pq.poll();
+        int now = cur.s;
         while(!pq.isEmpty() && idx < n) {
             Plan next = pq.peek();
 
             // 현재 작업 처리(완료, 보류)
-            int currentEnd = cur.s + cur.l;
+            int currentEnd = now + cur.l;
 
             if (currentEnd <= next.s) {
                 answer[idx++] = cur.name; // 작업 완료.
-
-                if (!onHold.isEmpty() && currentEnd < next.s) {
+                now = currentEnd;
+                if (!onHold.isEmpty() && now < next.s) {
                     cur = onHold.pop();
-                    cur.s = currentEnd; // stack에서 꺼낸 것은 항상 현재 시간으로 수정한다.
                     continue;
                 }
             } else {
                 // 현재 종료시간보다 다음 시작시간이 빠르다.
                 int left = currentEnd - next.s;
-                onHold.push(new Plan(cur.name, next.s, left)); // 현 작업 보류
-                //시간 관가 이상하다.
+                cur.l = left;
+                onHold.push(cur); // 현 작업 보류
             }
 
             cur = pq.poll();
+            now = cur.s;
         }
 
         answer[idx++] = cur.name;
