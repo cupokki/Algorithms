@@ -23,7 +23,7 @@ public class Solution {
 //    }
     public static long solution(int k, int d) {
         long answer = 0;
-        long y = d/k * k;
+        long y = d/k * k; // d가 아니라 d이하의 k의 배수이어야 한다!!!!
         for (int x = 0; x <= d; x += k) {
             while ((long)x * x + y * y > (long)d * d) {
                 y -= k;
