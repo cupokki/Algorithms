@@ -30,23 +30,49 @@ public class Solution {
 //
 //        return answer[range];
 //    }
+//    public static int[] solution(long begin, long end) {
+//        int range = (int) (end - begin) + 1;
+//        int[] answer = new int[range];
+//
+//        Arrays.fill(answer, 1);
+//        if (begin == 1) answer[0] = 0;
+//        int maxNum = (int)end / 2; // 교체되는 숫자는 floor(end / 2)이하
+//        if (maxNum > 10_000_000) maxNum = 10_000_000;
+//        int startNum = (int)Math.ceil(Math.sqrt(begin)); // 반드시 1이 포함되는 경우가 있다? -> 소수
+//        for (int i = startNum; i <= maxNum; i++) {
+//            for (int j = 0; j < range; j++) {
+//                int idx = (int)begin + j;
+//                if (idx < 2 * i) continue;
+//                if (idx % i == 0) {
+//                    answer[j] = i;
+//                }
+//            }
+//        }
+//
+//        return answer;
+//    }
     public static int[] solution(long begin, long end) {
-        int range = (int) (end - begin);
-        int[] answer = new int[range + 1];
-        Arrays.fill(answer, 1);
-        if (begin == 1) answer[0] = 0;
-        int maxNum = (int)end / 2; // 교체되는 숫자는 floor(end / 2)이하
-        int startNum = (int)Math.sqrt(maxNum); // 최대 숫자의 - range
-//        int startNum = maxNum - range + 1;
-        for (int i = startNum; i <= maxNum; i++) {
-            for (int j = 0; j <= range; j++) {
-                int idx = (int)begin + j;
-                if (idx < 2 * i) continue;
-                if (idx % i == 0) {
-                    answer[j] = i;
+        int range = (int) (end - begin) + 1;
+        int[] answer = new int[range];
+
+        for (int i = 0; i < range; i++) {
+            // 문제의 조건을 다시 해석하면, answer[i]는 n를 제외한 가장 큰 약수
+            int n = (int)begin + i;
+            int factor = 1; // n이 소수면 항상 1.
+            for (int j = 2; (long)j * j <= n; j++) {
+                if (n % j == 0) {
+                    if (n / j <= 10000000) {
+                        factor = n / j;
+                        break;
+                    } else {
+                        factor = j;
+                    }
                 }
             }
+            answer[i] = factor;
         }
+
+        if (begin == 1) answer[0] = 0;
 
         return answer;
     }
@@ -58,8 +84,9 @@ public class Solution {
     public static void main(String[] args) {
         print(solution(1, 10));
         print(solution(5, 10));
-        //print(solution(1_000_000_000, 1_000_000_000));
+        print(solution(1_000_000_000, 1_000_000_000));
         print(solution(999_999_999, 1_000_000_000));
-        print(solution(2, 4));
+        print(solution(1, 4));
+        print(solution(1, 1));
     }
 }
