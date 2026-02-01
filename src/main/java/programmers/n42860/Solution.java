@@ -24,25 +24,22 @@ public class Solution {
             }
         }
 
-        int dist = 0;
-        int toRight = 0;
-        for (int i = 1; i < len - 1; i++) {
-            dist++;
-            if (chars[i] != 'A') {
-                toRight = dist;
-            }
+        int moveCost = Integer.MAX_VALUE;
+
+        for (int i = 0; i < len; i++) {
+            if (chars[i] == 'A')
+                continue;   // 꺾는 후보는 A 아닌 위치만
+
+            // 오른쪽 먼저 i에서 꺾는다.
+            int routeA = 2 * i + (len - 1 - i);
+
+            // 왼쪽 먼저 i에서 꺾는다
+            int routeB = 2 * (len - 1 - i) + i;
+
+            moveCost = Math.min(moveCost, Math.min(routeA, routeB));
         }
 
-        dist = 0;
-        int toLeft = 0;
-        for (int i = len - 2; i >= 0; i--) {
-            dist++;
-            if (chars[i] != 'A') {
-                toLeft = dist;
-            }
-        }
-
-        answer = Math.min(toLeft, toRight) + calculateCost;
+        answer = moveCost + calculateCost;
 
         return answer;
     }
@@ -50,6 +47,6 @@ public class Solution {
     public static void main(String[] args) {
         System.out.println(solution("JAZ"));
         System.out.println(solution("JEROEN"));
-        System.out.println(solution("JAN"));
+        System.out.println(solution("BBAAB"));
     }
 }
