@@ -19,27 +19,29 @@ public class Solution {
             if (chars[i] != 'A') {
                 calculateCost += Math.min(
                         chars[i] - 'A',
-                        26 - (chars[i] - 'A') % 26
+                        'Z' - chars[i] + 1
                 );
             }
         }
 
-        int moveCost = Integer.MAX_VALUE;
+        int minMoveCost = Integer.MAX_VALUE;
 
         for (int i = 0; i < len; i++) {
-            if (chars[i] == 'A')
-                continue;   // 꺾는 후보는 A 아닌 위치만
+            int rightLen = i + 1;
+            while (rightLen < len && chars[rightLen] == 'A') {
+                rightLen++;
+            }
 
             // 오른쪽 먼저 i에서 꺾는다.
-            int routeA = 2 * i + (len - 1 - i);
+            int routeA = 2 * i + (len - rightLen);
 
             // 왼쪽 먼저 i에서 꺾는다
-            int routeB = 2 * (len - 1 - i) + i;
+            int routeB = 2 * (len - rightLen) + i;
 
-            moveCost = Math.min(moveCost, Math.min(routeA, routeB));
+            minMoveCost = Math.min(minMoveCost, Math.min(routeA, routeB));
         }
 
-        answer = moveCost + calculateCost;
+        answer = minMoveCost + calculateCost;
 
         return answer;
     }
