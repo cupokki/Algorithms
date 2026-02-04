@@ -1,4 +1,4 @@
-package boj.n2847;
+package boj.greedy.n2847;
 
 import java.io.BufferedReader;
 import java.io.IOException;
