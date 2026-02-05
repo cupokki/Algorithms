@@ -25,14 +25,14 @@ public class Solution {
     public static long solution(int cap, int n, int[] deliveries, int[] pickups) {
         long answer = 0;
 
-
+        int p = 0, d = 0;
         for (int i = n - 1; i >= 0; i--) {
-            int p = 0, d = 0;
+//        int p = 0, d = 0;
             d += deliveries[i]; // n-1 부터 i번째까지 배달 할 상자 수
             p += pickups[i];    // n-1 부터 i번째까지 수거 할 상자 수
 
-            deliveries[i] = 0; //useless
-            pickups[i] = 0;
+//            deliveries[i] = 0; //useless
+//            pickups[i] = 0;
 
             int round = 0;
             while (d > 0 || p > 0) {
@@ -42,18 +42,18 @@ public class Solution {
             }
             answer += 2 * (i + 1) * round; // 왕복
 
-            // round번 돌아오는 길에 여유 공간 활용.
-            for (int j = i - 1; j >= 0; j--) {
-                if (d >= 0 && p >= 0) {
-                    break;
-                }
-                int td = deliveries[j] + d;
-                deliveries[j] = Math.max(0, td);
-                d = Math.min(td, 0);
-                int tp = pickups[j] + p;
-                pickups[j] = Math.max(0, tp);
-                p = Math.min(tp, 0);
-            }
+//            // round번 돌아오는 길에 여유 공간 활용.
+//            for (int j = i - 1; j >= 0; j--) {
+//                if (d >= 0 && p >= 0) {
+//                    break;
+//                }
+//                int td = deliveries[j] + d;
+//                deliveries[j] = Math.max(0, td);
+//                d = Math.min(td, 0);
+//                int tp = pickups[j] + p;
+//                pickups[j] = Math.max(0, tp);
+//                p = Math.min(tp, 0);
+//            }
         }
 
         return answer;
