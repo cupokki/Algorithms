@@ -23,31 +23,37 @@ public class Solution {
     딱 남은 배달량을 0으로 만들 수 있는 양만 들고간다?
      */
     public static long solution(int cap, int n, int[] deliveries, int[] pickups) {
-        long answer = -1;
-        int len = n - 1;
-        int limit = len;
+        long answer = 0;
 
-        while(limit >= 0) {
-            answer += 2 * limit;
-            int idx = limit - 1;
 
-            int truck = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            int p = 0, d = 0;
+            d += deliveries[i]; // n-1 부터 i번째까지 배달 할 상자 수
+            p += pickups[i];    // n-1 부터 i번째까지 수거 할 상자 수
 
-            for (int i = limit - 1; i >= 0; i--) {
-                // 배달
-                if (truck + deliveries[i] <= cap) {
-                    truck += deliveries[i];
-                    deliveries[i] = 0;
-                }
+            deliveries[i] = 0; //useless
+            pickups[i] = 0;
 
-                // 수거
-
-                break;
+            int round = 0;
+            while (d > 0 || p > 0) {
+                round++;
+                d -= cap;
+                p -= cap;
             }
+            answer += 2 * (i + 1) * round; // 왕복
 
-            // 위치가 limit 위치의 이고 배달 및 수거가 완료된 주소 발생 then limit--
-            while (limit >= 0 && deliveries[limit] == 0 && pickups[limit] == 0)
-               limit--;
+            // round번 돌아오는 길에 여유 공간 활용.
+            for (int j = i - 1; j >= 0; j--) {
+                if (d >= 0 && p >= 0) {
+                    break;
+                }
+                int td = deliveries[j] + d;
+                deliveries[j] = Math.max(0, td);
+                d = Math.min(td, 0);
+                int tp = pickups[j] + p;
+                pickups[j] = Math.max(0, tp);
+                p = Math.min(tp, 0);
+            }
         }
 
         return answer;
@@ -67,5 +73,6 @@ public class Solution {
                 new int[]{1, 0, 2, 0, 1, 0, 2},
                 new int[]{0, 2, 0, 1, 0, 2, 0}
         ));
+
     }
 }
