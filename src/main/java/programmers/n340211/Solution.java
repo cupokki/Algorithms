@@ -1,7 +1,6 @@
 package programmers.n340211;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Solution {
@@ -37,13 +36,13 @@ public class Solution {
     public static int solution(int[][] points, int[][] routes) {
         int answer = 0;
 
-        int[][] currentPos = new int[8][8];
+//        int[][] currentPos = new int[8][8];
 
         List<Robot> robots = new ArrayList<>();
         for (int i = 0; i < routes.length; i++) {
             int[] p = points[routes[i][0] - 1]; // 0-based convert
             robots.add(new Robot(p[0], p[1], routes[i]));
-            currentPos[p[0]][p[1]] = i + 1; // id(i) 대로 기록 temp
+//            currentPos[p[0]][p[1]] = i + 1; // id(i) 대로 기록 temp
         }
 
         while (robots.size() > 0){
@@ -72,7 +71,7 @@ public class Solution {
             // 로봇 이동
             for (int i = 0; i < robots.size(); i++) {
                 Robot ro = robots.get(i);
-                currentPos[ro.r][ro.c] = 0;
+//                currentPos[ro.r][ro.c] = 0;
                 if (ro.current == ro.route.length - 1) {
                     removeList.add(ro);
                     continue;
@@ -84,7 +83,7 @@ public class Solution {
                 } else if (ro.c != next[1]){
                     ro.c += ro.c > next[1] ? -1 : 1;
                 }
-                currentPos[ro.r][ro.c] = i + 1;
+//                currentPos[ro.r][ro.c] = i + 1;
                 if (ro.r == next[0] && ro.c == next[1]) {
                     ro.current += 1;
                 }
