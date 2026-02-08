@@ -1,10 +1,6 @@
 package programmers.n72412;
 
-import com.sun.source.tree.Tree;
-
-import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Solution {
     /*
@@ -17,53 +13,50 @@ public class Solution {
     코테결과 분석해 팀에 맞는 지원자가 몇명인지 알 수 있는 도구 만든다.
     info: 지원자 정보들, 5만개 이하
 
-    쿼리가 촤대 10만회 이므로, 완전탐색은 매우 불리할 것. 인덱스화?
-    트리맵?
+    쿼리가 촤대 10만회 이므로, 완전탐색은 매우 불리할 것. 인덱스화? 미리 모든 조합을 생성해야할 듯
      */
-    record Row(
-            String lang,
-            String pos,
-            String career,
-            String soulFood,
-            Integer score
-    ) implements Comparable<Row>{
-        @Override
-        public int compareTo(Row o) {
-            int res = this.score.compareTo(o.score);
-            if (res == 0) this.lang.compareTo(o.lang);
-            if (res == 0) res = this.pos.compareTo(o.pos);
-            if (res == 0) res = this.career.compareTo(o.career);
-            if (res == 0) res = this.soulFood.compareTo(o.soulFood);
-            return res;
-        }
-    };
     public static int[] solution(String[] info, String[] query) {
         int size = query.length;
         int[] answer = new int[size];
 
-        TreeMap<Row, Integer> tree = new TreeMap<>();
+        Map<String, List<Integer>> map = new HashMap<>();
 
         // parsing
         for (int i = 0; i < info.length; i++) {
-            String[] token = info[i].split(" ");
-            tree.put(new Row(token[0], token[1], token[2], token[3], Integer.parseInt(token[4])),i);
+            String[] tokens = info[i].split(" ");
+            String[] langs = {tokens[0], "-"};
+            String[] poses = {tokens[1], "-"};
+            String[] careers = {tokens[2], "-"};
+            String[] foods = {tokens[3], "-"};
+            int score = Integer.parseInt(tokens[4]);
+
+            for (String l : langs) {
+                for (String p : poses) {
+                    for (String c : careers) {
+                        for (String f : foods) {
+                            String key = l + p + c + f;
+                            map.computeIfAbsent(key, k -> new ArrayList<>()).add(score);
+                        }
+                    }
+                }
+            }
         }
 
         for (int i = 0; i < size; i++) {
             // 와일드카드 어떻게 구현할 것인가.
-            String[] token = query[i].split("and");
-            Arrays.stream(token).map(s -> {
-                s = s.trim();
-                if (s.equals("-")) {
-                    // 와일드 카드
-                }
-                return s;
-            });
-
-//            var res = tree.subMap(
-//                    new Row()
-//            );
-//            answer[i] = res.size();
+            String[] tokens = Arrays.stream(query[i].split(" "))
+                    .filter(s -> !s.equals("and"))
+                    .map(String::trim)
+                    .toArray(String[]::new);
+            int score = Integer.parseInt(tokens[4]);
+            String key = String.join("",Arrays.copyOf(tokens, 4));
+            List<Integer> list = map.get(key);
+            list.sort(Comparator.comparingInt(Integer::intValue));
+            int idx = 0;
+            while (idx < list.size() && list.get(idx) < score) {
+                idx++;
+            }
+            answer[i] += list.size() - idx;
         }
 
         return answer;
