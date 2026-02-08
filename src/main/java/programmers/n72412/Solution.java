@@ -42,6 +42,9 @@ public class Solution {
             }
         }
 
+        for (var list : map.values()) {
+            Collections.sort(list);
+        }
         for (int i = 0; i < size; i++) {
             // 와일드카드 어떻게 구현할 것인가.
             String[] tokens = Arrays.stream(query[i].split(" "))
@@ -50,16 +53,29 @@ public class Solution {
                     .toArray(String[]::new);
             int score = Integer.parseInt(tokens[4]);
             String key = String.join("",Arrays.copyOf(tokens, 4));
-            List<Integer> list = map.get(key);
-            list.sort(Comparator.comparingInt(Integer::intValue));
-            int idx = 0;
-            while (idx < list.size() && list.get(idx) < score) {
-                idx++;
-            }
-            answer[i] += list.size() - idx;
+            List<Integer> list = map.getOrDefault(key, new ArrayList<>());
+//            O(size)
+//            int idx = 0;
+//            while (idx < list.size() && list.get(idx) < score) {
+//                idx++;
+//            }
+//            answer[i] = list.size() - idx;
+            answer[i] = list.size() - binarySearch(list, score, 0, list.size());
         }
 
         return answer;
+    }
+
+    static int binarySearch(List<Integer> list, int score, int left, int right) {
+        int mid = left + (right - left) / 2;
+        if (left == right) {
+            return left;
+        }
+        if (list.get(mid) >= score) {
+            return binarySearch(list, score, left, mid);
+        } else {
+            return binarySearch(list, score, mid + 1, right);
+        }
     }
 
     public static void main(String[] args) {
