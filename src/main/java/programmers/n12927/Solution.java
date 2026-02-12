@@ -25,53 +25,46 @@ public class Solution {
         long answer = 0;
         int len = works.length;
 
+        Arrays.sort(works);
         long sum = Arrays.stream(works).sum();
-        if (sum <= n) {
+        if (sum < n) {
             return 0;
         }
 
-        Arrays.sort(works);
-        List<Integer> indexes = new ArrayList<>();
-        int cur = -1;
-        for (int i = 0; i < len; i++) {
-            if (works[i] != cur) {
-                indexes.add(i);
-                cur = works[i];
-            }
-        }
-
-        for (int i = indexes.size() - 1; i > 0 ; i--) {
-            if (n <= 0) {
+        for (int i = len - 2; i >= 0; i--) {
+            if (n == 0) {
                 break;
             }
-
-            int idx = indexes.get(i);
-            int gap = works[idx];
-            if (idx > 0) gap = works[idx] - works[idx - 1];
-
-            for (int j = idx; j < len; j++) {
-                if (n < gap) {
-                    break;
+            if (works[i] != works[i + 1]) {
+                int gap = works[i + 1] - works[i];
+                int dist = len - i - 1;
+                while(gap * dist > n) {
+                    gap--;
                 }
-                works[j] -= gap;
-                n -= gap;
+                for (int j = i + 1; j < len; j++) { // 균등 배분 해야한다.
+                    works[j] -= gap;
+                    n -= gap;
+                }
             }
+        }
 
+        int idx = len - 1;
+        while(n > 0) {
+            if (works[idx] > 0) {
+                works[idx]--;
+                n--;
+            }
+            idx = (len + idx - 1) % len;
         }
 
         for (int i = 0; i < len; i++) {
-            if (n > 0) {
-                works[i]--;
-                n--;
-            }
             answer += (long) works[i] * works[i];
         }
         return answer;
-
     }
 
     public static void main(String[] args) {
-        System.out.println(solution(11, new int[]{1, 2, 3, 4, 5}));
+        System.out.println(solution(5, new int[]{1, 3, 3}));
         System.out.println(solution(4, new int[]{4, 3, 3}));
         System.out.println(solution(1, new int[]{2, 1, 2}));
         System.out.println(solution(3, new int[]{1, 1}));
