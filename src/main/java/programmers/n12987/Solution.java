@@ -13,26 +13,19 @@ public class Solution {
     길이 10만이하 자연수
     원소크기 10억이하 자연수
 
-    n보다 큰값의 개수를 비교하면 될 듯?
+    그리디
      */
     public static int solution(int[] A, int[] B) {
         int answer = 0;
         int n = A.length;
+        Arrays.sort(A);
+        Arrays.sort(B);
+        int idx = 0;
         for (int i = 0; i < n; i++) {
-            int num = B[i];
-            int bCnt = 0;
-            for (int j = 0; j < n; j++) {
-                if (num <= B[j]) bCnt++;
+            if (A[idx] < B[i]) {
+                answer++;
+                idx++;
             }
-            int aCnt = 0;
-            for (int j = 0; j < n; j++) {
-                if (num < A[j]) aCnt++;
-            }
-
-            if (bCnt >= aCnt) {
-                answer = Math.max(answer, aCnt);
-            }
-
         }
 
         return answer;
