@@ -16,12 +16,11 @@ public class Solution {
         int n = routes.length;
 
         Arrays.sort(routes, Comparator.comparing((int[] r) -> r[1]));
-        for (int i = 0; i < n;) {
-            int end = routes[i][1];
-            answer++;
-            i++;
-            while (i < n && routes[i][0] <= end) {
-                i++;
+        int end = -30000;
+        for (int i = 0; i < n; i++) {
+            if (end < routes[i][0]) {
+                end = routes[i][1];
+                answer++;
             }
         }
         return answer;
