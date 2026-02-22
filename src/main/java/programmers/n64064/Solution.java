@@ -15,60 +15,44 @@ public class Solution {
     아이디 개수 8이하 자연수
     아이디 길이 최대 8이하 자연수
      */
-    static int bannedSize;
-    static int userSize;
     static String[] users;
     static String[] bans;
-    static int result;
-    static Set<String> set;
+    static Set<Integer> set;
+    static boolean[][] isMatch;
     public static int solution(String[] user_id, String[] banned_id) {
-        result = 0;
         users = user_id;
         bans = banned_id;
-        bannedSize = banned_id.length;
-        userSize = user_id.length;
-        result = 0;
         set = new HashSet<>();
-        dfs(0, userSize, new boolean[userSize]);
-        return result;
+        isMatch = new boolean[bans.length][users.length];
+        for (int i = 0; i < bans.length; i++) {
+            for (int j = 0; j < users.length; j++) {
+                isMatch[i][j] = validate(bans[i], users[j]);
+            }
+        }
+        dfs(0, 0);
+        int answer = set.size();
+        return answer;
     }
 
-    static void dfs(int depth, int userSize, boolean[] visited) {
-        if (depth == bannedSize) {
-            StringBuilder sb = new StringBuilder();
-            for(int i = 0; i < userSize; i++) {
-                if (visited[i]) sb.append(users[i]);
-            }
-            String str = sb.toString();
-//            System.out.println(str);
-            if (!set.contains(str)) {
-                result++;
-                set.add(str);
-            }
+    static void dfs(int depth, int bitmask) {
+        if (depth == bans.length) {
+            set.add(bitmask);
             return;
         }
 
-        for (int i = 0; i < userSize; i++) {
-            if (!visited[i] && validate(bans[depth], users[i])) {
-                visited[i] = true;
-                dfs(depth + 1, userSize, visited);
-                visited[i] = false;
+        for (int i = 0; i < users.length; i++) {
+            if ((bitmask & (1 << i)) == 0 && isMatch[depth][i]) {
+                dfs(depth + 1, bitmask | (1 << i));
             }
         }
     }
 
     static boolean validate(String a, String b) {
         int len = a.length();
-        if (len != b.length()) {
-            return false;
-        }
+        if (len != b.length()) return false;
         for (int i = 0 ; i < len; i++) {
-            if (a.charAt(i) == '*') {
-                continue;
-            }
-            if (a.charAt(i) != b.charAt(i)) {
-                return false;
-            }
+            if (a.charAt(i) == '*') continue;
+            if (a.charAt(i) != b.charAt(i)) return false;
         }
         return true;
     }
