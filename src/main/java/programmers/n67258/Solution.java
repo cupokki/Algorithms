@@ -18,10 +18,12 @@ public class Solution {
      */
 
     public static int[] solution(String[] gems) {
-        int[] answer = new int[2];
-        int max = Integer.MIN_VALUE;
+        int[] answer = {1, 1};
+        int min = Integer.MAX_VALUE;
+        int types = (int) Arrays.stream(gems).distinct().count();
         Map<String, Integer> map = new HashMap<>();
         int tail = 0;
+
         for (int head = 0; head < gems.length; head++) {
             map.merge(gems[head], 1, Integer::sum);
             while (tail < head && gems[head].equals(gems[tail])) {
@@ -29,15 +31,14 @@ public class Solution {
                 if (map.get(gems[tail]) == 0) map.remove(gems[tail]);
                 tail++;
             }
-            while (tail < head && gems[tail].equals(gems[tail + 1])) {
+            while (tail < head && map.get(gems[tail]) > 1) {
                 map.merge(gems[tail], -1, Integer::sum);
                 if (map.get(gems[tail]) == 0) map.remove(gems[tail]);
                 tail++;
             }
 
-            int types = map.keySet().size();
-            if (types > max) {
-                max = types;
+            if (map.keySet().size() == types && min > head - tail) {
+                min = head - tail;
                 answer[0] = tail + 1;
                 answer[1] = head + 1;
             }
@@ -47,6 +48,9 @@ public class Solution {
     }
 
     public static void main(String[] args) {
+        Arrays.stream(solution(new String[]{"A", "B", "C", "B", "D", "A"}))
+                .forEach(i -> System.out.print(i + " "));
+        System.out.println();
         Arrays.stream(solution(new String[]{"DIA", "RUBY", "RUBY", "DIA", "DIA", "EMERALD", "SAPPHIRE", "DIA"}))
                 .forEach(i -> System.out.print(i + " "));
         System.out.println();
