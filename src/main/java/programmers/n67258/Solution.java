@@ -1,6 +1,8 @@
 package programmers.n67258;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Solution {
     /*
@@ -11,25 +13,33 @@ public class Solution {
     투 포인터?
 
     방금 포함한 구간의 첫 요소가 마지막에 포함되었다면 제한다.
+    이런 식의 최대구간이 항상 정답이 아니다
+    내방식대로 올바른 구현이 될려면 모든게 들어있는지 상태를 유지해야한다..
      */
-    static String[] Gems;
+
     public static int[] solution(String[] gems) {
         int[] answer = new int[2];
         int max = Integer.MIN_VALUE;
-        int tail = 0, head = 0;
-        while (head < gems.length - 1 && tail <= head) {
-            head++;
-            while (tail != head && gems[tail] == gems[head]) {
+        Map<String, Integer> map = new HashMap<>();
+        int tail = 0;
+        for (int head = 0; head < gems.length; head++) {
+            map.merge(gems[head], 1, Integer::sum);
+            while (tail < head && gems[head].equals(gems[tail])) {
+                map.merge(gems[tail], -1, Integer::sum);
+                if (map.get(gems[tail]) == 0) map.remove(gems[tail]);
                 tail++;
             }
-            while (tail <= head && gems[tail] == gems[tail + 1]) {
+            while (tail < head && gems[tail].equals(gems[tail + 1])) {
+                map.merge(gems[tail], -1, Integer::sum);
+                if (map.get(gems[tail]) == 0) map.remove(gems[tail]);
                 tail++;
             }
-            int gap = head - tail;
-            if (gap > max) {
-                max = gap;
+
+            int types = map.keySet().size();
+            if (types > max) {
+                max = types;
                 answer[0] = tail + 1;
-                answer[1] = head;
+                answer[1] = head + 1;
             }
         }
 
