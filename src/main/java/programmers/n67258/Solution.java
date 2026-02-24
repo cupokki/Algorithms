@@ -33,7 +33,7 @@ public class Solution {
 //            }
             while (tail < head && map.get(gems[tail]) > 1) {
                 map.merge(gems[tail], -1, Integer::sum);
-                if (map.get(gems[tail]) == 0) map.remove(gems[tail]);
+//                if (map.get(gems[tail]) == 0) map.remove(gems[tail]); //useless
                 tail++;
             }
 
