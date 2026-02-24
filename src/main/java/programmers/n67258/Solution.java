@@ -37,7 +37,7 @@ public class Solution {
                 tail++;
             }
 
-            if (map.keySet().size() == types && min > head - tail) {
+            if (map.size() == types && min > head - tail) {
                 min = head - tail;
                 answer[0] = tail + 1;
                 answer[1] = head + 1;
