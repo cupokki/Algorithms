@@ -26,11 +26,11 @@ public class Solution {
 
         for (int head = 0; head < gems.length; head++) {
             map.merge(gems[head], 1, Integer::sum);
-            while (tail < head && gems[head].equals(gems[tail])) {
-                map.merge(gems[tail], -1, Integer::sum);
-                if (map.get(gems[tail]) == 0) map.remove(gems[tail]);
-                tail++;
-            }
+//            while (tail < head && gems[head].equals(gems[tail])) {
+//                map.merge(gems[tail], -1, Integer::sum);
+//                if (map.get(gems[tail]) == 0) map.remove(gems[tail]);
+//                tail++;
+//            }
             while (tail < head && map.get(gems[tail]) > 1) {
                 map.merge(gems[tail], -1, Integer::sum);
                 if (map.get(gems[tail]) == 0) map.remove(gems[tail]);
