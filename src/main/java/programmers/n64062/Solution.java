@@ -16,19 +16,31 @@ public class Solution {
     각 요소를 최소 값만큼 제한다. -> 최솟값을 찾아야한다... 시간복잡도 상승
 
      */
-    static int N;
+    static int N, K;
     static int[] Stones;
     public static int solution(int[] stones, int k) {
         int answer = 0;
         int max = Arrays.stream(stones).max().getAsInt();
         N = stones.length;
+        K = k;
         Stones = stones;
         answer = binarySearch(0, max);
         return answer;
     }
 
-    static int binarySearch(int r, int l) {
-        int m = r + (r + l) / 2;
+    static int binarySearch(int l, int r) {
+        if (r < l) return r;
+
+        int m = (r + l) / 2;
+
+        if (check(m)) {
+            return binarySearch(m + 1, r);
+        } else {
+            return binarySearch(l, m - 1);
+        }
+    }
+
+    static boolean check(int m) {
         int cnt = 0;
         for (int i = 0; i < N; i++) {
             if (Stones[i] < m) {
@@ -36,14 +48,12 @@ public class Solution {
             } else {
                 cnt = 0;
             }
+
+            if (cnt == K) {
+                return false;
+            }
         }
-        if (cnt == m) {
-            return m;
-        } else if (cnt > m) {
-            return binarySearch(r, m);
-        } else {
-            return binarySearch(m + 1, l);
-        }
+        return true;
     }
 
     public static void main(String[] args) {
