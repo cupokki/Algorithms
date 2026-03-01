@@ -11,34 +11,47 @@ public class Solution {
 
     원형에 대한 특징? 시작과 끝에 문제
 
-
     두개의 요소를 고려한다. 첫번쨰것을 고르는가 두번째 것을 고르는가.
-
      */
     public static int solution(int[] sticker) {
+        int answer = 0;
         int n = sticker.length;
         int[][] dp = new int[2][n + 1];
+        if (n == 1) {
+            return sticker[0];
+        }
+        if (n == 2) {
+            return Math.max(sticker[0], sticker[1]);
+        }
 
-        // 첫 번째 요소를 선택한다.
+        // 첫 번째 요소를 선택한다. 마지막 요소는 선택하지않는다.
         for (int i = 1; i < n; i++) {
             dp[0][i] = Math.max(
                     dp[0][(n + i - 2) % n] + sticker[i - 1],
-                    dp[1][(n + i - 3) % n] + sticker[i - 1]
+                    dp[0][(n + i - 3) % n] + sticker[i - 1]
             );
+            // answer = Math.max(answer, dp[0][i]);
         }
 
-        // 첫 번쨰 요소를 선택하지 않는다.
+        // 첫 번쨰 요소를 선택하지 않는다. 마지막 요소는 선택된다.
         for (int i = 2; i <= n; i++) {
             dp[1][i] = Math.max(
                     dp[1][(n + i - 2) % n] + sticker[i - 1],
                     dp[1][(n + i - 3) % n] + sticker[i - 1]
             );
+            // answer = Math.max(answer, dp[1][i]);
         }
 
-        return Math.max(dp[0][n - 1], dp[1][n]);
+        // return answer;
+        return Math.max(
+                Math.max(dp[0][n - 1], dp[0][n - 2]),
+                Math.max(dp[1][n], dp[1][n - 1])
+        );
     }
 
     public static void main(String[] args) {
+        System.out.println(solution(new int[]{1}));
+        System.out.println(solution(new int[]{1, 2}));
         System.out.println(solution(new int[]{14, 6, 5, 11, 3, 9, 2, 10}));
         System.out.println(solution(new int[]{1, 3, 2, 5, 4}));
     }
