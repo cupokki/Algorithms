@@ -1,6 +1,7 @@
 package programmers.n42861;
 
-import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class Solution {
     /*
@@ -20,8 +21,6 @@ public class Solution {
         int answer = 0;
         int[][] adjMatrix = new int[n][n];
 
-
-
         for (int i = 0; i < costs.length; i++) {
             int u = costs[i][0];
             int v = costs[i][1];
@@ -31,19 +30,30 @@ public class Solution {
 
         }
 
-        int[] dist = new int[n];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        dist[0] = 0;
+        boolean[] visited = new boolean[n];
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
+        pq.offer(new int[]{0, 0}); // 노드 0, 거리 0
+        int nodeCnt = 0;
+
         // 모든 노드를 순회하며, 가장 작은 간선을 선택한다.
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i == j) continue;
-                if (adjMatrix[i][j] == 0) continue;
-                dist[j] = Math.min(dist[j], adjMatrix[i][j]);
+        while (!pq.isEmpty()) {
+            int[] state = pq.poll();
+            int cur = state[0];
+            int dist = state[1];
+
+            if (visited[cur])  continue;
+            visited[cur] = true;
+            answer += dist;
+//            nodeCnt++;
+//            if (nodeCnt == n) break;
+
+            for (int next = 0; next < n; next++) {
+                int w = adjMatrix[cur][next];
+                if(w != 0 && !visited[next]) {
+                    pq.offer(new int[]{next, w});
+                }
             }
         }
-
-        answer = Arrays.stream(dist).sum();
 
         return answer;
     }
