@@ -14,31 +14,28 @@ public class Solution {
     => 누적합 시 long 초과
 
     DP?
+
+    직전의 상태만 보관하면 되므로 카데인 알고리즘을 적용할 수 있다.
      */
     public static long solution(int[] sequence) {
         long answer = 0;
         int n = sequence.length;
-        long[] aSeq = new long[n + 1]; // 1로 시작하는 펄스 수열 적용 (홀수가 -1)
-        long[] bSeq = new long[n + 1]; // -1로 시작하는 펄스 수열 적용 (짝수가 -1)
 
-
+        long aMemo = 0; // 짝수는 양, 홀수는 음
+        long bMemo = 0; // 짝수는 홀, 음수는 양
+        int purse = 1;
         for (int i = 0; i < n; i++) {
-            aSeq[i + 1] = bSeq[i + 1] = sequence[i];
-        }
-        for (int i = 1; i <= n; i ++) {
-            if (i % 2 == 0) aSeq[i] *= -1; // 홀수가 -1
-            if (i % 2 != 0) bSeq[i] *= -1; // 짝수가 -1
+            int aCur = sequence[i] * purse;
+            int bCur = sequence[i] * purse * -1;
+
+            aMemo = Math.max(aMemo + aCur, aCur);
+            bMemo = Math.max(bMemo + bCur, bCur);
+
+            purse *= -1;
+
+            answer = Math.max(answer, Math.max(aMemo, bMemo));
         }
 
-        long[] aDp = new long[n + 1];
-        long[] bDp = new long[n + 1];
-
-        for (int i = 1; i <= n; i++) {
-            aDp[i] = Math.max(aSeq[i] + aDp[i - 1], aSeq[i]);
-            bDp[i] = Math.max(bSeq[i] + bDp[i - 1], bSeq[i]);
-
-            answer = Math.max(Math.max(aDp[i], bDp[i]), answer);
-        }
         return answer;
     }
 
