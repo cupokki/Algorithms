@@ -26,27 +26,25 @@ public class Solution {
     public static long solution(int n, int[] times) {
         long answer = 0;
 
-        int l = 1, r = 1_000_000_000;
-        int m = (l + r) / 2;
+        long l = 1, r = 1_000_000_000L * 1_000_000_000L;
         while (l <= r) {
-            m = (l + r) / 2;
-            if (check(times, m) >= n) {
+            long m = (l + r) / 2;
+            if (check(times, m, n)) {
+                answer = m;
                 r = m - 1;
             } else {
                 l = m + 1;
             }
-
         }
-
-        answer = m;
         return answer;
     }
-    static int check(int[] times, int t) {
-        int sum = 0;
+    static boolean check(int[] times, long t, long n) {
+        long sum = 0;
         for (int i = 0; i < times.length; i++) {
             sum += t / times[i];
+            if (sum >= n) return true;
         }
-        return sum;
+        return sum >= n;
     }
 
     public static void main(String[] args) {
