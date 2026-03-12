@@ -52,7 +52,7 @@ public class Solution {
                 int nc = c + dir[d][1];
                 if (checkBorder(n, nr, nc) && cost < costs[nr][nc] && board[nr][nc] == 0) {
 //                    visited[nr][nc] = true;
-                    costs[nr][nc] = cost;
+                    costs[nr][nc] = cost + (d != head ? 500 : 0);
                     q.offer(new int[] {nr, nc, d, cost + (d != head ? 500 : 0)});
                 }
             }
@@ -65,20 +65,20 @@ public class Solution {
     }
 
     public static void main (String[] args) {
-//        System.out.println(solution(new int[][]{
-//                {0, 0, 0}, {0, 0, 0}, {0, 0, 0}
-//        }));
-//
-//        System.out.println(solution(new int[][]{
-//                {0,0,0,0,0,0,0,1},
-//                {0,0,0,0,0,0,0,0},
-//                {0,0,0,0,0,1,0,0},
-//                {0,0,0,0,1,0,0,0},
-//                {0,0,0,1,0,0,0,1},
-//                {0,0,1,0,0,0,1,0},
-//                {0,1,0,0,0,1,0,0},
-//                {1,0,0,0,0,0,0,0}
-//        }));
+        System.out.println(solution(new int[][]{
+                {0, 0, 0}, {0, 0, 0}, {0, 0, 0}
+        }));
+
+        System.out.println(solution(new int[][]{
+                {0,0,0,0,0,0,0,1},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,1,0,0},
+                {0,0,0,0,1,0,0,0},
+                {0,0,0,1,0,0,0,1},
+                {0,0,1,0,0,0,1,0},
+                {0,1,0,0,0,1,0,0},
+                {1,0,0,0,0,0,0,0}
+        }));
 
         System.out.println(solution(new int[][]{
                 {0, 0, 1, 0},
