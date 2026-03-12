@@ -1,5 +1,6 @@
 package programmers.n67259;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -18,37 +19,45 @@ public class Solution {
             {-1, 0}, {0, 1}, {1, 0}, {0, -1}
     };
     public static int solution(int[][] board) {
-        int answer = 0;
         int n = board.length;
+
+        int answer = Math.min(bfs(n, 1, board), bfs(n, 2, board));
+        return answer;
+    }
+    static int bfs(int n, int initDir, int[][] board) {
+        int result = Integer.MAX_VALUE;
         Queue<int[]> q = new LinkedList<>();
-        // q.offer(new int[] {r, c, dir, cost});
-//        q.offer(new int[] {0, 0, 1, 0});
-        q.offer(new int[] {0, 0, 2, 0});
+//        boolean[][] visited = new boolean[n][n];
+//        visited[0][0] = true;
+
+        int[][] costs = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(costs[i], Integer.MAX_VALUE);
+        }
+        q.offer(new int[] {0, 0, initDir, 0});
         while (!q.isEmpty()) {
             int[] state = q.poll();
             int r = state[0];
             int c = state[1];
             int head = state[2];
             int cost = state[3];
-
-            if (answer > cost) continue;
-            int d = 0;
-            while (checkBorder(n, r + dir[head][0] * (d + 1),  c + dir[head][1] * (d + 1))
-                    && board[r + dir[head][0] * (d + 1)][c + dir[head][1] * (d + 1)] == 0) {
-                d++;
+            if (result < cost) continue;
+            if (r == n - 1 && c == n - 1) {
+                result = cost;
+                continue;
             }
-            if (d == 0) continue;
-            int nr = r + dir[head][0] * d;
-            int nc = c + dir[head][1] * d;
-            int nextCost = cost + (d * 100);
-            if (nr == n - 1&& nc == n - 1) {
-                answer = nextCost;
+            cost += 100;
+            for (int d = 0; d < 4; d++) {
+                int nr = r + dir[d][0];
+                int nc = c + dir[d][1];
+                if (checkBorder(n, nr, nc) && cost < costs[nr][nc] && board[nr][nc] == 0) {
+//                    visited[nr][nc] = true;
+                    costs[nr][nc] = cost;
+                    q.offer(new int[] {nr, nc, d, cost + (d != head ? 500 : 0)});
+                }
             }
-            q.offer(new int[]{nr, nc, (head + 1) % 4, nextCost + 500});
-            q.offer(new int[]{nr, nc, (4 + head - 1) % 4, nextCost + 500});
         }
-
-        return answer;
+        return result;
     }
 
     static boolean checkBorder(int n, int r, int c) {
@@ -56,23 +65,26 @@ public class Solution {
     }
 
     public static void main (String[] args) {
-        System.out.println(solution(new int[][]{
-                {0, 0, 0}, {0, 0, 0}, {0, 0, 0}
-        }));
+//        System.out.println(solution(new int[][]{
+//                {0, 0, 0}, {0, 0, 0}, {0, 0, 0}
+//        }));
+//
+//        System.out.println(solution(new int[][]{
+//                {0,0,0,0,0,0,0,1},
+//                {0,0,0,0,0,0,0,0},
+//                {0,0,0,0,0,1,0,0},
+//                {0,0,0,0,1,0,0,0},
+//                {0,0,0,1,0,0,0,1},
+//                {0,0,1,0,0,0,1,0},
+//                {0,1,0,0,0,1,0,0},
+//                {1,0,0,0,0,0,0,0}
+//        }));
 
         System.out.println(solution(new int[][]{
-                {0,0,0,0,0,0,0,1},
-                {0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,1,0,0},
-                {0,0,0,0,1,0,0,1},
-                {0,0,0,1,0,0,1,0},
-                {0,0,1,0,0,1,0,0},
-                {0,1,0,0,1,0,0,0},
-                {1,0,0,0,0,0,0,0}
-        }));
-
-        System.out.println(solution(new int[][]{
-                {0, 0, 1, 0}, {0, 0, 0, 0}, {0, 1, 0, 1}, {1, 0, 0, 0}
+                {0, 0, 1, 0},
+                {0, 0, 0, 0},
+                {0, 1, 0, 1},
+                {1, 0, 0, 0}
         }));
 
         System.out.println(solution(new int[][]{
