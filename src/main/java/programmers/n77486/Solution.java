@@ -37,10 +37,9 @@ public class Solution {
             String parent = tree.get(seller[i]);
             int remain = 100 * amount[i];
             while(!current.equals("center") && remain != 0) { //최대 10000의 깊이
-                int nextIncome = remain / 10;
-                int currentIncome = remain - nextIncome;
+                int currentIncome = (int)Math.ceil(remain * 0.9);
                 incomes.merge(current, currentIncome, Integer::sum);
-                remain = nextIncome;
+                remain -= currentIncome;
 
                 current = parent;
                 parent = tree.get(current);
