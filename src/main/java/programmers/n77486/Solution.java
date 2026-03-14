@@ -16,9 +16,6 @@ public class Solution {
     원단위 절사
 
 
-    말단노드부터 해야하는거 아닌가? = 자식이 없는 노드
-    말단 노드라도 깊이가 깊은거 부터 해야하는거 아닌가?
-    깊은 노드부터 안하면 다시 계산해야함..
      */
     public static int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
         int n = enroll.length;
@@ -32,17 +29,18 @@ public class Solution {
 
         int m = seller.length;
         Map<String, Integer> incomes = new HashMap<>();
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < n; i++) {
             incomes.put(enroll[i], 0);
         }
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; i++) { // 10만 이하
             String current = seller[i];
             String parent = tree.get(seller[i]);
             int remain = 100 * amount[i];
-            while(!current.equals("center")) {
-
-                incomes.merge(current, (int)Math.floor(remain * 0.9), Integer::sum);
-                remain = (int)Math.floor(remain * 0.1);
+            while(!current.equals("center") && remain != 0) { //최대 10000의 깊이
+                int nextIncome = remain / 10;
+                int currentIncome = remain - nextIncome;
+                incomes.merge(current, currentIncome, Integer::sum);
+                remain = nextIncome;
 
                 current = parent;
                 parent = tree.get(current);
