@@ -1,6 +1,7 @@
 package programmers.n42627;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -38,46 +39,45 @@ public class Solution {
             }
             return this.l - o.l;
         }
+    }
 
-        public static int solution(int[][] jobs) {
-            int answer = 0;
-            int n = jobs.length;
-            List<Job> jobList = new ArrayList<>();
-            for (int i = 0; i < n; i++) {
-                jobList.add(new Job(i, jobs[i][0], jobs[i][1]));
-            }
-            PriorityQueue<Job> pq = new PriorityQueue<>();
-            int sum = jobList.get(0).l;
-            int now = jobList.get(0).l;
-            int idx = 1;
-            Job cur;
-            while (idx < n) {
-                if (pq.isEmpty() || jobList.get(idx).compareTo(pq.peek()) < 0) {
-                    cur = jobList.get(idx);
-                } else { // 큐작업 수행
-                    pq.offer(jobList.get(idx));
-                    cur = pq.poll();
-                }
-                now += cur.l;
-                sum += now - cur.s;
+    public static int solution(int[][] jobs) {
+        int answer = 0;
+        int n = jobs.length;
+        List<Job> jobList = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            jobList.add(new Job(i, jobs[i][0], jobs[i][1]));
+        }
+        PriorityQueue<Job> pq = new PriorityQueue<>();
+        int sum = 0;
+        int now = 0;
+        pq.offer(jobList.get(0));
+        int idx = 1;
+        Job cur;
+        while (idx < n) {
+            while(!pq.isEmpty() || jobList.get(idx).compareTo(pq.peek()) > 0) {
+                pq.offer(jobList.get(idx));
                 idx++;
-
             }
+            cur = pq.poll();
+            now += cur.l;
+            sum += now - cur.s;
+            idx++;
 
-            while (!pq.isEmpty()) {
-                cur = pq.poll();
-                now += cur.l;
-                sum += now - cur.s;
-            }
-
-            answer = (int)Math.floor(sum / n);
-            return answer;
         }
 
-        public static void main(String[] args) {
-            System.out.println(solution(new int[][]{
-                    {0, 3}, {1, 9}, {3, 5}
-            }));
+        while (!pq.isEmpty()) {
+            cur = pq.poll();
+            now += cur.l;
+            sum += now - cur.s;
         }
+
+        answer = sum / n;
+        return answer;
+    }
+    public static void main(String[] args) {
+        System.out.println(solution(new int[][]{
+                {0, 3}, {1, 9}, {3, 5}
+        }));
     }
 }
