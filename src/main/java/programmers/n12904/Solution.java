@@ -13,7 +13,7 @@ public class Solution {/*
 
         for (int end = 0; end < n; end++) {
             for (int start = 0; start <= end; start++) {
-                if (max > end - start) break;
+                if (max > end - start + 1) break;
                 if (check(s, start, end)) {
                     max = Math.max(max, end - start + 1);
                 }
@@ -24,7 +24,7 @@ public class Solution {/*
         return answer;
     }
     static boolean check(String s, int start, int end) {
-        for (int i = 0; i < (end - start) / 2; i++) {
+        for (int i = 0; i <= (end - start) / 2; i++) {
             if (s.charAt(start + i) != s.charAt(end - i)) {
                 return false;
             }
