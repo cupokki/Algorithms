@@ -44,18 +44,14 @@ public class Solution {
         // 마지막 버스
         int passengerCnt = 0;
         // 마지막 최소 한자리가 남을때 까지 탑승
-        while (crewIdx < crewCnt && crewArrivedAt.isBefore(leaveAt) && passengerCnt < m) {
+        while (crewIdx < crewCnt - 1 && crewArrivedAt.isBefore(leaveAt) && passengerCnt < m - 1) {
             crewArrivedAt = LocalTime.parse(timetable[crewIdx++]);
             passengerCnt++;
         }
 
-//         TODO: 자리하나를
-        if (passengerCnt < m) {
-            while (crewIdx >= 1 && timetable[crewIdx].equals(timetable[crewIdx - 1])) crewIdx--;
-            answer = LocalTime.parse(timetable[crewIdx]).minusMinutes(1).toString();
-        }
-        else
-            answer = crewArrivedAt.minusMinutes(1).toString();
+        // 마지막 탑승자의 대기 시간이 현버스 출발시간 전이면 이전 버스를 타야한다.
+        answer = leaveAt.minusMinutes(1).toString();
+
         return answer;
     }
 
@@ -63,8 +59,8 @@ public class Solution {
 //        System.out.println(solution(1, 1, 5, new String[]{"08:00", "08:01", "08:02", "08:03"}));
 //        System.out.println(solution(2, 10, 2, new String[]{"09:10", "09:09", "08:00"}));
 //        System.out.println(solution(2, 1, 2, new String[]{"09:00", "09:00", "09:00", "09:00"}));
-//        System.out.println(solution(1, 1, 5, new String[]{"00:01", "00:01", "00:01", "00:01", "00:01"}));
-//        System.out.println(solution(1, 1, 1, new String[]{"23:59"}));
+        System.out.println(solution(1, 1, 5, new String[]{"00:01", "00:01", "00:01", "00:01", "00:01"}));
+        System.out.println(solution(1, 1, 1, new String[]{"23:59"}));
         System.out.println(solution(10, 60, 45, new String[]{"23:59","23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59"}));
     }
 }
