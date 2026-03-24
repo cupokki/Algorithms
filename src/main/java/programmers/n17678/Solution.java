@@ -21,37 +21,39 @@ public class Solution {
         Arrays.sort(timetable);
 
         int crewCnt = timetable.length;
-
-        int i = 0; // i번쨰 버스
         int crewIdx = 0;
-        LocalTime now = LocalTime.parse("09:00");
-        LocalTime leaveAt = now.plusMinutes(t); // 첫차의 떠나는 시간
-        LocalTime crewArrivedAt = LocalTime.parse(timetable[crewIdx]); // 대기열의 첫 번째 크루
 
-        // n - 1 번 버스까지 처리
-        while (i < n - 1) {
-            int passengerCnt = 0;
-            // 크루가 i번쨰 버스에 탑승
-            while (crewIdx < crewCnt && crewArrivedAt.isBefore(leaveAt) && passengerCnt < m) {
-                crewArrivedAt = LocalTime.parse(timetable[crewIdx++]);
-                passengerCnt++;
-            }
-            now = now.plusMinutes(t);
-            leaveAt = now.plusMinutes(t);
-            i++;
-        }
-
-        // 마지막 버스
+        LocalTime now = LocalTime.parse("09:00"); // 버스시간
+        LocalTime lastCrewArrivedAt = LocalTime.parse(timetable[0]); // i번째버스에 크루가 마지막으로 탑승한 시간
         int passengerCnt = 0;
-        // 마지막 최소 한자리가 남을때 까지 탑승
-        while (crewIdx < crewCnt - 1 && crewArrivedAt.isBefore(leaveAt) && passengerCnt < m - 1) {
-            crewArrivedAt = LocalTime.parse(timetable[crewIdx++]);
-            passengerCnt++;
+
+        for (int i = 0; i < n; i++) {
+            passengerCnt = 0;
+            // 크루가 i번쨰 버스에 탑승
+            while (crewIdx < crewCnt && passengerCnt < m) {
+                LocalTime crewArrivedAt = LocalTime.parse(timetable[crewIdx]); // 대기열의 첫 번째 크루
+
+                // 크루 도착시간이 now
+                if (!crewArrivedAt.isAfter(now)) {
+                    lastCrewArrivedAt = crewArrivedAt;
+                    crewIdx++;
+                    passengerCnt++;
+                } else {
+                    break;
+                }
+            }
+
+            if (i < n - 1) {
+                now = now.plusMinutes(t);
+            }
         }
 
-        // 마지막 탑승자의 대기 시간이 현버스 출발시간 전이면 이전 버스를 타야한다.
-        answer = leaveAt.minusMinutes(1).toString();
-
+        // 자리가 남았다면
+        if (passengerCnt < m) {
+            answer = now.toString();
+        } else {
+            answer = lastCrewArrivedAt.minusMinutes(1).toString();
+        }
         return answer;
     }
 
@@ -59,7 +61,7 @@ public class Solution {
 //        System.out.println(solution(1, 1, 5, new String[]{"08:00", "08:01", "08:02", "08:03"}));
 //        System.out.println(solution(2, 10, 2, new String[]{"09:10", "09:09", "08:00"}));
 //        System.out.println(solution(2, 1, 2, new String[]{"09:00", "09:00", "09:00", "09:00"}));
-        System.out.println(solution(1, 1, 5, new String[]{"00:01", "00:01", "00:01", "00:01", "00:01"}));
+//        System.out.println(solution(1, 1, 5, new String[]{"00:01", "00:01", "00:01", "00:01", "00:01"}));
         System.out.println(solution(1, 1, 1, new String[]{"23:59"}));
         System.out.println(solution(10, 60, 45, new String[]{"23:59","23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59", "23:59"}));
     }
