@@ -20,37 +20,39 @@ public class Solution {
     public static int solution(int n, int[][] results) {
         int answer = 0;
 
+        int m = results.length;
         boolean[][] graph = new boolean[n + 1][n + 1];
 
         for (int[] edge : results) {
-            graph[edge[0]][edge[1]] = true;
+            graph[edge[1]][edge[0]] = true;
         }
 
         for (int i = 1; i <= n; i++) {
-            int temp = 0;
-            for (int j = 1; j <= n; j++) {
-                if (graph[i][j] || graph[j][i]) {
-                    temp++;
-                }
-            }
-            if (temp == n - 1) {
-                // 이 점은 순위가 확정임
+            if (bfs(graph, n, i) == n - 1) { // 현 노드를 기점으로 모든 간선을 사용한다면, 순위가 확정?
                 answer++;
-
-                // i 와 연결된 모든 j에 대해
-                for (int j = 1; j <= n; j++) {
-                    if (graph[i][j]) {
-                        for (int k = 1; k <= n; k++) { //상위노드
-                            if (graph[i][j]) graph[k][j] = true;
-                        }
-                    }
-                }
             }
         }
 
 
-
         return answer;
+    }
+    static int bfs(boolean[][] graph, int n, int s) {
+        boolean[] visited = new boolean[n + 1];
+        visited[s] = true;
+        int cnt = 0;
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(s);
+        while (!q.isEmpty()) {
+            int cur = q.poll();
+            for (int next = 1; next <= n; next++) {
+                if (!visited[next] && graph[cur][next]) {
+                    visited[next] = true;
+                    q.offer(next);
+                    cnt++;
+                }
+            }
+        }
+        return cnt; // 방문한 노드 = 사용한 간선
     }
 
     public static void main(String[] args) {
