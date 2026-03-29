@@ -12,32 +12,35 @@ public class Solution {
     경기수 n는 4500이하
 
     일부 경기기록이 분실된 results가 주어질때, 순위가 확실한 사람의 수를 출력
-    방향 그래프로 연결하고, 말단 노드부터 검사?
 
-
-
+    노드 i가 이긴 수와, 진 수를 합하여 n - 1이면 순위가 확정인 노드이다.
     */
     public static int solution(int n, int[][] results) {
         int answer = 0;
 
         int m = results.length;
-        boolean[][] graph = new boolean[n + 1][n + 1];
+        int[][] graph = new int[n + 1][n + 1];
 
         for (int[] edge : results) {
-            graph[edge[1]][edge[0]] = true;
+            graph[edge[0]][edge[1]] = 1; // a는 b를 이김
+            graph[edge[1]][edge[0]] = -1; // b는 a에게 짐
         }
 
         for (int i = 1; i <= n; i++) {
-            if (bfs(graph, n, i) == n - 1) { // 현 노드를 기점으로 모든 간선을 사용한다면, 순위가 확정?
+
+            boolean[] visited = new boolean[n + 1];
+            visited[i] = true;
+            int winCnt = bfs(graph, visited, n, i, -1); // i가 진 것(상행)
+            int loseCnt = bfs(graph, visited, n, i, 1); // i가 이긴 것(하행)
+
+            if (winCnt + loseCnt == n - 1) {
                 answer++;
             }
         }
 
-
         return answer;
     }
-    static int bfs(boolean[][] graph, int n, int s) {
-        boolean[] visited = new boolean[n + 1];
+    static int bfs(int[][] graph, boolean[] visited, int n, int s, int checker) {
         visited[s] = true;
         int cnt = 0;
         Queue<Integer> q = new LinkedList<>();
@@ -45,7 +48,7 @@ public class Solution {
         while (!q.isEmpty()) {
             int cur = q.poll();
             for (int next = 1; next <= n; next++) {
-                if (!visited[next] && graph[cur][next]) {
+                if (!visited[next] && graph[cur][next] == checker) {
                     visited[next] = true;
                     q.offer(next);
                     cnt++;
