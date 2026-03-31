@@ -17,7 +17,6 @@ public class Solution {
 
 
     public static int solution(int[][] scores) {
-        int answer = -1;
 
         int n = scores.length;
 
@@ -37,14 +36,14 @@ public class Solution {
 
         list.sort(Comparator.comparing((int[] a) -> a[1]).reversed());
 
+        int rank = 0;
         for (int i = 0; i < list.size(); i++) {
-            answer++;
-            if (list.get(0)[0] == 0) {
-                break;
+            rank++;
+            if (list.get(i)[0] == 0) {
+                return rank;
             }
         }
-
-        return answer;
+        return -1;
     }
 
     public static void main(String[] args) {
