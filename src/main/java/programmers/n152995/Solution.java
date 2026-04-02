@@ -12,43 +12,45 @@ public class Solution {
     테이블의 0번은 완호이며, 완호의 석차를 출력한다.
     인센을 못받는다면 -1을 출력한다.
 
-    인원의 수는 최대 10만명
+    인원의 수는 최대 10만명, ^2 = 10_000_000_000
+
+     [3,2]  <-- max:2
+     [3,2]  <-- max:2
+     [2,1]  <-- max:2
+    *[2,2]  <-- 2 > max:2
+     [1,4]  <-- 4 > max:2
     */
-
-
     public static int solution(int[][] scores) {
 
         int n = scores.length;
 
-        List<int[]> list = new ArrayList<>();
+        int[] myScore = {scores[0][0], scores[0][1]}; //완호의 점수를 기록해둔 뒤
 
-        for (int i = 0; i < n; i++) {
-            boolean check = true;
+        Arrays.sort(scores, Comparator // 두 점수를 각각
+                .comparing((int[] a) -> a[0]) // 내림차순
+                .reversed()
+                .thenComparingInt(a -> a[1]) // 오름차순
+        );
 
-            for (int j = i + 1; j < n; j++) {
-                if (scores[i][0] < scores[j][0] && scores[i][1] < scores[j][1]) {
-                    check = false;
-                    break;
+
+        int max = Integer.MIN_VALUE; // 오름차순 정렬된 두번째 필드
+        int rank = 1;
+        for (int i = 0; i < n ; i++) {
+            if (scores[i][1] < max) {
+                if (scores[i][0] == myScore[0] && scores[i][1] == myScore[1]) {
+                    return -1; // 현재가 완호이며 필드보다 작다면 대상자가 아님
                 }
-            }
-            if (check) list.add(new int[]{i, scores[i][0] + scores[i][1]});
-        }
-
-        list.sort(Comparator.comparing((int[] a) -> a[1]).reversed());
-
-        int rank = 0;
-        for (int i = 0; i < list.size(); i++) {
-            rank++;
-            if (list.get(i)[0] == 0) {
-                return rank;
+            } else {
+                max = Math.max(max, scores[i][1]); // 필드 a가 같은 것 중, 필드 b의 최댓값, 즉 첫번째를 구함
+                if (scores[i][0] + scores[i][1] > myScore[0] + myScore[1])
+                    rank++; //현재 합이 나보다 크다면
             }
         }
-        return -1;
+
+        return rank;
     }
 
     public static void main(String[] args) {
         System.out.println(solution(new int[][]{{2, 2}, {1, 4}, {3, 2}, {3, 2}, {2, 1}}));
     }
-
-
 }
