@@ -18,24 +18,46 @@ public class Solution {
     public static int solution(int n, int[][] results) {
         int answer = 0;
 
-        int m = results.length;
-        int[][] graph = new int[n + 1][n + 1];
+//        int m = results.length;
+//        int[][] graph = new int[n + 1][n + 1];
+//
+//        for (int[] edge : results) {
+//            graph[edge[0]][edge[1]] = 1; // a는 b를 이김
+//            graph[edge[1]][edge[0]] = -1; // b는 a에게 짐
+//        }
+//
+//        for (int i = 1; i <= n; i++) {
+//
+//            boolean[] visited = new boolean[n + 1];
+//            visited[i] = true;
+//            int winCnt = bfs(graph, visited, n, i, -1); // i가 진 것(상행)
+//            int loseCnt = bfs(graph, visited, n, i, 1); // i가 이긴 것(하행)
+//
+//            if (winCnt + loseCnt == n - 1) {
+//                answer++;
+//            }
+//        }
 
+        int[][] graph = new int[n + 1][n + 1];
         for (int[] edge : results) {
-            graph[edge[0]][edge[1]] = 1; // a는 b를 이김
-            graph[edge[1]][edge[0]] = -1; // b는 a에게 짐
+            graph[edge[0]][edge[1]] = 1;
+        }
+        for (int k = 1; k <= n; k++) {
+            for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= n; j++) {
+                    if (graph[i][k] == 1 && graph[k][j] == 1) {
+                        graph[i][j] = 1; // i가 k를 이기고 k가 j에게 이기면 -> i는 j를 이기는 것이 성립
+                    }
+                }
+            }
         }
 
         for (int i = 1; i <= n; i++) {
-
-            boolean[] visited = new boolean[n + 1];
-            visited[i] = true;
-            int winCnt = bfs(graph, visited, n, i, -1); // i가 진 것(상행)
-            int loseCnt = bfs(graph, visited, n, i, 1); // i가 이긴 것(하행)
-
-            if (winCnt + loseCnt == n - 1) {
-                answer++;
+            int cnt = 0;
+            for (int j = 1; j <= n; j++) {
+                if (graph[i][j] == 1 || graph[j][i] == 1) cnt++; // 이기거나 진 사실이 확실하면
             }
+            if (cnt == n - 1) answer++;
         }
 
         return answer;
