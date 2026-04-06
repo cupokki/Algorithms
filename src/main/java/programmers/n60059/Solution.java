@@ -16,31 +16,39 @@ public class Solution {
 
 
      */
-    static int[] dr = {1, 0, -1, 0};
-    static int[] dc = {0, 1, 0, -1};
+    static int[] dr = {0, 1, 0, -1, 0};
+    static int[] dc = {0, 0, 1, 0, -1};
     public static boolean solution(int[][] key, int[][] lock) {
-        int n = key.length;
-        int m = key[0].length;
+        int n = lock.length;
+        int m = key.length;
 
-//        int[] lockFlag = new int[n];
-//        int[] keyFlag = new int[n];
-//
-//        for (int i = 0; i < n; i++) {
-//            keyFlag[i] |= 1 << i;
-//            lockFlag[i] |= 1 << i;
-//        }
+        int[][][] rotatedLock = new int[4][m][m];
+        rotatedLock[0] = lock;
 
-        for (int d = 0; d < 4; d++) { // 4방 회전
-            int[][] movedKey = new int[n][m];
+        // 이거 정방향이 아닌데 이래해도 작동하려나?
+        // i, j가 다를 수있다. 이방법은 안되고 미리 돌려놓는 다른 방법을 생각해보자.
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                 rotatedLock[1][j][n - 1 - i] = lock[i][j];
+                 rotatedLock[2][n - 1 - i][n - 1 - j] = lock[i][j];
+                 rotatedLock[3][n - 1 - j][i] = lock[i][j];
+            }
+        }
+
+        for (int dir = 0; dir < 5; dir++) { // 4방 회전
+            int[][] movedKey = new int[n][n];
             for (int i = 0; i < n; i++) { // y축이동 = n * 2
-                for (int j = 0; j < m; j++) { // x축이동 = m * 2
-                    int nr = i + dr[d];
-                    int nc = j + dc[d];
+                for (int j = 0; j < n; j++) { // x축이동 = m * 2
+                    int nr = i + dr[dir];
+                    int nc = j + dc[dir];
                     if (nr >= 0 && nc >= 0 && nr <n && nc < m)
                         movedKey[nr][nc] = key[i][j];
                 }
             }
-            if (unlock(n, m, movedKey, lock)) return true;
+            for (int rotate = 0; rotate < 4; rotate++) {
+                if (unlock(n, m, movedKey, rotatedLock[rotate])) return true;
+            }
         }
 
         return false;
