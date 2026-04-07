@@ -16,47 +16,38 @@ public class Solution {
 
 
      */
-    static int[] dr = {0, 1, 0, -1, 0};
-    static int[] dc = {0, 0, 1, 0, -1};
     public static boolean solution(int[][] key, int[][] lock) {
         int n = lock.length;
         int m = key.length;
 
-        int[][][] rotatedLock = new int[4][m][m];
-        rotatedLock[0] = lock;
-
         // 이거 정방향이 아닌데 이래해도 작동하려나?
         // i, j가 다를 수있다. 이방법은 안되고 미리 돌려놓는 다른 방법을 생각해보자.
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                 rotatedLock[1][j][n - 1 - i] = lock[i][j];
-                 rotatedLock[2][n - 1 - i][n - 1 - j] = lock[i][j];
-                 rotatedLock[3][n - 1 - j][i] = lock[i][j];
+        int[][][] rotatedKey = new int[4][n][n];
+        rotatedKey[0] = key;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m; j++) {
+                rotatedKey[1][j][m - 1 - i] = key[i][j];
+                rotatedKey[2][m - 1 - i][m - 1 - j] = key[i][j];
+                rotatedKey[3][m - 1 - j][i] = key[i][j];
             }
         }
 
-        for (int dir = 0; dir < 5; dir++) { // 4방 회전
-            int[][] movedKey = new int[n][n];
-            for (int i = 0; i < n; i++) { // y축이동 = n * 2
-                for (int j = 0; j < n; j++) { // x축이동 = m * 2
-                    int nr = i + dr[dir];
-                    int nc = j + dc[dir];
-                    if (nr >= 0 && nc >= 0 && nr <n && nc < m)
-                        movedKey[nr][nc] = key[i][j];
+        for (int d = 0; d < 4; d++) {
+            for (int i = 0; i <= m - n; i++) { // y축이동
+                for (int j = 0; j <= m - n; j++) { // x축이동
+                    if (unlock(n, m, i, j, rotatedKey[d], lock)) return true;
                 }
-            }
-            for (int rotate = 0; rotate < 4; rotate++) {
-                if (unlock(n, m, movedKey, rotatedLock[rotate])) return true;
             }
         }
 
         return false;
     }
-    static boolean unlock(int n, int m, int[][] key, int[][] lock) {
+    static boolean unlock(int n, int m, int kr, int kc, int[][] key, int[][] lock) {
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (key[i][j] + lock[i][j] != 1) return false;
+            for (int j = 0; j < n; j++) {
+                if (i >= kr && j >= kc && key[i - kr][j - kc] + lock[i][j] != 1) return false;
+                else if (lock[i][j] == 0) return false;
             }
         }
         return true;
