@@ -13,17 +13,12 @@ public class Solution {
     홈은 0, 돌기는 1
 
     둘을 합하여 모든 면이 채워지도록 한다.
-
-
      */
     public static boolean solution(int[][] key, int[][] lock) {
         int n = lock.length;
         int m = key.length;
 
-        // 이거 정방향이 아닌데 이래해도 작동하려나?
-        // i, j가 다를 수있다. 이방법은 안되고 미리 돌려놓는 다른 방법을 생각해보자.
-
-        int[][][] rotatedKey = new int[4][n][n];
+        int[][][] rotatedKey = new int[4][m][m];
         rotatedKey[0] = key;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < m; j++) {
@@ -34,8 +29,8 @@ public class Solution {
         }
 
         for (int d = 0; d < 4; d++) {
-            for (int i = 0; i <= m - n; i++) { // y축이동
-                for (int j = 0; j <= m - n; j++) { // x축이동
+            for (int i = -(m - 1); i < n; i++) {
+                for (int j = -(m - 1); j < n; j++) {
                     if (unlock(n, m, i, j, rotatedKey[d], lock)) return true;
                 }
             }
@@ -46,8 +41,10 @@ public class Solution {
     static boolean unlock(int n, int m, int kr, int kc, int[][] key, int[][] lock) {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (i >= kr && j >= kc && key[i - kr][j - kc] + lock[i][j] != 1) return false;
-                else if (lock[i][j] == 0) return false;
+                int r = i - kr;
+                int c = j - kc;
+                int kv = (r >= 0 && r < m && c >= 0 && c < m) ? key[r][c] : 0;
+                if (lock[i][j] + kv != 1) return false;
             }
         }
         return true;
