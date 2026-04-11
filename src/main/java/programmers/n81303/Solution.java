@@ -42,34 +42,31 @@ public class Solution {
                     break;
                 case "C":
                     stack.push(cur);
-                    if (cur - 1 >= 0) nodes[cur - 1][1] = nodes[cur][1];
-                    if (cur + 1 < n) nodes[cur + 1][0] = nodes[cur][0]; // 노드이동
-                    if (nodes[cur][1] == -1) cur = nodes[cur][0];
-                    else cur = nodes[cur][1];
+                    int prev = nodes[cur][0];
+                    int next = nodes[cur][1];
+                    // 연결
+                    if (prev != -1) nodes[prev][1] = next;
+                    if (next != -1) nodes[next][0] = prev;
+                    // 인덱스 이동
+                    if (next != -1) cur = next;
+                    else cur = prev;
                     break;
                 case "Z":
                     int popped = stack.pop();
-                    nodes[nodes[popped][0]][1] = popped;
-                    nodes[nodes[popped][1]][0] = popped;
+
+                    if (nodes[popped][0] != -1) nodes[nodes[popped][0]][1] = popped;
+                    if (nodes[popped][1] != -1) nodes[nodes[popped][1]][0] = popped;
                     break;
                 default:    break;
 
             }
         }
-        boolean[] temp = new boolean[n];
-        int i = 0;
-        while(true) {
-            temp[i] = true;
-            if (nodes[i][1] == -1) {
-                break;
-            }
-            i = nodes[i][1];
-        }
-        StringBuilder sb = new StringBuilder();
-        for (boolean b : temp) {
-            sb.append(b ? "O" : "X");
-        }
-        System.out.println(sb.toString());
+        char[] temp = new char[n];
+        Arrays.fill(temp, 'O');
+
+        while (!stack.isEmpty()) temp[stack.pop()] = 'X';
+
+        answer = String.valueOf(temp);
         return answer;
     }
 
