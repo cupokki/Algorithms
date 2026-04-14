@@ -18,6 +18,16 @@ public class Solution {
     단순 dfs
     
     */
+    static class Node {
+        public Node(int parent) {
+            this.parent = parent;
+            this.children = new ArrayList<>();
+        }
+
+        int parent = -1;
+        List<Integer> children;
+
+    }
     public static int solution(int[] info, int[][] edges) {
         int answer = 0;
 
@@ -25,25 +35,23 @@ public class Solution {
 
 
         boolean[] visited = new boolean[n];
-        List<Integer>[] binTree = new List[n];
-        for (int i = 0; i < n; i++) {
-            binTree[i] = new ArrayList<>();
-        }
+        Map<Integer, Node> tree = new HashMap();
         for (int[] e: edges) {
-            binTree[e[0]].add(e[1]);
-            binTree[e[1]].add(e[0]);
+            var p = tree.computeIfAbsent(e[0], k -> new Node(-1));
+            p.children.add(e[1]);
+            var c = tree.computeIfAbsent(e[1], k -> new Node(e[1]));
+            c.parent = (e[0]);
         }
 
 
         for (int i = 1 ; i < n; i++) { // 루트도 간선이 하나일수도 있으므로 1부터 시작
-            if (binTree[i].size() == 1) {
+            if (tree.get(i) != null) {
+                var node = tree.get(i);
                 int cur = i;
-                while(binTree[cur].get(0) == 1) {
+                while (node.parent != -1 && node.children.size() == 1) {
                     visited[cur] = true;
-                    int parent =  binTree[cur].get(0);
-                    binTree[parent].remove(cur);
-                    cur = parent;
-
+                    cur = node.parent;
+                    node = tree.get(cur);
                 }
             }
         }
@@ -58,7 +66,7 @@ public class Solution {
             int wCnt = state[2];
 
             //TODO: 트리인데 모든 노드를 검사한다고?
-            for (int v : binTree[u]) {
+            for (int v : tree.get(u).children) {
                 if (info[v] == 0) sCnt++;
                 if (info[v] == 1) wCnt++;
                 if (!visited[v] && sCnt > wCnt) {
