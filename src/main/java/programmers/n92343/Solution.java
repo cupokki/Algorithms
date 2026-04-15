@@ -21,73 +21,92 @@ public class Solution {
     static class Node {
         public Node(int parent) {
             this.parent = parent;
-            this.children = new ArrayList<>();
+            this.children = new HashSet<>();
         }
 
         int parent = -1;
-        List<Integer> children;
+        Set<Integer> children;
 
     }
+
+    static Map<Integer,Node> tree;
+    static boolean[][] graph;
+    static int n;
+    static int[] Info;
     public static int solution(int[] info, int[][] edges) {
         int answer = 0;
-
-        int n = info.length;
-
-
+        n = info.length;
+        Info = info;
         boolean[] visited = new boolean[n];
-        Map<Integer, Node> tree = new HashMap();
-        for (int[] e: edges) {
-            var p = tree.computeIfAbsent(e[0], k -> new Node(-1));
-            p.children.add(e[1]);
-            var c = tree.computeIfAbsent(e[1], k -> new Node(e[1]));
-            c.parent = (e[0]);
+//        tree = new HashMap();
+//        for (int[] e : edges) {
+//            var p = tree.computeIfAbsent(e[0], k -> new Node(-1));
+//            p.children.add(e[1]);
+//            var c = tree.computeIfAbsent(e[1], k -> new Node(e[1]));
+//            c.parent = (e[0]);
+//        }
+
+        for (int[] e : edges) {
+            graph[e[0]][e[1]] = graph[e[1]][e[0]] = true;
         }
+//
+//        for (int i = 1; i < n; i++) { // 루트도 간선이 하나일수도 있으므로 1부터 시작
+//            var node = tree.get(i);
+//            int cur = i;
+//            while (node.children.size() == 0 && info[cur] == 1) {
+//                visited[cur] = true;
+//                tree.get(node.parent).children.remove(cur);
+//                cur = node.parent;
+//                node = tree.get(cur);
+//            }
+//        }
 
-
-        for (int i = 1 ; i < n; i++) { // 루트도 간선이 하나일수도 있으므로 1부터 시작
-            if (tree.get(i) != null) {
-                var node = tree.get(i);
-                int cur = i;
-                while (node.parent != -1 && node.children.size() == 1) {
-                    visited[cur] = true;
-                    cur = node.parent;
-                    node = tree.get(cur);
-                }
-            }
-        }
-        Queue<int[]> q = new LinkedList<>();
-        q.offer(new int[] {0, 1, 0});
-        visited[0] = true;
-
-        while (!q.isEmpty()) {
-            int[] state = q.poll();
-            int u = state[0];
-            int sCnt = state[1];
-            int wCnt = state[2];
-
-            //TODO: 트리인데 모든 노드를 검사한다고?
-            for (int v : tree.get(u).children) {
-                if (info[v] == 0) sCnt++;
-                if (info[v] == 1) wCnt++;
-                if (!visited[v] && sCnt > wCnt) {
-                    q.offer(new int[]{v, sCnt, wCnt});
-                    visited[v] = true;
-                    answer = Math.max(sCnt, answer);
-                }
-            }
-        }
-
-
+        // bfs 하려니 양쪽을 둘러보면 문제 규칙과 맞지 않는다.
+        // dfs이다.
+        // 종료조건은 무엇인가? 모든 노드를 다 들려야하나?
+        // 프루닝은? 프루닝 대상인걸 어떻게 알지?
+        // 현 가지를 더 진행할지말지는 다른 가지를 들렸다 와야 알 수 있는것 아닌가?
+        // 그러면 현 가지를 보류하는 알고리즘이 있어야하는거 아닌가?
+        max = 0;
+        bfs(0, 1, 0, 1 << 0 | 1 << 1);
         return answer;
     }
 
+    static int max;
+    static void bfs(int curNode, int sheep, int wolves, int next) {
+        // 0은 루트
+//        if (wolves >= sheep) return;
+//        max = Math.max(max, sheep);
+//        for (int nextNode = 1; nextNode < n; nextNode++) {
+//            if (graph[curNode][nextNode]) {
+//                bfs(nextNode, sheep + (Info[nextNode] == 1?1:0), wolves + (Info[nextNode] == 0?1:0), next);
+//            }
+//        }
+
+        for (int i = 0; i < n; i++) {
+            if ((next & (1 << i)) == 0) continue;
+            int nextNode = i;
+            int nextSheep = sheep + (Info[nextNode] == 0?1:0);
+            int nextWolves = wolves + (Info[nextNode] == 1?1:0);
+
+            if (wolves < sheep) {
+                max = Math.max(max, nextSheep);
+                int nextMask = next & ~(1 << curNode);
+                for (int to = 0; to < n; to++) {
+                    if (graph[curNode][to]) nextMask |= 1 << to;
+                }
+                bfs(nextNode, nextSheep, nextWolves, nextMask);
+            }
+        }
+    }
+
     public static void main(String[] args) {
-        System.out.println(solution(new int[] {0,0,1,1,1,0,1,0,1,0,1,1}, new int[][] {
+        System.out.println(solution(new int[]{0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1}, new int[][]{
                 {0, 1}, {1, 2}, {1, 4}, {0, 8}, {8, 7}, {9, 10}, {9, 11}, {4, 3}, {6, 5}, {4, 6}, {8, 9}
         }));
 
-        System.out.println(solution(new int[] {0,1,0,1,1,0,1,0,0,1,0}, new int[][] {
-                {0, 1}, {1, 2}, {1, 3}, {1, 4}, {2, 5}, {2, 6}, {3, 7}, {4, 8}, {6, 9}, {9,10}
+        System.out.println(solution(new int[]{0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0}, new int[][]{
+                {0, 1}, {1, 2}, {1, 3}, {1, 4}, {2, 5}, {2, 6}, {3, 7}, {4, 8}, {6, 9}, {9, 10}
         }));
     }
 }
