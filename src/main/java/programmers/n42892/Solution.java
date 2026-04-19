@@ -10,27 +10,32 @@ public class Solution {
     이진 트리를 전위순회 후위순회한 결과를 반환한다.
     노드
      */
+    static class Node {
+        int idx;
+        int x, y;
+        int parent;
+        int lChild;
+        int rChild;
+    }
     public static int[][] solution(int[][] nodeinfo) {
         int n = nodeinfo.length;
         int[][] answer = new int[2][n];
 
-        // 좌표쌍을 보고. 그래프에 추가하는 방식
-        int[] sortedIdx = IntStream.range(0, n)
-                .boxed()
-                .sorted(Comparator
-                        .comparingInt((Integer i) -> nodeinfo[i][1])
-                        .thenComparingInt(i -> nodeinfo[i][0]))
-                .mapToInt(i -> i)
-                .toArray();
+        List<int[]> nodes = new ArrayList<>();
+        for (int i = 0; i < n; i++) nodes.add(new int[]{i, nodeinfo[i][0], nodeinfo[i][1]});
 
-        int[] binTree = new int[n];
-        Arrays.fill(binTree, -1);
-        binTree[0] = sortedIdx[0];
 
-        for (int i = 1; i < n; i++) {
-            insert(binTree, sortedIdx[i]);
+        nodes.sort(Comparator
+                .comparingInt((int[] a) -> a[1])
+                .reversed()
+                .thenComparingInt(a -> a[0]));
+
+        int[] root = nodes.get(0);
+        
+        for (int i = 0; i < n; i++) {
+            insert(root, nodes.get(i));
         }
-
+        
         answer[0] = preOrder();
         answer[0] = postOrder();
 
@@ -41,10 +46,17 @@ public class Solution {
         return answer;
     }
 
-    static void insert(int[] binTree, int data) {
-        int i = 0;
-//        while (binTree[i] == data) // compare data
+    static boolean isParentGreater(int[] parent, int[] target) {
+        if (parent[2] == target[2]) return parent[1] > target[1];
+        return parent[2] > target[2];
+    }
+    
+    static void insert(int[] parent, int[] target) {
+        if (isParentGreater(parent, target)) {
+            
+        } else {
 
+        }
     }
 
     static int[] preOrder() {
