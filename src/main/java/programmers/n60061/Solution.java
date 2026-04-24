@@ -20,42 +20,45 @@ public class Solution {
     기둥은 반드시 위, 보는 반드시 오른쪽으로 설치한다.
     */
     public static int[][] solution(int n, int[][] buildFrame) {
-        List<int[]> list = new ArrayList<>();
-
         boolean[][] beam = new boolean[n][n];
         boolean[][] pillar = new boolean[n][n + 1];
 
         for (int i = 0; i < n; i++) { // 최대 1000개
-            int[] b = buildFrame[i];
+            int x = buildFrame[i][0], y = buildFrame[i][1];
+            int a = buildFrame[i][2], b = buildFrame[i][3];
 
-            if (b[3] == 0) { // 삭제
-                if (b[2] == 0) { // 기둥
-                    // 기둥을 지울때, 내 위에 보,기둥이 없으며, 내 왼쪽 위의 보도 없어야한다.
+            if (a == 0 && b == 0) {
 
-                } else { // 보
-                    // 보를 지울때, 내 양쪽 보가 기둥을 보유하는지를 확인해야한다.
-
-                }
             }
-            if (b[3] == 1) { // 추가
-                if (b[2] == 0) { // 기둥
-                    // 기둥을 추가할때, 내 아래, 보나 기둥이 있어야한다.
+            if (a == 0 && b == 1) {
 
-                } else { // 보
-                    // 보를 추가할때, 내 아래 기둥이 있거나, 내 양쪽에 보가 있는지 확인.
-
-
-                }
             }
+            if (a == 0 && b == 1) {
+                if (y == 0 || pillar[x][y - 1] || x > 0 && beam[x - 1][y])
+                    pillar[x][y] = true;
+            }
+            if (a == 1 && b == 1) {
+                if (pillar[x][y - 1] || (x == 0 && beam[x + 1][y]) || (beam[x - 1][y] && beam[x + 1][y]))
+                    beam[x][y] = true;
+            }
+
         }
+        List<int[]> list = new ArrayList<>();
+        for (int y = 0; y < n; y++) {
+            for (int x = 0; x <= n; x++) {
+                if (x < n && beam[x][y]) list.add(new int[]{x, y, 1});
+                if (pillar[x][y]) list.add(new int[]{x, y, 0});
+            }
+            list.sort(Comparator.comparingInt((int[] a) -> a[0])
+                    .thenComparingInt(a -> a[1])
+                    .thenComparingInt(a -> a[2]));
 
-
-        int[][] answer = null;
-        return answer;
+            int[][] answer = list.toArray(new int[list.size()][3]);
+            return answer;
+        }
     }
 
-
-    public static void main(String[] args) {
+    public static  void main(String[] args) {
         Arrays.stream(solution(5,
                 new int[][] {{1, 0, 0, 1}, {1, 1, 1, 1}, {2, 1, 0, 1}, {2, 2, 1, 1}, {5, 0, 0, 1}, {5, 1, 0, 1}, {4, 2, 1, 1}, {3, 2, 1, 1}}
         )).forEach(row -> System.out.println(Arrays.toString(row)));
