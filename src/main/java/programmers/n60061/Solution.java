@@ -20,42 +20,56 @@ public class Solution {
     기둥은 반드시 위, 보는 반드시 오른쪽으로 설치한다.
     */
     public static int[][] solution(int n, int[][] buildFrame) {
-        boolean[][] beam = new boolean[n][n];
-        boolean[][] pillar = new boolean[n][n + 1];
+        boolean[][] beam = new boolean[n + 1][n + 1];
+        boolean[][] pillar = new boolean[n + 1][n + 1];
 
         for (int i = 0; i < n; i++) { // 최대 1000개
             int x = buildFrame[i][0], y = buildFrame[i][1];
-            int a = buildFrame[i][2], b = buildFrame[i][3];
+            int a = buildFrame[i][2], b = buildFrame[i][3]; // 타입, 명령
 
-            if (a == 0 && b == 0) {
+            if (a == 0) pillar[x][y] = b == 1;
+            else if (a == 1) beam[x][y] = b == 1;
 
+            if (!isValid(n, beam, pillar)) {
+                if (a == 0) pillar[x][y] = b == 0;
+                else if (a == 1) beam[x][y] = b == 0;
             }
-            if (a == 0 && b == 1) {
-
-            }
-            if (a == 0 && b == 1) {
-                if (y == 0 || pillar[x][y - 1] || x > 0 && beam[x - 1][y])
-                    pillar[x][y] = true;
-            }
-            if (a == 1 && b == 1) {
-                if (pillar[x][y - 1] || (x == 0 && beam[x + 1][y]) || (beam[x - 1][y] && beam[x + 1][y]))
-                    beam[x][y] = true;
-            }
-
         }
         List<int[]> list = new ArrayList<>();
-        for (int y = 0; y < n; y++) {
+        for (int y = 0; y <= n; y++) {
             for (int x = 0; x <= n; x++) {
-                if (x < n && beam[x][y]) list.add(new int[]{x, y, 1});
+                if (beam[x][y]) list.add(new int[]{x, y, 1});
                 if (pillar[x][y]) list.add(new int[]{x, y, 0});
             }
-            list.sort(Comparator.comparingInt((int[] a) -> a[0])
-                    .thenComparingInt(a -> a[1])
-                    .thenComparingInt(a -> a[2]));
-
-            int[][] answer = list.toArray(new int[list.size()][3]);
-            return answer;
         }
+        list.sort(Comparator.comparingInt((int[] a) -> a[0])
+                .thenComparingInt(a -> a[1])
+                .thenComparingInt(a -> a[2]));
+
+        int[][] answer = list.toArray(new int[list.size()][3]);
+        return answer;
+    }
+    static boolean isValid(int n, boolean[][] pillar, boolean[][] beam) {
+        for (int x = 0; x <= n; x++) {
+            for (int y = 0; y <= n; y++) {
+                if (pillar[x][y]) {
+                    boolean check = false;
+                    if (y == 0) check = true; //바닥
+                    if (y > 0 && pillar[x][y - 1]) check = true; // 아래 기둥
+                    if (x > 0 && beam[x - 1][y]) check = true; // 내 왼쪽 아래 보
+                    if (beam[x][y]) check = true; // 내 아래 보
+                    if (!check) return false;
+                }
+                if (beam[x][y]) {
+                    boolean check = false;
+                    if (y > 0 && pillar[x][y - 1]) check = true; // 내 왼쪽 아래 기둥
+                    if (y > 0 && x < n && pillar[x + 1][y - 1]) check = true; // 오른쪽 아래 기둥
+                    if (x > 0 && x < n && beam[x - 1][y] && beam[x + 1][y]) check = true; // 양옆 보
+                    if (!check) return false;
+                }
+            }
+        }
+        return true;
     }
 
     public static  void main(String[] args) {
