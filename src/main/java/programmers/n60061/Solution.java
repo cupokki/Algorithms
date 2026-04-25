@@ -23,16 +23,16 @@ public class Solution {
         boolean[][] beam = new boolean[n + 1][n + 1];
         boolean[][] pillar = new boolean[n + 1][n + 1];
 
-        for (int i = 0; i < n; i++) { // 최대 1000개
+        for (int i = 0; i < buildFrame.length; i++) { // 최대 1000개
             int x = buildFrame[i][0], y = buildFrame[i][1];
             int a = buildFrame[i][2], b = buildFrame[i][3]; // 타입, 명령
 
-            if (a == 0) pillar[x][y] = b == 1;
-            else if (a == 1) beam[x][y] = b == 1;
+            if (a == 0) pillar[x][y] = (b == 1);
+            else if (a == 1) beam[x][y] = (b == 1);
 
-            if (!isValid(n, beam, pillar)) {
-                if (a == 0) pillar[x][y] = b == 0;
-                else if (a == 1) beam[x][y] = b == 0;
+            if (!isValid(n, pillar, beam)) {
+                if (a == 0) pillar[x][y] = (b == 0);
+                else if (a == 1) beam[x][y] = (b == 0);
             }
         }
         List<int[]> list = new ArrayList<>();
@@ -46,7 +46,7 @@ public class Solution {
                 .thenComparingInt(a -> a[1])
                 .thenComparingInt(a -> a[2]));
 
-        int[][] answer = list.toArray(new int[list.size()][3]);
+        int[][] answer = list.toArray(new int[list.size()][]);
         return answer;
     }
     static boolean isValid(int n, boolean[][] pillar, boolean[][] beam) {
