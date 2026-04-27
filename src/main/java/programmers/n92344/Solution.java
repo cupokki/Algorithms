@@ -17,11 +17,6 @@ public class Solution {
     회복은 1000이상이 가능한가?
     
     skill은 최대 25000수행되므로 시물레이션 가능한가?
-
-    NM 순회하며, 해당 점이 k[i]의 범위 내라면 계속 아니라면, 그만 둠, 이런식 가능하지않을까 
-    
-    r1 < i < r2 && c1 < j < c2 && board[i][j] > sum;
-    좌표값 때문에 skill 써야하는데.
     */
     public static int solution(int[][] board, int[][] skill) {
         int answer = 0;
@@ -29,13 +24,35 @@ public class Solution {
         int n = board.length;
         int m = board[0].length;
 
-        int[][] sums = new int[n][m];
+        int[][] sums = new int[n + 1][m + 1];
+
+        for (int[] s : skill) {
+            int r1 = s[1], c1 = s[2], r2 = s[3], c2 = s[4];
+            int degree = (s[0] == 1) ? -s[5] : s[5];
+
+            sums[r1][c1] += degree;
+            sums[r1][c2 + 1] -= degree;
+            sums[r2 + 1][c1] -= degree;
+            sums[r2 + 1][c2 + 1] += degree;
+        }
+
+        // 스위핑 (오른쪽에서 왼쪽)
+        for (int i = 0; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                sums[i][j] += sums[i][j - 1];
+            }
+        }
+
+        // 스위핑 (위에서 아래로)
+        for (int j = 0; j <= m; j++) {
+            for (int i = 1; i <= n; i++) {
+                sums[i][j] += sums[i - 1][j];
+            }
+        }
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (board[i][j] > 0) {
-                    answer++;
-                }
+                if (sums[i][j] + board[i][j] > 0) answer++;
             }
         }
 
