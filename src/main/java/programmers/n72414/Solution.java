@@ -20,33 +20,33 @@ public class Solution {
             int e = toInt(t[1]);
 
             time[s] += 1;
-            time[e + 1] -= 1;
+            time[e] -= 1;
         }
 
         for (int i = 1; i < time.length; i++) {
             time[i] += time[i - 1];
         }
 
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-        int sum = 0;
-        for (int i = 0; i <= advTime; i++) {
+        int startAt = 0;
+        long sum = 0;
+        for (int i = 0; i < advTime; i++) {
             sum += time[i];
         }
-        for (int i = 1; i <= playTime - advTime; i++) {
-            sum -= time[i - 1];
-            sum += time[i + advTime];
+        long max = sum;
+
+        for (int i = advTime; i < playTime; i++) {
+            sum = sum - time[i - advTime] + time[i];
             if (sum > max) {
-                min = i;
+                startAt = i - advTime + 1;
                 max = sum;
             }
         }
 
-        int h = min / 3600;
-        int m = (min % 3600) / 60;
-        int s = min % 60;
+        int h = startAt / 3600;
+        int m = (startAt % 3600) / 60;
+        int s = startAt % 60;
 
-        answer = h + ":" + m + ":" + s;
+        answer = String.format("%02d:%02d:%02d",h, m, s);
         return answer;
     }
     static int toInt(String t) {
@@ -57,8 +57,14 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("02:03:55", "00:14:15", new String[]{
-                "01:20:15-01:45:14", "00:40:31-01:00:00", "00:25:50-00:48:29", "01:30:59-01:53:29", "01:37:44-02:02:30"
+//        System.out.println(solution("02:03:55", "00:14:15", new String[]{
+//                "01:20:15-01:45:14", "00:40:31-01:00:00", "00:25:50-00:48:29", "01:30:59-01:53:29", "01:37:44-02:02:30"
+//        }));
+//        System.out.println(solution("99:59:59", "25:00:00", new String[]{
+//                "69:59:59-89:59:59", "01:00:00-21:00:00", "79:59:59-99:59:59", "11:00:00-31:00:00"
+//        }));
+        System.out.println(solution("50:00:00", "50:00:00", new String[]{
+                "15:36:51-38:21:49", "10:14:18-15:36:51", "38:21:49-42:51:45"
         }));
     }
 }
