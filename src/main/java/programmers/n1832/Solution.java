@@ -23,31 +23,42 @@ public class Solution {
      */
     static int MOD = 20170805;
     public static int solution(int m, int n, int[][] cityMap) {
-        int[][] dp = new int[m][n];
+        int[][] down = new int[m][n];
+        int[][] right = new int[m][n];
 
         // 기저조건
-        for (int i = 0; i < m; i++) {
-            if (cityMap[i][0] == 1) break;
-            dp[i][0] = 1;
-        }
+        // 오른쪽방향
         for (int i = 0; i < n; i++) {
             if (cityMap[0][i] == 1) break;
-            dp[0][i] = 1;
+            right[0][i] = 1;
         }
+        // 아래 방향
+        for (int i = 0; i < m; i++) {
+            if (cityMap[i][0] == 1) break;
+            down[i][0] = 1;
+        }
+
 
 
         for (int i = 1; i < m; i++) {
             for (int j = 1; j < n; j++) {
                 if (cityMap[i][j] == 1) continue;
 
-                dp[i][j] = dp[i][j] + dp[i - 1][j] + dp[i][j - 1];
-                if (cityMap[i - 1][j] == 2) dp[i][j] -= 1;
-                if (cityMap[i][j - 1] == 2) dp[i][j] -= 1;
-                dp[i][j] %= MOD;
+                if (cityMap[i - 1][j] == 0) { // 윗 칸이 전체 가능
+                    down[i][j] = (down[i - 1][j] + right[i - 1][j]) % MOD;
+                } else if (cityMap[i - 1][j] == 2) { // 윗 칸이 직진(아랫쪽)만 가능
+                    down[i][j] = down[i - 1][j];
+                }
+
+                if (cityMap[i][j - 1] == 0) { // 오른쪽 칸이 전체 가능
+                    right[i][j] = (down[i][j - 1] + right[i][j - 1]) % MOD;
+                } else if (cityMap[i][j - 1] == 2) { // 오른쪽 칸은 직진(오른쪽)만 가능
+                    right[i][j] = right[i][j - 1];
+                }
             }
         }
 
-        return dp[m - 1][n - 1];
+        return (down[m - 1][n - 1] + right[m - 1][n - 1]) % MOD;
     }
 
 //    static int[] dr = {0, 1};
