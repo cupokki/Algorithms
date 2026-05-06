@@ -27,8 +27,9 @@ public class Solution {
         boolean[][] board = new boolean[1000][1000];
 
         int n = line.length;
-        int sx = 1000, sy = 1000;
-        int ex = 0, ey = 0;
+        long sx = Long.MAX_VALUE, sy = Long.MAX_VALUE;
+        long ex = Long.MIN_VALUE, ey = Long.MIN_VALUE;
+        List<long[]> coords = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 long a = line[i][0], b = line[i][1], e = line[i][2];
@@ -41,26 +42,33 @@ public class Solution {
                 if ((b * f - e * d) % denominator != 0) continue;
                 if ((e * c - a * f) % denominator != 0) continue;
 
-                int x = (int) ((b * f - e * d) / denominator);
-                int y = (int) ((e * c - a * f) / denominator);
-                board[x][y] = true;
-                sx = Math.max(sx, x);
-                sy = Math.max(sy, y);
-                ex = Math.min(ex, x);
-                ey = Math.min(ey, y);
+                long x = (b * f - e * d) / denominator;
+                long y = (e * c - a * f) / denominator;
+
+                coords.add(new long[]{x, y});
+
+                sx = Math.min(sx, x);
+                sy = Math.min(sy, y);
+                ex = Math.max(ex, x);
+                ey = Math.max(ey, y);
             }
         }
 
-        String[] answer = new String[ey - sy + 1];
-        int idx = 0;
-        for (int i = sy; i < ey; i++) {
-            StringBuilder sb = new StringBuilder();
-            for (int j = sx; j < ex; j++) {
-                sb.append(board[i][j] ? "*" : ".");
-            }
-            answer[idx++] = sb.toString();
+        char[][] result = new char[(int) (ey - sy + 1)][(int) (ex - sx + 1)];
+
+        for (int i = 0; i < result.length; i++) {
+            Arrays.fill(result[i], '.');
         }
 
+        for (long[] coord : coords) {
+            int nx = (int) (coord[0] - sx);
+            int ny = (int) (ey - coord[1]); // y좌표는 뒤집어서 매핑
+            result[ny][nx] = '*';
+        }
+        String[] answer = new String[result.length];
+        for (int i = 0; i < answer.length; i++) {
+            answer[i] = String.valueOf(result);
+        }
         return answer;
     }
 
