@@ -34,8 +34,8 @@ public class Solution {
         max = 1; // 최솟값.
         for (int i = 0; i < edges.length; i++) {
             int u = edges[i][0];
-            int v = edges[i][0];
-            int type = edges[i][0]; // 1, 2, 3은 각각 A, B, C를 의미함
+            int v = edges[i][1];
+            int type = edges[i][2]; // 1, 2, 3은 각각 A, B, C를 의미함
             // graph[u][v] = graph[v][u] = type; // 사이클 없음, 무방향 처리가능?
             graph[u][v] = type;
 
@@ -62,14 +62,13 @@ public class Solution {
         Queue<Integer> q = new LinkedList<>();
         Set<Integer> infected = new HashSet<>();
         infected.add(Infection);
+        q.offer(Infection);
         for (int type: result) {
             while(!q.isEmpty()) {
                 int u = q.poll();
                 for (int v = 0; v < N; v++) {
-                    if (graph[u][v] == type) {
-                        if (infected.contains(v)) { // 단방향 및 사이클 없으므로 재방문 없음.
-                            infected.add(v);
-                        }
+                    if (!infected.contains(v) && graph[u][v] == type) {
+                        infected.add(v);
                         q.offer(v);
                     }
                 }
