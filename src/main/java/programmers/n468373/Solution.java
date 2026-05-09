@@ -15,72 +15,73 @@ public class Solution {
 
     파이프 = 간선
     노드는 최대 100개, 최소 두개
-
-    그리디나, 그래프같은데..
-    일단 문제에 사이클은 없는것 같고,
-
-    아 k최댓값 k인데... 이걸로 가능한가.. dfs
     */
     static int[][] graph;
     static int N, K;
     static int max;
     static int Infection;
+    static int[] result;
     public static int solution(int n, int infection, int[][] edges, int k) {
         N = n;
         K = k;
         graph = new int[n + 1][n + 1];
-        result = new int[k];
         Infection = infection;
         max = 1; // 최솟값.
+        result = new int[k];
         for (int i = 0; i < edges.length; i++) {
             int u = edges[i][0];
             int v = edges[i][1];
             int type = edges[i][2]; // 1, 2, 3은 각각 A, B, C를 의미함
-            // graph[u][v] = graph[v][u] = type; // 사이클 없음, 무방향 처리가능?
-            graph[u][v] = type;
+             graph[u][v] = graph[v][u] = type;
 
         }
 
+        List<Integer> init = new ArrayList<>();
+        init.add(infection);
         dfs(0);
 
         return max;
     }
-    static int[] result;
     static void dfs(int depth) {
         if (depth == K) {
-            Math.max(max, solve());
+            max = Math.max(max, bfs()); // solve는 bfs
             return;
         }
-
         for (int type = 1; type <= 3; type++) {
-            result[depth] = type; // 같은걸 연속해서 뽑는 경우를 제거해야한다.
+            result[depth] = type;
             dfs(depth + 1);
         }
     }
+    static int bfs() {
+        int cnt = 0;
 
-    static int solve() {
-        Queue<Integer> q = new LinkedList<>();
-        Set<Integer> infected = new HashSet<>();
-        infected.add(Infection);
-        q.offer(Infection);
-        for (int type: result) {
-            while(!q.isEmpty()) {
+        boolean[] infected = new boolean[N + 1];
+        infected[Infection] = true;
+
+        for (int type : result) {
+            Queue<Integer> q = new LinkedList<>();
+            for (int i = 1; i <= N; i++) {
+                if (infected[i]) q.offer(i);
+            }
+            while (!q.isEmpty()) {
                 int u = q.poll();
-                for (int v = 0; v < N; v++) {
-                    if (!infected.contains(v) && graph[u][v] == type) {
-                        infected.add(v);
+                for (int v = 1; v <= N; v++) {
+                    if (!infected[v] && graph[u][v] == type) {
+                        infected[v] = true;
                         q.offer(v);
                     }
                 }
             }
         }
-        return infected.size();
+
+        for (int i = 1 ; i <= N; i++) {
+            if (infected[i]) cnt++;
+        }
+        return cnt;
     }
 
-
-
-     public static void main(String[] args) {
+    public static void main(String[] args) {
          System.out.println(solution(10, 1, new int[][]{{1, 2, 1}, {1, 3, 1}, {1, 4, 3}, {1, 5, 2}, {5, 6, 1}, {5, 7, 1}, {2, 8, 3}, {2, 9, 2}, {9, 10, 1}}, 2));
          System.out.println(solution(7, 6, new int[][]{{1, 2, 3}, {1, 4, 3}, {4, 5, 1}, {5, 6, 1}, {3, 6, 2}, {3, 7, 2}}, 3));
-     }
+    }
 }
