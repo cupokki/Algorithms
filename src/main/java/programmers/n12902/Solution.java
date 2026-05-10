@@ -13,11 +13,10 @@ public class Solution {
         dp[0] = 1;
         if (n >= 2) dp[2] = 3;
 
-        for (int i = 4; i <= n; i++) {
-            dp[i] = (dp[i - 2] * 3) % MOD;
-            for (int j = 4; j <= i; j += 2)  {
-                dp[i] = (dp[i] + (dp[i - j] * 2)) % MOD;
-            }
+        long sum = 0;
+        for (int i = 4; i <= n; i += 2) {
+            sum = (sum + dp[i - 4]) % MOD;
+            dp[i] = (dp[i - 2] * 3 + sum * 2) % MOD;
         }
 
         return (int) dp[n];
