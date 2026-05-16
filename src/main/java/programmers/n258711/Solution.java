@@ -23,28 +23,32 @@ public class Solution {
         nodes = new HashMap<>();
         for (int[] edge : edges) {
             nodes.computeIfAbsent(edge[0], k -> new ArrayList<>()).add(edge[1]);
-            if (edge[0] == edge[1]) {
-                answer[1]++; // size 1인 도넛
-            }
+//            if (edge[0] == edge[1]) {
+//                answer[1]++; // size 1인 도넛
+//            }
         }
 
 
         boolean[] founded = new boolean[1_000_001];
-        // bfs
+
+        // 정점 확정
         for (int i : nodes.keySet()) {
             List<Integer> children = nodes.get(i);
             if (children.size() > 2) answer[0] = i; // 정점 확정
             if (children.size() == 2) {
                 if (isCreatedNode(i)) {
                     answer[0] = i;
+                    founded[i] = true;
                     break;
                 }
             }
         }
 
-        for (int i : nodes.keySet()) {
-            if (i == answer[0]) continue;
-            if (nodes.get(i).size() != 2) continue;
+        //
+//        for (int i : nodes.keySet()) {
+        for (int i : nodes.get(answer[0])) {
+            if (founded[i]) continue;
+//            if (nodes.get(i).size() != 2) continue;
             // 판별
             // 경로를 다돌고 최대로 많이 방문한 노드의 방문수 cnt
             // cnt == 1 => 도넛
@@ -57,12 +61,11 @@ public class Solution {
                 int cur = q.poll();
                 if (nodes.get(cur) == null) continue;
                 for (int next : nodes.get(cur)) {
-                    if (next == i) {
-                        cnt++;
-                    }
                     if (!founded[next]) {
                         q.offer(next);
                         founded[next] = true;
+                    } else {
+                        cnt++;
                     }
                 }
             }
@@ -70,10 +73,12 @@ public class Solution {
                 answer[1]++; // 도넛
             } else if (cnt == 2) {
                 answer[3]++; // 8자
+            } else {
+                answer[2]++; // 막대
             }
         }
 
-        answer[2] = nodes.get(answer[0]).size() - (answer[1] + answer[3]);
+//        answer[2] = nodes.get(answer[0]).size() - (answer[1] + answer[3]);
         return answer;
     }
 
@@ -96,9 +101,9 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-//        Arrays.stream(solution(new int[][]{{2, 3}, {4, 3}, {1, 1}, {2, 1}}))
-//                .forEach(i -> System.out.print(i + " "));
-//        System.out.println();
+        Arrays.stream(solution(new int[][]{{2, 3}, {4, 3}, {1, 1}, {2, 1}}))
+                .forEach(i -> System.out.print(i + " "));
+        System.out.println();
         Arrays.stream(solution(new int[][]{{4, 11}, {1, 12}, {8, 3}, {12, 7}, {4, 2}, {7, 11}, {4, 8}, {9, 6}, {10, 11}, {6, 10}, {3, 5}, {11, 1}, {5, 3}, {11, 9}, {3, 8}}))
                 .forEach(i -> System.out.print(i + " "));
         System.out.println();
