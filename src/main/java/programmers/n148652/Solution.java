@@ -32,18 +32,30 @@ public class Solution {
     */
     public static int solution(int n, long l, long r) {
         int answer = 0;
-
-        for (long i = l; i < r; i++) {
-            long[] temp = new long[n];
-            for (int j = n - 1; j >= 0 ; j--) {
-                temp[j] = (i /= 5);
-            }
-            if (temp[0] != 2) { // 두번째 원소, 즉 0이라는 뜻, i는 1이 아님
-
-            }
+        for (long i = l; i <= r; i++) {
+            if (isOne(n, i)) answer++;
         }
         return answer;
     }
+
+    static boolean isOne(int n, long x) {
+        // n단계부터 1단계까지 부모를 타고 올라감
+        while (n-- > 0) {
+            if ((x - 1) % 5 == 2) return false; // 가운데
+            x = (x - 1) / 5 + 1; // 부모 노드의 위치로 갱신하고 한 단계 위로 이동
+        }
+        return true; // 끝까지 0을 만나지 않고 0단계(루트)까지 올라왔다면 1
+    }
+
+//     static boolean isOne(int n, long x) {
+//         if (n == 0) return true;
+
+//         // 가운데, 즉 0
+//         if ((x - 1) % 5 == 2) return false;
+
+//         // 1이면, 부모노드를 찾아 다시 수행
+//         return isOne(n - 1, (x - 1) / 5 + 1);
+//     }
 
     public static void main(String[] args) {
         System.out.println(solution(2, 4, 17)); // 8
