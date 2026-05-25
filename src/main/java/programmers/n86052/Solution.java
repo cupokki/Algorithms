@@ -16,61 +16,55 @@ public class Solution {
     이미 사용한 간선이 사용되면 종료
     */
 
+    static int m, n;
+    static int[] dr = {-1, 0, 1, 0};
+    static int[] dc = {0, 1, 0, -1};
+    static List<Integer> result;
+    static boolean[][][] visitedEdge;
     public static int[] solution(String[] grid) {
-        int[] answer = {};
-        List<Integer> result = new ArrayList<>();
 
-        int m, n;
         m = grid.length;
         n = grid[0].length();
-        int[] dr = {-1, 0, 1, 0};
-        int[] dc = {0, 1, 0, -1};
+        result = new ArrayList<>();
+        visitedEdge = new boolean[m][n][4];
 
-        boolean[][] visitedEdge = new boolean[m * n][m * n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 for (int d = 0; d < 4; d++) {
-
-                    int dir = d; // 초기 출발 방향
-                    int nr = (m + i + dr[d]) % m;
-                    int nc = (n + j + dc[d]) % n;
-                    int cnt = 1;
-
-                    int currentNodeIdx = i * m + j;
-                    int nextNodeIdx = nr * m + nc;
-                    while (!visitedEdge[currentNodeIdx][nextNodeIdx]) {
-                        if (nr == i && nc == j) { // 사이클 발생
-                            result.add(cnt);
-                            break;
-                        }
-                        char c = grid[nr].charAt(nc);
-
-                        if (c == 'L') {
-                            dir = (4 + dir - 1) % 4;
-                        } else if (c == 'R') {
-                            dir = (4 + dir + 2) % 4;
-                        }
-
-                        cnt++;
-                        currentNodeIdx = nr * m + nc;
-                        nr = (m + i + dr[dir]) % m;
-                        nc = (n + j + dc[dir]) % n;
-                        nextNodeIdx = nr * m + nc;
-                        visitedEdge[currentNodeIdx][nextNodeIdx] = true;
-                    }
+                    move(grid, i, j, d);
                 }
             }
         }
+        int[] answer = result.stream().mapToInt(Integer::intValue).sorted().toArray();
         return answer;
+    }
+    static void move(String[] grid, int r, int c, int dir) {
+        int cnt = 0;
+
+        while (!visitedEdge[r][c][dir]){
+            visitedEdge[r][c][dir] = true;
+            cnt++;
+
+            // 이동 방향설정
+            if (grid[r].charAt(c) == 'L')
+                dir = (4 + dir + 3) % 4;
+            else if (grid[r].charAt(c) == 'R')
+                dir = (4 + dir + 1) % 4;
+
+            // 다음 포인터 이동
+            r = (m + r + dr[dir]) % m;
+            c = (n + c + dc[dir]) % n;
+        }
+        if (cnt != 0) result.add(cnt);
     }
 
 
     public static void main(String[] args) {
-        Arrays.stream(solution(new String[]{"SL", "LR"})).forEach(i -> System.out.println(i + " "));
-        System.out.println();
-        Arrays.stream(solution(new String[]{"S"})).forEach(i -> System.out.println(i + " "));
-        System.out.println();
-        Arrays.stream(solution(new String[]{"R", "R"})).forEach(i -> System.out.println(i + " "));
+//        Arrays.stream(solution(new String[]{"SL", "LR"})).forEach(i -> System.out.print(i + " "));
+//        System.out.println();
+//        Arrays.stream(solution(new String[]{"S"})).forEach(i -> System.out.print(i + " "));
+//        System.out.println();
+        Arrays.stream(solution(new String[]{"R", "R"})).forEach(i -> System.out.print(i + " "));
         System.out.println();
     }
 
