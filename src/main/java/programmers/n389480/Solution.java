@@ -19,24 +19,34 @@ public class Solution {
     static int M, N;
     public static int solution(int[][] info, int n, int m) {
         memo = new int[info.length][121];
+        for (int i = 0; i < info.length; i++)
+            Arrays.fill(memo[i], Integer.MAX_VALUE);
+
         N = n; M = m;
         dfs(info, 0, 0);
         return min == Integer.MAX_VALUE ? -1 : min;
     }
-
+    /**
+     * @return a 최솟값
+     */
     static int dfs(int[][] info, int b, int depth) {
-        if (depth == info.length) {
-//            min = Math.min(min, );
-            return min;
-        }
+        if (b > M) return Integer.MAX_VALUE;
 
-        if (memo[depth][b] != 0) {
+        if (depth == info.length) {
             return memo[depth][b];
         }
-        memo[depth][b] = dfs(info, b, depth + 1);
-        if (memo[depth][b] + info[depth][1] < N) return memo[depth][b] + info[depth][0];
-//        if (b + info[depth][1] < M)
-            return dfs(info, b + info[depth][1], depth + 1);
+
+        if (memo[depth][b] != Integer.MAX_VALUE) {
+            return memo[depth][b];
+        }
+
+        memo[depth][b] = dfs(info, b, depth + 1) + info[depth][0];
+        memo[depth][b + info[depth][1]] = dfs(info, b + info[depth][1], depth + 1);
+
+        return Math.min(
+                memo[depth][b],
+                memo[depth][b + info[depth][1]]
+                );
 
     }
 
