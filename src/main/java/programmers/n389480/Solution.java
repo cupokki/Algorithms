@@ -44,7 +44,7 @@ public class Solution {
             caseA = temp + info[depth][0];
         }
 
-        // 2. B가 선택하는 경우
+        // B가 선택
         if (b + info[depth][1] < M) {
             caseB = dfs(info, b + info[depth][1], depth + 1);
         }
