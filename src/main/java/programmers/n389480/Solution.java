@@ -21,7 +21,7 @@ public class Solution {
         N = n; M = m;
         memo = new int[info.length][M + 1]; // i 까지 고려했을때, b가 j 보다 작아야한다.
         for (int i = 0; i < info.length; i++)
-            Arrays.fill(memo[i], INF);
+            Arrays.fill(memo[i], -1);
         int answer = dfs(info, 0, 0);
         return answer == INF ? -1: answer;
     }
@@ -31,7 +31,7 @@ public class Solution {
             return 0; // 더이상 더할 것이 없음. (a_0 + a_1 + a_2 + ... ) + 0;
         }
 
-        if (memo[depth][b] != INF) {
+        if (memo[depth][b] != -1) {
             return memo[depth][b];
         }
 
