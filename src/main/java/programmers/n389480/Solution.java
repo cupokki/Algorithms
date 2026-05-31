@@ -14,40 +14,42 @@ public class Solution {
 
     dfs는 불가?
     */
+    static final int INF = Integer.MAX_VALUE / 2;
     static int[][] memo;
-    static int min;
     static int M, N;
     public static int solution(int[][] info, int n, int m) {
-        memo = new int[info.length][121];
-        for (int i = 0; i < info.length; i++)
-            Arrays.fill(memo[i], Integer.MAX_VALUE);
-
         N = n; M = m;
-        dfs(info, 0, 0);
-        return min == Integer.MAX_VALUE ? -1 : min;
+        memo = new int[info.length][M + 1]; // i 까지 고려했을때, b가 j 보다 작아야한다.
+        for (int i = 0; i < info.length; i++)
+            Arrays.fill(memo[i], INF);
+        int answer = dfs(info, 0, 0);
+        return answer == INF ? -1: answer;
     }
-    /**
-     * @return a 최솟값
-     */
+
     static int dfs(int[][] info, int b, int depth) {
-        if (b > M) return Integer.MAX_VALUE;
-
         if (depth == info.length) {
+            return 0; // 더이상 더할 것이 없음. (a_0 + a_1 + a_2 + ... ) + 0;
+        }
+
+        if (memo[depth][b] != INF) {
             return memo[depth][b];
         }
 
-        if (memo[depth][b] != Integer.MAX_VALUE) {
-            return memo[depth][b];
+        int caseA = INF;
+        int caseB = INF;
+
+        // A가 선택
+        int temp = dfs(info, b, depth + 1);
+        if (temp != INF && temp + info[depth][0] < N) {
+            caseA = temp + info[depth][0];
         }
 
-        memo[depth][b] = dfs(info, b, depth + 1) + info[depth][0];
-        memo[depth][b + info[depth][1]] = dfs(info, b + info[depth][1], depth + 1);
+        // 2. B가 선택하는 경우
+        if (b + info[depth][1] < M) {
+            caseB = dfs(info, b + info[depth][1], depth + 1);
+        }
 
-        return Math.min(
-                memo[depth][b],
-                memo[depth][b + info[depth][1]]
-                );
-
+        return memo[depth][b] = Math.min(caseA, caseB);
     }
 
     public static void main(String[] args) {
