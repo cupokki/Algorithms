@@ -1,5 +1,7 @@
 package programmers.n131129;
 
+import java.util.Arrays;
+
 public class Solution {
     /*
     특수룰 다트대회
@@ -25,40 +27,64 @@ public class Solution {
 
     그리디하게 선택한다면? 최대한 큰것을 선택한다.
     */
+    static class Answer {
+        int total;
+        int singleAndBull;
+
+        public Answer(int total, int singleAndBull) {
+            this.total = total;
+            this.singleAndBull = singleAndBull;
+        }
+    }
+
     public static int[] solution(int target) {
         int[] answer = new int[2];
 //         memo = new int[sum][target + 1];
 //         for (int i = 0; i <= target; i++) Arrays.fill(memo[i], -1);
-
 //         backtrack(target);
         // return memo[][];
 
-        int[] dp = new int[target + 1];
 
-        dp[0] = 0; // 0개의 불이나, 싱글이 필요하다.
+        int[][] dp = new int[target + 1][2]; // 최소 횟수와, 불과 싱글의 합 target을 만들기위한.
+
+        // 최소한의 공으로 target을 만들되 같은 case가 많다면 불과 싱글이 최대한 많아야한다.
+        dp[0][0] = 0; // 최소 0을 만들기위해 0개의 불이나, 싱글이 필요하다.
+        dp[0][1] = 0;
         for (int i = 1; i <= target; i++) {
-            int bull = 0;
-            int single = 0;
-            if (target >= 50) {
+
+            // 더블
+            for (int score = 2; score <= 40; score += 2) {
+                if (i - score < 0) break;
+                dp[i][0] = dp[i - score][0] + 1;
+                dp[i][1] = dp[i - score][1];
             }
 
-            if (target >= 60) {
+            // 트리플
+            for (int score = 3; score <= 60; score += 3) {
+                if (i - score < 0) break;
+                dp[i][0] = dp[i - score][0] + 1; // 횟수 1
+                dp[i][1] = dp[i - score][1];
             }
 
-            if (target >= 40) {
+            // 불
+            if (i >= 50) {
+                dp[i][0] = dp[i - 50][0] + 1;
+                dp[i][1] = dp[i - 50][1] + 1;
             }
 
-            if (target >= 20) {
+            // 싱글
+            for (int score = 1; score <= 20; score += 1) {
+                if (i - score < 0) break;
+                if (dp[i][0] > dp[i - score][0] + 1) { // 현재가 더 우선순위가 높다면?
+                    if (dp[i][1] > dp[i - score][1] + 1) continue;
+                    dp[i][0] = dp[i - score][0] + 1; // 횟수 1
+                    dp[i][1] = dp[i - score][1] + 1; // 싱글및불 1
+                }
             }
-            dp[i] = Math.min(
-                    dp[i],  // 그냥 두면 해결이 안되는데?
-                    dp[i - dp[i - 1]] + bull + single
-            );
         }
-        return answer;
-    }
 
-    //    static int[] memo;
+        return new int[]{dp[target][0], dp[target][1]};
+        //    static int[] memo;
 //    static int backtrack(int remain, int sum) {
 //        if (remain == 0) {
 //            return 0;
@@ -73,8 +99,13 @@ public class Solution {
 //
 //        return memo[][] = score;
 //    }
+
+    }
+
     public static void main(String[] args) {
-        System.out.println(solution(21));
-        System.out.println(solution(58));
+        System.out.println(Arrays.toString(solution(20)));
+        System.out.println(Arrays.toString(solution(21)));
+        System.out.println(Arrays.toString(solution(58)));
+        System.out.println(Arrays.toString(solution(61)));
     }
 }
