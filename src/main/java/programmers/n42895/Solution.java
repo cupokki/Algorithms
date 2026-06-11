@@ -18,49 +18,60 @@ public class Solution {
     => 관점은 이런 계산과정이 최소가 되게 하는것인지가 중요한데
     5로 111을 만들때, 가장 빠른게 555/5 이다.
 
+    TODO: 첫항의 괄호만 고려되므로 다른 방법을 찾아야한다.
     */
     public static int solution(int N, int number) {
-        memo = new int[32000 + 1];
-        Arrays.fill(memo, Integer.MAX_VALUE / 2);
+
+
+
+//        memo = new int[32000 + 1];
+//        Arrays.fill(memo, Integer.MAX_VALUE / 2);
+
+        memo = new HashMap<>();
+
         int answer = INF;
         int term = N;
-        int i = 1;
-        while (term < memo.length) {
-            answer = Math.min(answer, backtrack(N, i, number));
+        for(int i = 1; i <= 8; i++) {
+            answer = Math.min(answer, backtrack(N, number, i, term) + i);
+            if (term * 10 + N > 32000 * N) break;
             term = term * 10 + N;
         }
-        return answer;
-//        return answer > 32000 ? -1 : answer;
+        return answer > 8 ? -1 : answer;
     }
 
-    static int[] memo;
+    //    static int[] memo;
+    static Map<Integer, Integer> memo;
     static final int INF = Integer.MAX_VALUE / 2;
     // 반환값: num을 만드는 최소 수
-    static int backtrack(int N, int depth, int num ) {
-        if (num == 0) {
-            return 0;
+    static int backtrack(int N, int number, int depth, int num) {
+        if (depth > 8) { // 최대 N 사용시
+            return 1;
         }
 
-        if (depth > 8) {
+        if (num == number) {
+            return depth;
+        }
+
+        if (memo.containsKey(num) && memo.get(num) <= depth) {
             return INF;
         }
 
-        if (memo[num] != INF) {
-            return memo[num];
-        }
+        memo.put(num, depth);
 
         int min = INF;
 
-        if (num - N > 0) min = Math.min(min, backtrack(N, depth + 1, num - N) + 1); // N 더하기
-        if (num + N <= memo.length) min = Math.min(min, backtrack(N, depth + 1, num + N) + 1); // N 빼기 -> 더해야할 것이 N 만큼 는다.
-        if (num + N <= memo.length) min = Math.min(min, backtrack(N, depth + 1, num * N) + 1); // 남은 수를 N으로 곱하기
-        if (num - N > 0) min = Math.min(min, backtrack(N, depth + 1, num / N) + 1); // 남은 수를 N으로 나누기
+        min = Math.min(min, backtrack(N, number, depth + 1, num + N)); // N 더하기
+        min = Math.min(min, backtrack(N, number, depth + 1, num - N)); // N 빼기 -> 더해야할 것이 N 만큼 는다.
+        min = Math.min(min, backtrack(N, number, depth + 1, num * N)); // 남은 수를 N으로 곱하기
+        if (num != 0)
+            min = Math.min(min, backtrack(N, number, depth + 1, num / N)); // 남은 수를 N으로 나누기
 
-        return memo[num] = min;
+        return min;
     }
 
      public static void main (String[] args) {
-         System.out.println(solution(5, 12)); // 4
-         System.out.println(solution(2, 11)); // 3
+//         System.out.println(solution(5, 12)); // 4
+//         System.out.println(solution(2, 11)); // 3
+         System.out.println(solution(5, 31168)); // -1
      }
 }
