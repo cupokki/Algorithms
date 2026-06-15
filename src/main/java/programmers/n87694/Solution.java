@@ -14,17 +14,34 @@ public class Solution {
 
     직사각형이 표현되는 좌표는 50이하 자연수
 
-    baba
     */
     public static int solution(int[][] rectangle, int characterX, int characterY, int itemX, int itemY) {
         int answer = Integer.MAX_VALUE;
 
-        boolean[][] grid = new boolean[51][51];
+        boolean[][] grid = new boolean[102][102];
+        boolean[][] visited = new boolean[102][102];
 
-        for (int[] pos : rectangle) {
-            for (int i = pos[0]; i <= pos[2]; i++) {
-                for (int j = pos[1]; j <= pos[3]; j++) {
-                    grid[i][j] = true;
+        for (int[] r : rectangle) {
+            int x1 = r[0] * 2; int y1 = r[1] * 2;
+            int x2 = r[2] * 2; int y2 = r[3] * 2;
+
+            for (int y = y1; y <= y2; y++) {
+                for (int x = x1; x <= x2; x++) {
+                    // 테두리인 경우에만 true
+                    if (y == y1 || y == y2 || x == x1 || x == x2) {
+                        grid[y][x] = true;
+                    }
+                }
+            }
+        }
+
+        for (int[] r : rectangle) {
+            int x1 = r[0] * 2; int y1 = r[1] * 2;
+            int x2 = r[2] * 2; int y2 = r[3] * 2;
+
+            for (int y = y1 + 1; y < y2; y++) {
+                for (int x = x1 + 1; x < x2; x++) {
+                    grid[y][x] = false;
                 }
             }
         }
@@ -32,34 +49,33 @@ public class Solution {
         int[] dr = {0, 0, 1, -1};
         int[] dc = {1, -1, 0, 0};
 
-
         Queue<int[]> q = new LinkedList<>();
-        boolean[][] visited = new boolean[51][51];
-        q.offer(new int[]{characterY, characterX, 0});
-        visited[characterY][characterX] = true;
+        q.offer(new int[]{characterY * 2, characterX * 2, 0});
+        visited[characterY * 2][characterX * 2] = true;
         while (!q.isEmpty()) {
             int[] state = q.poll();
+
+            if (state[0] == (itemY * 2) && state[1] == (itemX * 2)) {
+                return state[2] / 2;
+            }
+
             for (int d = 0; d < 4; d++) {
                 int nr = state[0] + dr[d];
                 int nc = state[1] + dc[d];
 
-                // 4방향 모두 불가일때,
-                if (grid[nr][nc]) {
+                if (nr < 0 || nc < 0 || nr >= 102 || nc >= 102) {
                     continue;
                 }
 
-                if (nr == itemY && nr == itemX) {
-                    answer = Math.min(answer, state[2] + 1);
-                }
-                if (!visited[nr][nc]) {
+                if (!visited[nr][nc] && grid[nr][nc]) {
                     visited[nr][nc] = true;
-                    q.offer(new int[]{nr, nc, state[2] + 1});
+                    q.offer(new int[]{ nr, nc, state[2] + 1 });
                 }
 
             }
         }
 
-        return answer;
+        return -1;
     }
 
     public static void main(String[] args) {
