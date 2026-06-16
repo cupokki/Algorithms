@@ -8,7 +8,9 @@ public class Solution {
     Update: r,c 위치를 value로
     Uddate: 모든 value1를 value2로
     Merge r1, c1, r2, c2의 모든 셀을 r1,c1의 값으로 만든다.
-    Unmerge  r, c에 해당하는 영역의 값을 최초 상태로 돌린다.
+        머지시에 기존값을 보관할 필욘 없고 영역에 대한 정보를 기록해야한다.
+    Unmerge  r, c에 해당하는 영역의 값을 최초 상태(blank)로 돌린다.
+
     Print r, c 위치의 값을 출력 비어있다면 "EMPTY"
 
 
@@ -16,8 +18,16 @@ public class Solution {
     */
     public String[] solution(String[] commands) {
         List<String> result = new ArrayList<>();
-        String[][] table = new String[51][51];
+        int[][][] roots = new int[51][51][2]; // rootR, rootC
+        String[][] values = new String[51][51];
 
+        for (int i = 1; i <= 50; i++) {
+            for (int j = 1; j <= 50; j++) {
+                roots[i][j][0] = i;
+                roots[i][j][1] = j;
+                values[i][j] = "";
+            }
+        }
         for (String comm :commands) {
             String[] arg = comm.split(" ");
             switch (arg[0]) {
@@ -25,10 +35,23 @@ public class Solution {
                     if (arg.length == 3) {
                         int r = Integer.parseInt(arg[0]);
                         int c = Integer.parseInt(arg[1]);
-                        int value = Integer.parseInt(arg[2]);
+
+                        if (roots[r][c][0] == r && roots[r][c][1] == c) {
+                            values[r][c] = arg[2];
+                        } else {
+                            values[roots[r][c][0]][roots[r][c][1]] = arg[2];
+                        }
                     } else {
-                        int value1 = Integer.parseInt(arg[0]);
-                        int value2 = Integer.parseInt(arg[1]);
+                        String value1 = arg[0];
+                        String value2 = arg[1];
+
+                        for (int i = 1; i <= 50; i++) {
+                            for (int j = 1; j <= 50; j++) {
+                                if (values[i][j] == value1) {
+                                    values[i][j] = value2;
+                                }
+                            }
+                        }
                     }
                     break;
                 case "MERGE":
@@ -36,15 +59,37 @@ public class Solution {
                     int c1 = Integer.parseInt(arg[1]);
                     int r2 = Integer.parseInt(arg[2]);
                     int c2 = Integer.parseInt(arg[3]);
-
+                    for (int i = r1; i <= r2; i++) {
+                        for (int j = c1; j <= c2; j++) {
+                            roots[i][j][0] = r1;
+                            roots[i][j][1] = c1;
+                        }
+                    }
                     break;
                 case "UNMERGE":
                     int r = Integer.parseInt(arg[0]);
                     int c = Integer.parseInt(arg[1]);
 
+                    int rr = roots[r][c][0];
+                    int rc = roots[r][c][1];
+
+                    for (int i = 1; i <= 50; i++) {
+                        for (int j = 1; j <= 50; j++) {
+                            if (roots[i][j][0] == rr && roots[i][j][1] == rc) {
+                                values[i][j] = "";
+                            }
+                        }
+                    }
+                    values[r][c] = values[rr][rc];
                     break;
+
                 case "PRINT":
-                    result.add(table[Integer.parseInt(arg[0])][Integer.parseInt(arg[1])]);
+                    int rrr = Integer.parseInt(arg[0]);
+                    int ccc = Integer.parseInt(arg[1]);
+                    String value = values[roots[rrr][ccc][0]][roots[rrr][ccc][1]] == "" ?
+                            "EMPTY" :
+                            values[roots[rrr][ccc][0]][roots[rrr][ccc][1]];
+                    result.add(value);
                     break;
                 default: break;
             }
