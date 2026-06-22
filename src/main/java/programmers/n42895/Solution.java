@@ -18,55 +18,53 @@ public class Solution {
     => 관점은 이런 계산과정이 최소가 되게 하는것인지가 중요한데
     5로 111을 만들때, 가장 빠른게 555/5 이다.
 
-    TODO: 첫항의 괄호만 고려되므로 다른 방법을 찾아야한다.
     */
+    static Set<Integer>[] memo;
+
     public static int solution(int N, int number) {
+        memo = new HashSet[9];
 
-
-
-//        memo = new int[32000 + 1];
-//        Arrays.fill(memo, Integer.MAX_VALUE / 2);
-
-        memo = new HashMap<>();
-
-        int answer = INF;
-        int term = N;
-        for(int i = 1; i <= 8; i++) {
-            answer = Math.min(answer, backtrack(N, number, i, term) + i);
-            if (term * 10 + N > 32000 * N) break;
-            term = term * 10 + N;
+        for (int k = 1; k <= 8; k++) {
+            Set<Integer> currentSet = getValues(k, N);
+            if (currentSet.contains(number)) {
+                return k;
+            }
         }
-        return answer > 8 ? -1 : answer;
+
+        return -1;
     }
 
-    //    static int[] memo;
-    static Map<Integer, Integer> memo;
-    static final int INF = Integer.MAX_VALUE / 2;
-    // 반환값: num을 만드는 최소 수
-    static int backtrack(int N, int number, int depth, int num) {
-        if (depth > 8) { // 최대 N 사용시
-            return 1;
+    static Set<Integer> getValues(int k, int N) {
+        if (memo[k] != null) {
+            return memo[k];
         }
 
-        if (num == number) {
-            return depth;
+        Set<Integer> result = new HashSet<>();
+
+        int continuousNum = 0;
+        for (int i = 0; i < k; i++) {
+            continuousNum = continuousNum * 10 + N;
+        }
+        result.add(continuousNum);
+
+        for (int i = 1; i < k; i++) {
+            Set<Integer> leftSet = getValues(i, N);
+            Set<Integer> rightSet = getValues(k - i, N);
+
+            for (int num1 : leftSet) {
+                for (int num2 : rightSet) {
+                    result.add(num1 + num2);
+                    result.add(num1 - num2);
+                    result.add(num1 * num2);
+                    if (num2 != 0) {
+                        result.add(num1 / num2);
+                    }
+                }
+            }
         }
 
-        if (memo.containsKey(num) && memo.get(num) <= depth) {
-            return INF;
-        }
-
-        memo.put(num, depth);
-
-        int min = INF;
-
-        min = Math.min(min, backtrack(N, number, depth + 1, num + N)); // N 더하기
-        min = Math.min(min, backtrack(N, number, depth + 1, num - N)); // N 빼기 -> 더해야할 것이 N 만큼 는다.
-        min = Math.min(min, backtrack(N, number, depth + 1, num * N)); // 남은 수를 N으로 곱하기
-        if (num != 0)
-            min = Math.min(min, backtrack(N, number, depth + 1, num / N)); // 남은 수를 N으로 나누기
-
-        return min;
+        memo[k] = result;
+        return result;
     }
 
      public static void main (String[] args) {
