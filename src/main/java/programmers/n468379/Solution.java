@@ -22,13 +22,20 @@ public class Solution {
     그럼 누적합?
 
     범위안에 최소의 크기를 어떻게 인지할까...
+
     */
 
     public int[] solution(int m, int n, int h, int w, int[][] drops) {
         int[][] grid = new int[m][n];
         int idx = 1;
         for (int[] pos: drops) {
-            grid[pos[0]][pos[1]] = idx++; // 점수기록
+            grid[pos[0]][pos[1]] = 1; // 점수기록
+        }
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                grid[i][j] += grid[i - 1][j] + grid[i][j - 1] + grid[i - 1][j - 1];
+            }
         }
 
         // 가장 낮은 점수인 영역을 찾아 탐색을 종료한다.
