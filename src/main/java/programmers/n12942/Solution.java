@@ -1,5 +1,7 @@
 package programmers.n12942;
 
+import java.util.Arrays;
+
 class Solution {
     /*
     만약 ab, bc행렬이 있을때
@@ -11,25 +13,33 @@ class Solution {
     public int solution(int[][] mat) {
         int answer = 0;
         int len = mat.length;
-        int[][] dp = new int[len + 1][len + 1];
+        int[][] dp = new int[len][len];
+        for (int i = 0; i < len; i++) {
+            Arrays.fill(dp[i], Integer.MAX_VALUE);
+        }
 
-        // dp[i][i] = 0;
-        // dp[i - 1][i] = mat[i - 1][0] * mat[i - 1][1] * mat[i][1];
-        // dp[i - 2][i] = Math.min(dp[i - 2][i - 1] + alpha, dp[i - 1][i] + alpha);
+        for (int i = 0; i < len; i++) {
+            dp[i][i] = 0; // 한 행렬만 존재 => 곱셉: 0
+        }
 
-//         for (int i = 0; i < len; i++) {
-//             for (int j = 0; j < len; j++) {
+        for (int dist = 1; dist < len; dist++) {
+            for (int i = 0; i < len - dist; i++) {
+                int j = i + dist;
 
-//             }
-//         }
+                for (int k = i; k < j; k++) {
+                    dp[i][j] = Math.min(
+                            dp[i][j],
+                            dp[i][k] + dp[k + 1][j] + (mat[i][0] * mat[k][1] * mat[j][1])
+                    );
+                }
+            }
+        }
 
-
-        return answer;
+        return dp[0][len - 1];
     }
 
-
-    // public static void main(String[] args) {
-    //     Solution sol = new Solution();
-    //     System.out.println(sol.solution(new int[][]{{5, 3}, {3, 10}, {10, 6}})); // 270
-    // }
+     public static void main(String[] args) {
+         Solution sol = new Solution();
+         System.out.println(sol.solution(new int[][]{{5, 3}, {3, 10}, {10, 6}})); // 270
+     }
 }
