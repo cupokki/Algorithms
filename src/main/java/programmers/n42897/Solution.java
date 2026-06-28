@@ -15,24 +15,22 @@ public class Solution {
 
         first[1] = money[0];
         first[2] = money[0];
-        first[3] = money[0] + money[2];
 
         second[2] = money[1];
-        second[3] = money[1];
 
-        for (int i = 3; i < n; i++) {
-            first[i] = Math.max(first[i - 2] + money[i - 1], first[i - 3] + money[i - 1]);
+        for (int i = 2; i < n; i++) {
+            first[i] = Math.max(first[i - 2] + money[i - 1], first[i - 1]);
         }
 
-        for (int i = 3; i <= n; i++) {
-            second[i] = Math.max(second[i - 2] + money[i - 1], second[i - 3] + money[i - 1]);
+        for (int i = 2; i <= n; i++) {
+            second[i] = Math.max(second[i - 2] + money[i - 1], second[i - 1]);
         }
 
-        answer = Math.max(
-                Math.max(first[n - 1], first[n - 2]),
-                Math.max(second[n], second[n - 1])
-        );
-
+        // answer = Math.max(
+        //     Math.max(first[n - 1], first[n - 2]),
+        //     Math.max(second[n], second[n - 1])
+        // );
+        answer = Math.max(first[n - 1], second[n]);
         return answer;
     }
 
