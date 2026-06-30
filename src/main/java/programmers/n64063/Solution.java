@@ -3,6 +3,7 @@ package programmers.n64063;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.LongStream;
 
 public class Solution {
     /*
@@ -21,16 +22,16 @@ public class Solution {
         int n = room_number.length; // 10억이하
 
         long[] answer = new long[n];
-
+        long[] possibleRoom = LongStream.range(0, n + 1).toArray();
         Set<Long> occupied = new HashSet<>();
 
         for (int i = 0; i < n; i++) {
             long wishNum = room_number[i];
-            while (occupied.contains(wishNum)) {
-                wishNum++; // time complexity
+            while (occupied.contains(possibleRoom[(int)wishNum])) { // 가장 점유된 수 중 가장 큰수?
+                possibleRoom[(int)wishNum]++;
             }
-            occupied.add(wishNum);
-            answer[i] = wishNum;
+            occupied.add(possibleRoom[(int)wishNum]);
+            answer[i] = possibleRoom[(int)wishNum];
         }
 
         return answer;
