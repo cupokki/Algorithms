@@ -1,8 +1,6 @@
 package programmers.n64063;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.LongStream;
 
 public class Solution {
@@ -22,16 +20,28 @@ public class Solution {
         int n = room_number.length; // 10억이하
 
         long[] answer = new long[n];
-        long[] possibleRoom = LongStream.range(0, n + 1).toArray();
-        Set<Long> occupied = new HashSet<>();
+        long[] possibleRoom = new long[(int)k + 1];
+        for (int i = 1; i <= k; i++) {
+            possibleRoom[i] = i;
+        }
 
         for (int i = 0; i < n; i++) {
-            long wishNum = room_number[i];
-            while (occupied.contains(possibleRoom[(int)wishNum])) { // 가장 점유된 수 중 가장 큰수?
-                possibleRoom[(int)wishNum]++;
+            long wishNum = (int)room_number[i];
+            List<Long> temp = new ArrayList<>();
+
+            while (possibleRoom[(int)wishNum] != wishNum) {
+                temp.add(wishNum);
+                wishNum = possibleRoom[(int)wishNum]; // 다음 방 후보로
             }
-            occupied.add(possibleRoom[(int)wishNum]);
-            answer[i] = possibleRoom[(int)wishNum];
+            answer[i] = wishNum;
+
+            possibleRoom[(int)wishNum] = wishNum + 1; // 기본
+
+            for (long num : temp) {
+                possibleRoom[(int)num] = wishNum + 1;
+            }
+
+            answer[i] = wishNum;
         }
 
         return answer;
