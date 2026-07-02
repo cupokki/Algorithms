@@ -20,25 +20,22 @@ public class Solution {
         int n = room_number.length; // 10억이하
 
         long[] answer = new long[n];
-        long[] possibleRoom = new long[(int)k + 1];
-        for (int i = 1; i <= k; i++) {
-            possibleRoom[i] = i;
-        }
+        Map<Long, Long> map = new HashMap<>();
 
-        for (int i = 0; i < n; i++) {
-            long wishNum = (int)room_number[i];
+        for (int i = 0; i < n; i++) { // 10^12
+            long wishNum = room_number[i];
+
             List<Long> temp = new ArrayList<>();
 
-            while (possibleRoom[(int)wishNum] != wishNum) {
+            while (map.containsKey(wishNum)) {
                 temp.add(wishNum);
-                wishNum = possibleRoom[(int)wishNum]; // 다음 방 후보로
+                wishNum = map.get(wishNum);
             }
-            answer[i] = wishNum;
 
-            possibleRoom[(int)wishNum] = wishNum + 1; // 기본
+            map.put(wishNum, wishNum + 1);
 
             for (long num : temp) {
-                possibleRoom[(int)num] = wishNum + 1;
+                map.put(num, wishNum + 1);
             }
 
             answer[i] = wishNum;
