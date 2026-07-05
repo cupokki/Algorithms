@@ -16,37 +16,40 @@ public class Solution {
     k는 2*10^13이하의 자연수 => 이분탐색?
     */
     public int solution(int[] food_times, long k) {
-        int answer = -1;
 
-        int n = food_times.length;
+        long total = Arrays.stream(food_times).sum();
+        if (total <= k)  return -1;
+
 
         // sort by times;
         PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparing(a -> a[0]));
 
+        int n = food_times.length;
         for (int i = 0; i < n; i++) {
-            pq.offer(new int[]{food_times[i], i});
+            pq.offer(new int[]{food_times[i], i + 1});
         }
 
+        int t = 0; // 소모한 시간
 
+        // 뺄 수 있을 때 까지 k에서 가장 작은 시간 빼기
         while (!pq.isEmpty()) {
-            int[] minFood = pq.peek();
-            int time = minFood[0] * pq.size();
-            if (k < time) {
-                k -= time;
-                pq.poll();
-            } else {
-                //
-
-                for (int i = 0; i < n; i++) { // k는 n 미만이 된 상태
-                    if (food_times[i] - time > 0) k--;
-                    if (k == 0) {
-                        return i;
-                    }
+            long cost = (pq.peek()[0] - t) * pq.size();
+            if (k >= cost) {
+                k -= cost;
+                long next = pq.peek()[0];
+                while(!pq.isEmpty() && pq.peek()[0] == next)  {
+                    t = pq.poll()[0];
                 }
+            } else {
+                break;
             }
         }
 
-        return -1;
+        List<int[]> result = new ArrayList<>();
+        while (!pq.isEmpty()) result.add(pq.poll());
+        result.sort(Comparator.comparingInt(a -> a[1]));
+
+        return result.get((int)(k % result.size()))[1];
     }
 
      public static void main(String[] args) {
