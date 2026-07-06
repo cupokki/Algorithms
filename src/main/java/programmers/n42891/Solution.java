@@ -20,7 +20,6 @@ public class Solution {
         long total = Arrays.stream(food_times).sum();
         if (total <= k)  return -1;
 
-
         // sort by times;
         PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparing(a -> a[0]));
 
@@ -29,17 +28,16 @@ public class Solution {
             pq.offer(new int[]{food_times[i], i + 1});
         }
 
-        int t = 0; // 소모한 시간
+        long t = 0; // 소모한 시간
+        long cnt = n;
 
         // 뺄 수 있을 때 까지 k에서 가장 작은 시간 빼기
         while (!pq.isEmpty()) {
-            long cost = (pq.peek()[0] - t) * pq.size();
+            long cost = (pq.peek()[0] - t) * cnt;
             if (k >= cost) {
                 k -= cost;
-                long next = pq.peek()[0];
-                while(!pq.isEmpty() && pq.peek()[0] == next)  {
-                    t = pq.poll()[0];
-                }
+                t = pq.poll()[0];
+                cnt--;
             } else {
                 break;
             }
@@ -49,7 +47,7 @@ public class Solution {
         while (!pq.isEmpty()) result.add(pq.poll());
         result.sort(Comparator.comparingInt(a -> a[1]));
 
-        return result.get((int)(k % result.size()))[1];
+        return result.get((int)(k % cnt))[1];
     }
 
      public static void main(String[] args) {
