@@ -1,5 +1,7 @@
 package programmers.n42891;
 
+import com.sun.jdi.LongValue;
+
 import java.util.*;
 
 public class Solution {
@@ -17,7 +19,8 @@ public class Solution {
     */
     public int solution(int[] food_times, long k) {
 
-        long total = Arrays.stream(food_times).sum();
+        // int 스트림시 합계에서 타입 처리를 못했음..
+        long total = Arrays.stream(food_times).mapToLong(i->i).sum();
         if (total <= k)  return -1;
 
         // sort by times;
