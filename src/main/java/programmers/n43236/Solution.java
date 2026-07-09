@@ -1,4 +1,4 @@
-package programmers.n43236
+package programmers.n43236;
 
 import java.util.*;
 
@@ -12,27 +12,51 @@ public class Solution {
     바위는 5만개 이하
     n은 5만개 이하
 
+    제거할 바위가 많을떄가 문제인데.
+
+
+
+    뭘정렬하고 그럴껀데
+
     노드간 거리를 구해놓고, nlogn인가
     */
     public int solution(int distance, int[] rocks, int n) {
         int answer = 0;
 
         Arrays.sort(rocks);
-        int[] dist = new int[rocks.length + 1];
-        dist[0] = rocks[0];
-        for (int i = 1; i <= rocks.length; i++) {
-            dist[i] = rocks[i] - rocks[i - 1];
-        }
 
         int low = 0;
         int high = distance;
         while (low <= high) {
             int mid = (low + high) / 2;
+
+            int cnt = 0;
+
+            int prevDist = 0;
+            for (int i = 0; i < rocks.length; i++) {
+                if (mid > rocks[i] - prevDist)
+                    cnt++;
+                else
+                    prevDist = rocks[i];
+            }
+
+            if (cnt >= mid) {
+                // 더 쪼인다.
+                low = mid + 1;
+                answer = Math.min(answer, mid);
+
+            } else {
+                // 더 늘려야한다.
+                high = mid - 1;
+
+            }
         }
+
         return answer;
     }
 
-     public static void main(String[] args) {
+
+    public static void main(String[] args) {
          Solution sol = new Solution();
          System.out.println(sol.solution(25, new int[]{2, 14, 11, 21, 17}, 2)); // 4
      }
