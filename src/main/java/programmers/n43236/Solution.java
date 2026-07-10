@@ -3,6 +3,7 @@ package programmers.n43236;
 import java.util.*;
 
 public class Solution {
+
     /*
     출발지로부터 dist만큼 떨어진 곳에 도착지
     그 사이 바위들이 놓여있어, n개를 제거한다.
@@ -12,18 +13,17 @@ public class Solution {
     바위는 5만개 이하
     n은 5만개 이하
 
-    제거할 바위가 많을떄가 문제인데.
-
-
-
-    뭘정렬하고 그럴껀데
-
     노드간 거리를 구해놓고, nlogn인가
     */
     public int solution(int distance, int[] rocks, int n) {
-        int answer = 0;
+        int answer = Integer.MAX_VALUE;
 
         Arrays.sort(rocks);
+        int[] dist = new int[rocks.length + 1];
+        for (int i = 0; i < rocks.length; i++) {
+            dist[i] = rocks[i];
+        }
+        dist[rocks.length] = distance;
 
         int low = 0;
         int high = distance;
@@ -31,33 +31,30 @@ public class Solution {
             int mid = (low + high) / 2;
 
             int cnt = 0;
-
-            int prevDist = 0;
-            for (int i = 0; i < rocks.length; i++) {
-                if (mid > rocks[i] - prevDist)
+            int startAt = 0;
+            for (int i = 0; i < dist.length; i++) {
+                // 목표치(mid)보다 작은 간격이 존재한다. -> 현재 바위를 제거해 mid보다 작은 최소값을 없앤다.
+                if (mid > dist[i] - startAt) {
                     cnt++;
-                else
-                    prevDist = rocks[i];
+                } else {
+                    startAt = dist[i];
+                }
             }
 
-            if (cnt >= mid) {
-                // 더 쪼인다.
+            // n회 보다 cnt가 많다. -> mid값을 너무 작게 잡았다.
+            if (cnt <= n) {
+                answer = mid;
                 low = mid + 1;
-                answer = Math.min(answer, mid);
-
             } else {
-                // 더 늘려야한다.
                 high = mid - 1;
-
             }
         }
-
         return answer;
     }
 
 
     public static void main(String[] args) {
-         Solution sol = new Solution();
-         System.out.println(sol.solution(25, new int[]{2, 14, 11, 21, 17}, 2)); // 4
-     }
+        Solution sol = new Solution();
+        System.out.println(sol.solution(25, new int[]{2, 14, 11, 21, 17}, 2)); // 4
+    }
 }
