@@ -12,10 +12,10 @@ public class Solution {
     ()
 
     ()(), (())
-
     (()()), ((())), ()()(), (())(), ()(())
 
     직전 값에 감싸는게 아니라 ()로 생성된 최소 단위공간만큼 케이스가 늘어난다?
+    괄호에 감싸지는 j개, 그렇지않은 i - 1 - j개
     */
     public int solution(int n) {
 
@@ -24,8 +24,11 @@ public class Solution {
         dp[0] = 1;
         dp[1] = 1; // "()"
 
+
         for (int i = 2; i <= n; i++) {
-            dp[i] = dp[i - 1] + 1;
+            for (int j = 0; j < i; j++) {
+                dp[i] += dp[j] * dp[i - 1 - j];
+            }
         }
 
         return dp[n];
