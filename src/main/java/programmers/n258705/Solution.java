@@ -19,27 +19,34 @@ class Solution {
     도형을 쪼갤때, 마름모 하나거나, 삼각형 두개로 겹치는 부눈을 고려한다.
 
     */
-    final static int MOD = 10007;
+    final int MOD = 10007;
+
     public int solution(int n, int[] tops) {
         int answer = 0;
 
         int[][] dp = new int[n + 1][2];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < 2; j++) {
-                if (tops[i] == 0) { // 삼각형이 위에 없다.
 
-                } else { // 있다.
+        dp[0][0] = 1; // 오른쪽 마름모x
+        dp[0][1] = 0; // 오른쪽 마름모o
 
-                }
+        for (int i = 1; i <= n; i++) {
+            if (tops[i - 1] == 1) { // 삼각형이 위에 있다.
+                dp[i][0] = (dp[i - 1][0] * 3 + dp[i - 1][1] * 2) % MOD;
+                dp[i][1] = (dp[i - 1][0] * 2 + dp[i - 1][1] * 1) % MOD;
+            } else { // 없다.
+                dp[i][0] = (dp[i - 1][0] * 2 + dp[i - 1][1] * 1) % MOD;
+                dp[i][1] = (dp[i - 1][0] * 1 + dp[i - 1][1] * 1) % MOD;
             }
         }
+
+        answer = (dp[n][0] + dp[n][1]) % MOD;
         return answer;
     }
 
-     public static void main(String[] args) {
-         Solution sol = new Solution();
-         System.out.println(sol.solution(4, new int[]{1, 1, 0, 1})); // 149
-         System.out.println(sol.solution(2, new int[]{0, 1})); // 11
-         System.out.println(sol.solution(10, new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0})); // 7704
-     }
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        System.out.println(sol.solution(4, new int[]{1, 1, 0, 1})); // 149
+        System.out.println(sol.solution(2, new int[]{0, 1})); // 11
+        System.out.println(sol.solution(10, new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0})); // 7704
+    }
 }
