@@ -32,7 +32,7 @@ class Solution {
         for (int i = 1; i <= n; i++) {
             if (tops[i - 1] == 1) { // 삼각형이 위에 있다.
                 dp[i][0] = (dp[i - 1][0] * 3 + dp[i - 1][1] * 2) % MOD;
-                dp[i][1] = (dp[i - 1][0] * 2 + dp[i - 1][1] * 1) % MOD;
+                dp[i][1] = (dp[i - 1][0] * 1 + dp[i - 1][1] * 1) % MOD;
             } else { // 없다.
                 dp[i][0] = (dp[i - 1][0] * 2 + dp[i - 1][1] * 1) % MOD;
                 dp[i][1] = (dp[i - 1][0] * 1 + dp[i - 1][1] * 1) % MOD;
