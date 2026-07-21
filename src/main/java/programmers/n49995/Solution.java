@@ -8,6 +8,8 @@ public class Solution {
     불가능 하다면 0
 
     배열의 길이는 2000
+
+    2000 ^ 3 = 40000000 * 2000 = 8 000 000 000 => 80억회
     */
     public int solution(int[] cookie) {
         int answer = 0;
@@ -15,11 +17,25 @@ public class Solution {
         int n = cookie.length;
         int[] prefixSum = new int[n + 1];
         for (int i = 1; i <= n; i++) {
-            prefixSum[i] = cookie[i] + prefixSum[i - 1];
+            prefixSum[i] = cookie[i - 1] + prefixSum[i - 1];
         }
 
-
-        for (int r = 0; r < n; r++) {
+        for (int m = 0; m < n; m++) {
+            int l = m;
+            int r =  m + 1;
+            int firstSon, secondSon;
+            while (l != 0 && r != n) {
+                firstSon = prefixSum[m] - prefixSum[l];
+                secondSon = prefixSum[r] - prefixSum[m + 1];
+                if (firstSon == secondSon) {
+                    answer = Math.max(answer, firstSon);
+                }
+                if (firstSon <= secondSon) {
+                    l--;
+                } else {
+                    r++;
+                }
+            }
         }
         return answer;
     }
