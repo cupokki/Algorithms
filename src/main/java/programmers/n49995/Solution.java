@@ -15,26 +15,25 @@ public class Solution {
         int answer = 0;
 
         int n = cookie.length;
-        int[] prefixSum = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
-            prefixSum[i] = cookie[i - 1] + prefixSum[i - 1];
-        }
 
-        for (int m = 0; m < n; m++) {
+        for (int m = 0; m < n - 1; m++) {
             int l = m;
             int r =  m + 1;
-            int firstSon, secondSon;
-            while (l != 0 && r != n) {
-                firstSon = prefixSum[m] - prefixSum[l];
-                secondSon = prefixSum[r] - prefixSum[m + 1];
+            int firstSon = cookie[l];
+            int secondSon = cookie[r];
+            while (l > 0 || r < n) {
                 if (firstSon == secondSon) {
                     answer = Math.max(answer, firstSon);
                 }
+
                 if (firstSon <= secondSon) {
-                    l--;
-                } else {
-                    r++;
+                    if (l == 0) break;
+                    firstSon += cookie[--l];
+                } else{
+                    if (r == n - 1) break;
+                    secondSon += cookie[++r];
                 }
+
             }
         }
         return answer;
