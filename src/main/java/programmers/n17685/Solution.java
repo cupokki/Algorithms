@@ -12,35 +12,55 @@ public class Solution {
     
     한글자씩 읽어들인다.
     map에 조회한다.
+
+    순서대로 입력하는게 아니다.
     
     */
     public int solution(String[] words) {
         int answer = 0;
 
-        Map<String, Integer> map = new HashMap<>();
+        int n = words.length;
+        Arrays.sort(words);
 
-        StringBuilder sb = new StringBuilder();
+        // 인접단어를 비교하여 계산
+        for (int i = 0; i < n; i++) {
+            String cur = words[i];
 
-        // 아예 처음 찾는 경우를 고려하라.
-        for (int i = 0; i < words.length; i++) {
-            String word = words[i];
-            sb = new StringBuilder();
-            boolean done = false;
-            for (int j = 0; j < word.length(); j++) {
-                sb.append(word.charAt(j));
-                int value = map.computeIfAbsent(sb.toString(), k -> 0);
-                if (value == 0 && map.containsKey(word)) { // unique
-                    done = true;
+            int maxSameLen = 0;
+
+            if (i > 0) {
+                String prev = words[i - 1];
+
+                // compare
+                int len = Math.min(prev.length(), cur.length());
+                int sameLen = len;
+                for (int j = 0; j < len; j++) {
+                    if (prev.charAt(j) != cur.charAt(j)) {
+                        sameLen = j;
+                        break;
+                    }
                 }
-                if (!done) {
-                    answer++;
-                }
-                map.put(sb.toString(), value + 1);
-
+                maxSameLen = Math.max(maxSameLen, sameLen);
             }
+
+            if (i < n - 1) {
+                String next = words[i + 1];
+
+                // compare
+                int len = Math.min(next.length(), cur.length());
+                int sameLen = len;
+                for (int j = 0; j < len; j++) {
+                    if (next.charAt(j) != cur.charAt(j)) {
+                        sameLen = j;
+                        break;
+                    }
+                }
+                maxSameLen = Math.max(maxSameLen, sameLen);
+            }
+
+            answer += Math.min(maxSameLen + 1, cur.length());
+
         }
-
-
         return answer;
     }
 
