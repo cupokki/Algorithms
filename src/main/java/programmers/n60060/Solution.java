@@ -1,5 +1,7 @@
 package programmers.n60060;
 
+import java.util.Arrays;
+
 public class Solution {
     /*
     노래가사 검색 프로그램 개발
@@ -12,11 +14,46 @@ public class Solution {
     - 단어에 공백 없음, 영어 소문자만
     - 가사 단어 길이의 합은 100만 이하.
     - 중복은 제거하라
+
+    words 정렬 -> 인접한것은 비슷할 확률이 높다.
+
+    binary search해서, start문자가 같은것 탐색
+    탐색후 주변검색
      */
     public int[] solution(String[] words, String[] queries) {
         int[] answer = {};
+
+        Arrays.sort(words);
+
+        for (String keyword : queries) {
+
+            int start = 0, end = keyword.length();
+            if (keyword.charAt(0) == '?') {
+                while (keyword.charAt(start) != '?') {
+                    start++;
+                }
+            } else {
+                while (keyword.charAt(end - 1) != '?') {
+                    end--;
+                }
+            }
+
+
+
+        }
+
         return answer;
     }
+
+    // 앞쪽 와일드카드넣으면 안된다.
+    int binarySearch (String[] words, String keyword, int l, int r) {
+        int m = (l + r) / 2;
+        while (l < r) {
+
+        }
+        return m;
+    }
+
 
     public static void main(String[] args) {
         Solution sol = new Solution();
