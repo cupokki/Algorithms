@@ -31,7 +31,7 @@ public class Solution {
             StringBuilder sb = new StringBuilder(words[i]);
             reversedWords[i] = sb.reverse().toString();
         }
-        Arrays.sort(words);
+        Arrays.sort(reversedWords);
 
 //        ab abc abb, aba, acc
         // ab?? -> ab, abc
@@ -40,15 +40,15 @@ public class Solution {
             String[] curWords;
             String keyword = queries[i];
             int matchCnt = 0;
-            int start = 0, end = keyword.length();
+            int start = keyword.length(), end = keyword.length();
             if (keyword.charAt(0) == '?') { // 앞부터 ?임
                 curWords = reversedWords;
                 keyword = new StringBuilder(queries[i]).reverse().toString();
             } else { // 뒤 부터 ?임
                 curWords = words;
             }
-            while (keyword.charAt(end - 1) == '?') {
-                end++;
+            while (keyword.charAt(start - 1) == '?') {
+                start--;
             }
 
             // 와일드카드와 일치하는 words 원소의 인덱스 발견
@@ -58,7 +58,7 @@ public class Solution {
                 for (int j = idx; j >= 0; j--) {
                     // 길이가 다르거나, 대상 구간 문자가 일치하지않으면
                     if (curWords[j].length() != keyword.length()) break;
-                    if (compare(curWords[j], keyword, start, end) != 0) break;
+                    if (compare(curWords[j], keyword) != 0) break;
                     matchCnt++;
                 }
 
@@ -66,7 +66,7 @@ public class Solution {
                 for (int j = idx + 1; j < curWords.length; j++) {
                     // 길이가 다르거나, 대상 구간 문자가 일치하지않으면
                     if (curWords[j].length() != keyword.length()) break;
-                    if (compare(curWords[j], keyword, start, end) != 0) break;
+                    if (compare(curWords[j], keyword) != 0) break;
                     matchCnt++;
                 }
             }
@@ -77,8 +77,9 @@ public class Solution {
         return answer;
     }
 
-    int compare(String word, String keyword, int start, int end) {
-        for (int i = start; i < end; i++) {
+    int compare(String word, String keyword) {
+        for (int i = 0; i < word.length(); i++) {
+            if (keyword.charAt(i) == '?') break;
             if (word.charAt(i) != keyword.charAt(i)) {
                 return word.charAt(i) - keyword.charAt(i);
             }
@@ -92,7 +93,7 @@ public class Solution {
         while (l < r) {
             m = (l + r) / 2;
             // m번째 문자가 키워드 보다 큼
-            int diff = compare(words[m], keyword, start, end);
+            int diff = compare(words[m], keyword);
             if (diff == 0) {
                 return m;
             } else if (diff < 0) {
