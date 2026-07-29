@@ -1,6 +1,6 @@
 package programmers.n60060;
 
-import java.util.Arrays;
+import java.util.*;
 
 public class Solution {
     /*
@@ -24,85 +24,78 @@ public class Solution {
     public int[] solution(String[] words, String[] queries) {
         int[] answer = new int[queries.length];
 
-        Arrays.sort(words);
-        // 역순정렬한 걸로 탐색?
-        String[] reversedWords = new String[words.length];
+        Map<Integer, List<String>> wordsByLength = new HashMap<>();
+        Map<Integer, List<String>> reversedWordsByLength = new HashMap<>();
+
         for (int i = 0; i < words.length; i++) {
-            StringBuilder sb = new StringBuilder(words[i]);
-            reversedWords[i] = sb.reverse().toString();
+            wordsByLength.computeIfAbsent(words[i].length(), k -> new ArrayList<>()).add(words[i]);
+            String reversed = new StringBuilder(words[i]).reverse().toString();
+            reversedWordsByLength.computeIfAbsent(words[i].length(), k -> new ArrayList<>()).add(reversed);
         }
-        Arrays.sort(reversedWords);
+
+
+
+        wordsByLength.forEach((k,v)-> Collections.sort(v));
+        reversedWordsByLength.forEach((k,v)-> Collections.sort(v));
 
 //        ab abc abb, aba, acc
         // ab?? -> ab, abc
 
         for (int i = 0; i < queries.length; i++) {
-            String[] curWords;
             String keyword = queries[i];
-            int matchCnt = 0;
-            int start = keyword.length(), end = keyword.length();
-            if (keyword.charAt(0) == '?') { // 앞부터 ?임
-                curWords = reversedWords;
-                keyword = new StringBuilder(queries[i]).reverse().toString();
-            } else { // 뒤 부터 ?임
-                curWords = words;
+            List<String> curWords;
+
+            if (keyword.charAt(0) == '?') {
+                keyword = new StringBuilder(keyword).reverse().toString();
+                curWords = reversedWordsByLength.get(keyword.length());
+            } else {
+                curWords = wordsByLength.get(keyword.length());
             }
-            while (keyword.charAt(start - 1) == '?') {
-                start--;
+
+            if (curWords == null) {
+                answer[i] = 0;
+                continue;
             }
+
+            String start = keyword.replace("?", "a");
+            String end = keyword.replace("?", "z");
 
             // 와일드카드와 일치하는 words 원소의 인덱스 발견
-            int idx = binarySearch(curWords, keyword, 0, curWords.length, start, end);
-            if (idx != -1) {
-                // 역순으로 더있는지 확인
-                for (int j = idx; j >= 0; j--) {
-                    // 길이가 다르거나, 대상 구간 문자가 일치하지않으면
-                    if (curWords[j].length() != keyword.length()) break;
-                    if (compare(curWords[j], keyword) != 0) break;
-                    matchCnt++;
-                }
-
-                // 정방향으로 더 있는지 확인
-                for (int j = idx + 1; j < curWords.length; j++) {
-                    // 길이가 다르거나, 대상 구간 문자가 일치하지않으면
-                    if (curWords[j].length() != keyword.length()) break;
-                    if (compare(curWords[j], keyword) != 0) break;
-                    matchCnt++;
-                }
-            }
-
-            answer[i] = matchCnt;
+            int startIdx = binarySearchLow(curWords, start);
+            int endIdx = binarySearchHigh(curWords, end);
+            answer[i] = endIdx - startIdx;
         }
 
         return answer;
     }
 
-    int compare(String word, String keyword) {
-        for (int i = 0; i < word.length(); i++) {
-            if (keyword.charAt(i) == '?') break;
-            if (word.charAt(i) != keyword.charAt(i)) {
-                return word.charAt(i) - keyword.charAt(i);
+
+    int binarySearchLow (List<String> words, String target) {
+        int l = 0;
+        int r = words.size();
+        while (l < r) {
+            int m = (l + r) / 2;
+            if (words.get(m).compareTo(target) >= 0) {
+                r = m;
+            } else {
+                l = m + 1;
             }
         }
-        return 0;
+        return l;
     }
 
-
-    int binarySearch (String[] words, String keyword, int l, int r, int start, int end) {
-        int m = 0;
+    int binarySearchHigh (List<String> words, String target) {
+        int l = 0;
+        int r = words.size();
         while (l < r) {
-            m = (l + r) / 2;
-            // m번째 문자가 키워드 보다 큼
-            int diff = compare(words[m], keyword);
-            if (diff == 0) {
-                return m;
-            } else if (diff < 0) {
-                l = m + 1;
+            int m = (l + r) / 2;
+            if (words.get(m).compareTo(target) > 0) {
+                r = m;
             } else {
-                r = m - 1;
+                l = m + 1;
             }
         }
-        return -1;
+        return l;
     }
 
 
