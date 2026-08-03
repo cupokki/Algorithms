@@ -98,27 +98,56 @@ public class Solution {
 //        return l;
 //    }
 //
-    public int[] solution(String[] words, String[] queries) {
-        class Node {
-            int parent;
-            int child;
-            char character;
-            Node(int parent, int child, char character) {
-                this.parent = parent;
-                this.child = child;
-                this.character = character;
+    class Node {
+        Map<Character, Node> children = new HashMap<>();
+        Map<Integer, Integer> wordLengthCnt = new HashMap<>();
+        // 전체 단어 길이가 별, 해당 길이를 가진 단어의 수.
+    }
+    class Tree {
+        Node root = new Node();
+
+        void add(String word) {
+            Node cur = root;
+            cur.wordLengthCnt.put(word.length(), cur.wordLengthCnt.getOrDefault(word.length(), 0) + 1);
+            for (char c : word.toCharArray()) {
+                cur = cur.children.computeIfAbsent(c, k -> new Node());
+                cur.wordLengthCnt.put(word.length(), cur.wordLengthCnt.getOrDefault(word.length(), 0) + 1);
             }
         }
 
+        int getCount(String query) {
+            Node cur = root;
+
+            for (char c : query.toCharArray()) {
+                if (c == '?') {
+                    return cur.wordLengthCnt.getOrDefault(query.length(), 0);
+                } else if (!cur.children.containsKey(c)) {
+                    return 0;
+                } else {
+                    cur = cur.children.get(c);
+                }
+            }
+            return cur.wordLengthCnt.getOrDefault(query.length(), 0);
+        }
+    }
+    public int[] solution(String[] words, String[] queries) {
+
         int[] answer = new int[queries.length];
-        List<Node> tree = new ArrayList();
+        Tree tree = new Tree();
+        Tree reversedTree = new Tree();
 
         for (String word : words) {
-            char[] chars = word.toCharArray();
-            int len = chars.length;
-            tree.add(new Node(-1, chars[1], chars[0]));
-            tree.add(new Node(chars[len - 1], -1, chars[len]));
-            for (int i = 1; i < len; i++) {
+            tree.add(word);
+            reversedTree.add(new StringBuilder(word).reverse().toString());
+        }
+
+
+        for (int i = 0; i < queries.length; i++) {
+            String query = queries[i];
+            if (query.charAt(0) == '?') {
+                answer[i] = reversedTree.getCount(new StringBuilder(query).reverse().toString());
+            } else {
+                answer[i] = tree.getCount(query);
             }
         }
 
