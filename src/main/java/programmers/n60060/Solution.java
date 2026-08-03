@@ -108,10 +108,12 @@ public class Solution {
 
         void add(String word) {
             Node cur = root;
-            cur.wordLengthCnt.put(word.length(), cur.wordLengthCnt.getOrDefault(word.length(), 0) + 1);
+//            cur.wordLengthCnt.put(word.length(), cur.wordLengthCnt.getOrDefault(word.length(), 0) + 1);
+            cur.wordLengthCnt.merge(word.length(), 1, Integer::sum);
             for (char c : word.toCharArray()) {
                 cur = cur.children.computeIfAbsent(c, k -> new Node());
-                cur.wordLengthCnt.put(word.length(), cur.wordLengthCnt.getOrDefault(word.length(), 0) + 1);
+//                cur.wordLengthCnt.put(word.length(), cur.wordLengthCnt.getOrDefault(word.length(), 0) + 1);
+                cur.wordLengthCnt.merge(word.length(), 1, Integer::sum);
             }
         }
 
