@@ -16,17 +16,20 @@ public class Solution {
     모든 문제를 푸는 최단 시간을 출력하라.
 
     어려운순으로 오름차순 정리?
+
+    1. 문제가 해결할 수 있는게 있다면 해결한다.
+    2. 해결 할 수 없으면, 해결 할 수 있을 만큼 공부한다.?
+
+    우선순위 큐 정렬기준을 어떡하는가.
+        - 요구 알고력과 코딩력은 우선순위를 매기면 답에 문제가 생기지 않는가.
+        - 가령 현재 [0, 3]이고, 우선순위에 [1, 3, 0, 0], [1, 4, 5, 5], [6, 7, 5, 5]인 문제가 있다면
+          알고력을 공부하는게 다음 문제를 푸는데 이득인지만,
+            코딩력을 공부해서 바로 문제를 풀수있지만,
+
+    /
      */
     public int solution(int alp, int cop, int[][] problems) {
         int answer = 0;
-
-//        Arrays.sort(problems, Comparator
-//                .comparing((int[] a) -> a[0]) // algReq
-//                .thenComparing(a -> a[1]) // copReq
-//                .thenComparing(a -> a[2]) // algRwd
-//                .thenComparing(a -> a[3]) // copRwd
-//                .thenComparing(a -> a[4]) // cost
-//        );
 
         PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator
                 .comparing((int[] a) -> a[0]) // algReq
@@ -59,6 +62,8 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-
+        Solution sol = new Solution();
+        System.out.println(sol.solution(10, 10, new int[][]{{10, 15, 2, 1, 2}, {20, 20, 3, 3, 4}})); // 15
+        System.out.println(sol.solution(0, 0, new int[][]{{0, 0, 2, 1, 2}, {4, 5, 3, 1, 2}, {4, 11, 4, 0, 2}, {10, 4, 0, 4, 2}})); // 13
     }
 }
