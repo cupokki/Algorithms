@@ -20,43 +20,30 @@ public class Solution {
     1. 문제가 해결할 수 있는게 있다면 해결한다.
     2. 해결 할 수 없으면, 해결 할 수 있을 만큼 공부한다.?
 
-    우선순위 큐 정렬기준을 어떡하는가.
-        - 요구 알고력과 코딩력은 우선순위를 매기면 답에 문제가 생기지 않는가.
-        - 가령 현재 [0, 3]이고, 우선순위에 [1, 3, 0, 0], [1, 4, 5, 5], [6, 7, 5, 5]인 문제가 있다면
-          알고력을 공부하는게 다음 문제를 푸는데 이득인지만,
-            코딩력을 공부해서 바로 문제를 풀수있지만,
-
     /
      */
     public int solution(int alp, int cop, int[][] problems) {
         int answer = 0;
-
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator
-                .comparing((int[] a) -> a[0]) // algReq
+        var comp = Comparator.comparing((int[] a) -> a[0]) // algReq
                 .thenComparing(a -> a[1]) // copReq
                 .thenComparing(a -> a[2]) // algRwd
                 .thenComparing(a -> a[3]) // copRwd
-                .thenComparing(a -> a[4]) // cost);
-        );
+                .thenComparing(a -> a[4]); // cost)
+                // a[5] : idx;
 
-        for (int[] problem : problems) pq.offer(problem);
+        PriorityQueue<int[]> pq = new PriorityQueue<>(comp);
+
+        for (int i = 0; i < problems[0].length; i++) {
+            pq.offer(new int[]{problems[i][0], problems[i][1], problems[i][2], problems[i][3],  problems[i][4], problems[i][5], i});
+        }
+
+        int[] dist = new int[problems[0].length];
+
+        Arrays.fill(dist, -1); // -1 = INF
 
         while (!pq.isEmpty()) {
             int[] cur = pq.peek();
-            if (alp >= cur[0] && cop >= cur[1]) {
-                alp += cur[2];
-                cop += cur[3];
-                answer += cur[4];
-                pq.poll();
-            } else if (alp < cur[0]) {
-                alp++;
-                answer++;
-                alp++;
-            } else {
-                cop++;
-                answer++;
-                cop++;
-            }
+            int idx = cur[5];
         }
         return answer;
     }
