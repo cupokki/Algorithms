@@ -21,26 +21,15 @@ public class Solution {
     다익스트라?
     우선 순위큐로 최초에 -1로 초기화 된 최단거리배열 갱신해가면서, 완성된 최단거리 배열 i번 인덱스가 결괏값이다.
     다익스트라는 bfs랑 비슷하나 우선순위큐를 사용한다는점, 갱신규칙이 다르다는 점이 다르다.
-
-
-
-
-    /
      */
     public int solution(int alp, int cop, int[][] problems) {
         int answer = 0;
-        var comp = Comparator.comparing((int[] a) -> a[0]) // algReq
-                .thenComparing(a -> a[1]) // copReq
-                .thenComparing(a -> a[2]) // algRwd
-                .thenComparing(a -> a[3]) // copRwd
-                .thenComparing(a -> a[4]); // cost)
-                // a[5] : idx;
+        var comp = Comparator
+                .comparing((int[] a) -> a[0]) // current alg
+                .thenComparing(a -> a[1]) // current cop
+                .thenComparing(a -> a[2]); // current cost
 
         PriorityQueue<int[]> pq = new PriorityQueue<>(comp);
-//
-//        for (int i = 0; i < problems[0].length; i++) {
-//            pq.offer(new int[]{problems[i][0], problems[i][1], problems[i][2], problems[i][3],  problems[i][4], problems[i][5], i});
-//        }
 
         int maxAlp = 0;
         int maxCop = 0;
@@ -50,9 +39,11 @@ public class Solution {
             maxCop = Math.max(maxCop, p[1]);
         }
 
+        int n = problems.length;
 
         int[][] dist = new int[maxAlp][maxCop];
-        for (int i = 0; i < dist.length; i++) Arrays.fill(dist[i], -1); // -1 = INF
+
+        for (int i = 0; i < dist.length; i++) Arrays.fill(dist[i], Integer.MAX_VALUE / 2); // INF
 
         pq.offer(new int[]{alp, cop, 0});
         dist[alp][cop] = 0;
@@ -61,12 +52,32 @@ public class Solution {
             int[] cur = pq.peek();
 
             // alp 공부
+            if (cur[0] + 1 < maxAlp && cur[2] + 1 < dist[cur[0] + 1][cur[1]]) {
+                pq.offer(new int[]{cur[0] + 1, cur[1], cur[2] + 1});
+            }
 
             // cop 공부
+            if (cur[1] + 1 < maxCop && cur[2] + 1 < dist[cur[0]][cur[1] + 1]) {
+                pq.offer(new int[]{cur[0], cur[1] + 1, cur[2] + 1});
+            }
 
             // 문제 풀기
-            for (;;) {}
+            for (int i = 0; i < n; i++) {
+                int alpReq = problems[i][0], copReq = problems[i][1];
+                int alpRwd = problems[i][2], copRwd = problems[i][3];
+                int cost = problems[i][4];
+
+                if ((cur[0] >= alpReq && cur[1] >= copReq) && cur[2] + cost < dist[cur[0]][cur[1]]) {
+                    pq.offer(new int[]{cur[0] +alpRwd , cur[1] + copRwd, cur[2] + cost});
+                }
+            }
         }
+        for (int i = 0; i < maxAlp; i++) {
+            for (int j = 0; j < maxCop; j++) {
+                answer = min(answer, dist[i][j]);
+            }
+        }
+
         return answer;
     }
 
