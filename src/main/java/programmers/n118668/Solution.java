@@ -49,7 +49,7 @@ public class Solution {
         dist[alp][cop] = 0;
 
         while (!pq.isEmpty()) {
-            int[] cur = pq.peek();
+            int[] cur = pq.poll();
 
             // alp 공부
             if (cur[0] + 1 < maxAlp && cur[2] + 1 < dist[cur[0] + 1][cur[1]]) {
