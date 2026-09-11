@@ -25,9 +25,10 @@ public class Solution {
     public int solution(int alp, int cop, int[][] problems) {
         int answer = 0;
         var comp = Comparator
-                .comparing((int[] a) -> a[0]) // current alg
-                .thenComparing(a -> a[1]) // current cop
-                .thenComparing(a -> a[2]); // current cost
+                // .comparing((int[] a) -> a[0]) // current alg
+                // .thenComparing(a -> a[1]) // current cop
+                // .thenComparing(a -> a[2]); // current cost
+                .comparing((int[] a) -> a[2]); // current cost
 
         PriorityQueue<int[]> pq = new PriorityQueue<>(comp);
 
@@ -41,24 +42,39 @@ public class Solution {
 
         int n = problems.length;
 
-        int[][] dist = new int[maxAlp][maxCop];
+        int[][] dist = new int[maxAlp + 1][maxCop + 1];
+        for (int i = 0; i < dist.length; i++) {
+            Arrays.fill(dist[i], Integer.MAX_VALUE / 2); // INF
+        }
 
-        for (int i = 0; i < dist.length; i++) Arrays.fill(dist[i], Integer.MAX_VALUE / 2); // INF
+        alp = min(alp, maxAlp);
+        cop = min(cop, maxCop); // 인덱스 초과 방지
 
         pq.offer(new int[]{alp, cop, 0});
         dist[alp][cop] = 0;
 
         while (!pq.isEmpty()) {
             int[] cur = pq.poll();
+            int curAlp = cur[0];
+            int curCop = cur[1];
+            int curCost = cur[2];
+
+            // 정답
+            if (curAlp == maxAlp && curCop == maxCop) return curCost;
+
+            // 더 좋은 케이스가 존재함
+            if (curCost > dist[curAlp][curCop]) continue;
 
             // alp 공부
-            if (cur[0] + 1 < maxAlp && cur[2] + 1 < dist[cur[0] + 1][cur[1]]) {
-                pq.offer(new int[]{cur[0] + 1, cur[1], cur[2] + 1});
+            if (curAlp + 1 <= maxAlp && curCost + 1 < dist[curAlp + 1][curCop]) {
+                dist[curAlp + 1][curCop] = curCost + 1;
+                pq.offer(new int[]{curAlp + 1, curCop, curCost + 1});
             }
 
             // cop 공부
-            if (cur[1] + 1 < maxCop && cur[2] + 1 < dist[cur[0]][cur[1] + 1]) {
-                pq.offer(new int[]{cur[0], cur[1] + 1, cur[2] + 1});
+            if (curCop + 1 <= maxCop && curCost + 1 < dist[curAlp][curCop + 1]) {
+                dist[curAlp][curCop + 1] = curCost + 1;
+                pq.offer(new int[]{curAlp, curCop + 1, curCost + 1});
             }
 
             // 문제 풀기
@@ -67,17 +83,17 @@ public class Solution {
                 int alpRwd = problems[i][2], copRwd = problems[i][3];
                 int cost = problems[i][4];
 
-                if ((cur[0] >= alpReq && cur[1] >= copReq) && cur[2] + cost < dist[cur[0]][cur[1]]) {
-                    pq.offer(new int[]{cur[0] +alpRwd , cur[1] + copRwd, cur[2] + cost});
+                int nextAlp = min(maxAlp, curAlp + alpRwd);
+                int nextCop = min(maxCop, curCop + copRwd);
+
+                if ((curAlp >= alpReq && curCop >= copReq) && curCost + cost < dist[nextAlp][nextCop]) {
+                    dist[nextAlp][nextCop] = curCost + cost;
+                    pq.offer(new int[]{nextAlp, nextCop, curCost + cost});
                 }
             }
         }
-        for (int i = 0; i < maxAlp; i++) {
-            for (int j = 0; j < maxCop; j++) {
-                answer = min(answer, dist[i][j]);
-            }
-        }
 
+        answer = dist[maxAlp][maxCop];
         return answer;
     }
 
