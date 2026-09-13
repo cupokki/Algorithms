@@ -1,5 +1,7 @@
 package programmers.n118668;
 
+import java.util.Arrays;
+
 public class Solution {
     /*
     알고력, 코딩력은 정수로 표현
@@ -104,21 +106,47 @@ public class Solution {
         }
 
         int[][] dp = new int[maxAlp + 1][maxCop + 1];
-
-        for (int i = 0; i < problems.length; i++) {
-            int reqAlp = problems[i][0];
-            int reqCop = problems[i][1];
-            int rwdAlp = problems[i][2];
-            int rwdCop = problems[i][3];
-            int cost = problems[i][4];
-
-            // 알고력 공부
-
-            // 코테력 공부
-
-            // 다른 공부
+        for (int i = 0; i <= maxAlp; i++) {
+            Arrays.fill(dp[i], Integer.MAX_VALUE / 2);
         }
 
+        alp = Math.min(alp, maxAlp);
+        cop = Math.min(cop, maxCop);
+
+        dp[alp][cop] = 0;
+
+        for (int i = 0; i <= maxAlp; i++) {
+            for (int j = 0; j <= maxCop; j++) {
+
+                // 알고력 공부
+                if (i + 1 <= maxAlp) {
+                    dp[i + 1][j] = Math.min(dp[i + 1][j], dp[i][j] + 1);
+                }
+                // 코테력 공부
+                if (j + 1 <= maxCop) {
+                    dp[i][j + 1] = Math.min(dp[i][j + 1], dp[i][j] + 1);
+                }
+
+                // 문제풀기
+                for (int[] cur : problems) {
+                    int alpReq = cur[0];
+                    int copReq = cur[1];
+                    int alpRwd = cur[2];
+                    int copRwd = cur[3];
+                    int cost = cur[4];
+
+                    if (i >= alpReq && j >= copReq) {
+                        int nextAlp = Math.min(maxAlp, i + alpRwd);
+                        int nextCop = Math.min(maxCop, j + copRwd);
+
+                        dp[nextAlp][nextCop] = Math.min(dp[nextAlp][nextCop], dp[i][j] + cost);
+                    }
+
+                }
+            }
+        }
+
+        answer = dp[maxAlp][maxCop];
         return answer;
     }
 
