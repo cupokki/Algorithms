@@ -1,5 +1,6 @@
 package programmers.n17676;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -16,16 +17,51 @@ public class Solution {
     
     => 날짜정보는 필요없다.
     
+    하루는 몇초인가. -> 24 * 60 * 60 = 3600 * 24 = 74400초
+    2000 * 74400초 충분히 가능하지않나?
+
     */
+    class Log {
+        LocalTime s;
+        Duration t;
+    }
+
     public int solution(String[] lines) {
         int answer = 0;
 
-        for (int i = 0; i < lines.length; i++) {
+        Queue<Log> q = new LinkedList<>();
+
+
+//         for (int i = 0; i < lines.length; i++) {
+//             String[] tokens = lines[i].split(" ");
+//             LocalTime s = DateTime.parse(tokens[1]);
+//             Duration t = Double.valueOf(tokens[2].substring(tokens[2].length - 1));
+//             q.offer(new Log(s, t));
+//         }
+
+        int n = lines.length;
+        Log cur;
+        for (int i = 0; i < n; i++) {
             String[] tokens = lines[i].split(" ");
-//            LocalTime s = LocalTime.from(tokens[1]);
-            Double t = Double.valueOf(tokens[2].substring(0, -1));
+            LocalTime start = LocalTime.parse(tokens[1]);
+            LocalTime end = start.plusSeconds(1);
+
+            int cnt = 1;
+
+            for (int j = i + 1; j < n; j++) {
+
+                tokens = lines[j].split(" ");
+                LocalTime curStart = LocalTime.parse(tokens[1]);
+                Double t = Double.valueOf(tokens[2].substring(tokens[2].length() - 1));
+                LocalTime curEnd = start.plusNanos((long) (t * 1_000_000L));
+
+            }
+
+            answer = Math.max(cnt, answer);
+
 
         }
+
         return answer;
     }
 
