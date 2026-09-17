@@ -24,7 +24,7 @@ public class Solution {
 
         for (int i = 0; i < n; i++) {
 
-            int tps = 01;
+            int tps = 0;
 
             String[] tokens = lines[i].split(" ");
 
