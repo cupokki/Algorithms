@@ -24,39 +24,50 @@ public class Solution {
 
         for (int i = 0; i < n; i++) {
 
-            int tps = 0;
+            int tps = 01;
 
             String[] tokens = lines[i].split(" ");
 
             // TPS 측정 구간
-            LocalTime end = LocalTime.parse(tokens[1]);
-            LocalTime start = end.minusSeconds(1).plusNanos(1_000_000L);
+            int start = toMillisecond(tokens[1]);
+            int end = start + 999;
 
-            for (int j = i; j < n; j++) {
+            for (int j = 0 ; j < n; j++) {
                 tokens = lines[j].split(" ");
-                LocalTime responseTime = LocalTime.parse(tokens[1]);
-                double t = Double.valueOf(tokens[2].substring(0, tokens[2].length() - 1)); // duration
-                LocalTime requestTime = responseTime.minusNanos((long)((t * 1_000_000_000L) - 1_000_000L));
+                int responseTime = toMillisecond(tokens[1]);
+                int requestTime = responseTime - toMillisecond(tokens[2]) + 1;
 
-                if (responseTime.isAfter(start) || requestTime.isBefore(end)) {
+                if (start <= responseTime && requestTime <= end) {
                     tps++;
-                }
-
-                if (responseTime.isBefore(start)) {
-                    i++;
                 }
             }
 
             answer = Math.max(tps, answer);
         }
 
-
         return answer;
+    }
+
+    int toMillisecond(String time) {
+        if (time.charAt(time.length() - 1) == 's') {
+            time = time.substring(0, time.length() - 1);
+            if (time.length() == 1) return Integer.parseInt(time) * 1000;
+            String[] tokens = time.split("\\.");
+            return Integer.parseInt(tokens[0]) * 1000
+                    + Integer.parseInt(tokens[1]) * (int) Math.pow(10, 3 - tokens[1].length());
+        }
+
+        String[] tokens = time.split("[:.]");
+        int hour = Integer.parseInt(tokens[0]) * 60 * 60 * 1000;
+        int minute = Integer.parseInt(tokens[1]) *  60 * 1000;
+        int second = Integer.parseInt(tokens[2]) * 1000;
+        int millisecond = Integer.parseInt(tokens[3]) * (int) Math.pow(10, 3 - tokens[3].length());
+        return hour + minute + second + millisecond;
     }
 
     public static void main(String[] args) {
         Solution sol = new Solution();
-//        System.out.println(sol.solution(new String[] {"2016-09-15 01:00:04.001 2.0s", "2016-09-15 01:00:07.000 2s"})); // 1
+        System.out.println(sol.solution(new String[] {"2016-09-15 01:00:04.001 2.0s", "2016-09-15 01:00:07.000 2s"})); // 1
         System.out.println(sol.solution(new String[] {"2016-09-15 01:00:04.002 2.0s","2016-09-15 01:00:07.000 2s"})); // 2
         System.out.println(sol.solution(new String[] {"2016-09-15 20:59:57.421 0.351s",
                 "2016-09-15 20:59:58.233 1.181s",
