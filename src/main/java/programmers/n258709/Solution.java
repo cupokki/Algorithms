@@ -4,12 +4,15 @@ import java.util.Arrays;
 
 public class Solution {
     /*
-   dice의 길이 n : 10이하, n은 2의 배수
-   dice[i]의 길이는 6이며 원소는 100이하 자연수
+    dice의 길이 n : 10이하, n은 2의 배수
+    dice[i]의 길이는 6이며 원소는 100이하 자연수
 
-   A와 B가 주사위를 n/2씩 주사위를 나누어 던져, 각각의 합을 구한다.
-   합이 큰쪽이 승리, 같다면 무승부이다.
-   A가 승리할 확률이 높도록 주사위를 가져간다. 이때 골라야하는 주사위번호를 오름차순으로 정렬하여 출력
+    A와 B가 주사위를 n/2씩 주사위를 나누어 던져, 각각의 합을 구한다.
+    합이 큰쪽이 승리, 같다면 무승부이다.
+    A가 승리할 확률이 높도록 주사위를 가져간다. 이때 골라야하는 주사위번호를 오름차순으로 정렬하여 출력
+    => 주사위의 액면 평균이 높은 주사위를 고른다?
+
+    dfs
 
      */
     public int[] solution(int[][] dice) {
@@ -17,11 +20,34 @@ public class Solution {
 
         int n = dice.length;
 
-        for (int i = 0; i < n; i++) {
 
+
+        double[] avgs = new double[n];
+
+        for (int i = 0; i < n; i++) {
+            Double avg = Arrays.stream(dice[i]).average().getAsDouble();
+            avgs[i] = avg;
         }
+
+        int[] result = new int[n / 2];
+        dfs(0, n, result);
+
         return answer;
     }
+
+    void dfs (int depth, int n, int[] result) {
+        if (depth == n) {
+            // set result
+            return;
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (result[i] == 0) {
+
+            }
+        }
+    }
+
 
     public static void main(String[] args) {
         Solution sol = new Solution();
