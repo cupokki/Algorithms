@@ -1,5 +1,7 @@
 package programmers.n133500;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
 public class Solution {
@@ -15,41 +17,36 @@ public class Solution {
     public int solution(int n, int[][] lighthouse) {
         int answer = 0;
 
-        List<Integer>[] nodes = new List[n];
+        Map<Integer,List<Integer>> nodes = new HashMap<>();
+
         for (int i = 0; i < n; i++) {
-            nodes[i] = new ArrayList<>();
+            nodes.put(i, new ArrayList<>());
         }
 
         for (int i = 0; i < lighthouse.length; i++) {
             int u = lighthouse[i][0] - 1;
             int v = lighthouse[i][1] - 1;
 
-            nodes[u].add(v); // 문제조건상 중복된 간선이 주어질 수 없다.
-            nodes[v].add(u);
+            nodes.get(u).add(v);
+            nodes.get(v).add(u);
         }
 
         boolean[] covered = new boolean[n];
-        for (int u = 0; u < n; u++) {
 
-            int uDegree = nodes[u].size();
+        Queue<Integer> q = new LinkedList<>();
 
-            if (covered[u] || uDegree == 1) continue; // 커버된곳과 말단은 건너뛴다.
+        while (!q.isEmpty()) {
+            int u = q.poll();
 
-            for (int v : nodes[u]) {
-                if (covered[v]) uDegree --;
+            int uDegree = nodes.get(u).size();
+
+            if (uDegree == 1) {
+                answer++;
+                covered[u] = true;
             }
 
-            if (uDegree == 1) { // 말단노드이다.
-                int v = nodes[u].iterator().next();
-                if (!covered[v]) { // 부모노드 커버되지않았다면
-                    covered[v] = true;
-                    for (int children : nodes[v]) {
-                        covered[children] = true;
-                    }
-                    answer++;
-                }
-            }
         }
+
         return answer;
     }
 
