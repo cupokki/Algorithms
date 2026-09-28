@@ -8,34 +8,27 @@ public class Solution {
     초침이 한바퀴 도는 동안 분침은 1/60을 움직인다.
         -> 임의의 시간에서 최대 61초는 경과해야 한번 더 겹친다.
         -> 시침또한 그렇다.
+
+    초침 : 1/60 바퀴/sec
+    분침 : 1/3600 바퀴/sec
+    시침 : 1/43200 바퀴/sec
+
     */
     public int solution(int h1, int m1, int s1, int h2, int m2, int s2) {
 
-        int cnt = 0;
+        int startSec = h1 * 60 * 60 + m1 * 6 + s1;
+        int endSec = h2 * 60 * 60 + m2 * 6 + s2;
 
-        int lh = 0, lm = 0, ls = 0; // last collusion
-
-        while (h1 != h2 && m1 != m2 && s1 != s2) {
-//            if () {
-//                cnt++;
-//            }
-
-            s1++;
-            if (s1 == 60) {
-                s1 = 0;
-                m1++;
-            }
-            if (m1 == 60) {
-                m1 = 0;
-                h1++;
-            }
-            if (h1 == 24) {
-                h1 = 0;
-            }
-        }
+        int cnt = count(endSec) - count(startSec); //
 
         if (cnt == 0) return -1;
+
         return cnt;
+    }
+
+    // 0부터 t초까지 알람 횟수
+    int count(int sec) {
+        return 0;
     }
 
     public static void main(String[] args) {
