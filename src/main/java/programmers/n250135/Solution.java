@@ -16,19 +16,21 @@ public class Solution {
     */
     public int solution(int h1, int m1, int s1, int h2, int m2, int s2) {
 
-        int startSec = h1 * 60 * 60 + m1 * 6 + s1;
-        int endSec = h2 * 60 * 60 + m2 * 6 + s2;
+        int startSec = h1 * 3600 + m1 * 60 + s1;
+        int endSec = h2 * 3600 + m2 * 60 + s2;
 
-        int cnt = count(endSec) - count(startSec); //
-
-        if (cnt == 0) return -1;
+        int cnt = count(endSec) - count(startSec);
 
         return cnt;
     }
 
     // 0부터 t초까지 알람 횟수
     int count(int sec) {
-        return 0;
+        int secAndMin = (59 * sec) / 3600; // 초침과 분침 collusion
+        int secAndHour = (719 * sec) / 43200;
+
+        // 정각 중복
+        return secAndMin + secAndHour - ((sec >= 43200) ? 1 : 0);
     }
 
     public static void main(String[] args) {
