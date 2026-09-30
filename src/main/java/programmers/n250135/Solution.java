@@ -13,6 +13,8 @@ public class Solution {
     분침 : 1/3600 바퀴/sec
     시침 : 1/43200 바퀴/sec
 
+    secAndMin = sec/60 - sec/(60 * 60) = 59 * sec /3600
+    secAndHour = sec/60 - sec/(60 * 60 * 24) = 719 * sec / 43200
     */
     public int solution(int h1, int m1, int s1, int h2, int m2, int s2) {
 
@@ -21,6 +23,14 @@ public class Solution {
 
         int cnt = count(endSec) - count(startSec);
 
+        int sDegree = (startSec * 720) % 43200;
+        int mDegree = (startSec * 12) % 43200;
+        int hDegree = startSec % 43200;
+
+        // 시작시점에 다시 겹침
+        if (sDegree == mDegree || sDegree == hDegree) {
+            cnt++;
+        }
         return cnt;
     }
 
@@ -30,7 +40,7 @@ public class Solution {
         int secAndHour = (719 * sec) / 43200;
 
         // 정각 중복
-        return secAndMin + secAndHour - ((sec >= 43200) ? 1 : 0);
+        return secAndMin + secAndHour - (sec >= 43200 ? 1 : 0) - (sec >= 86400 ? 1 : 0);
     }
 
     public static void main(String[] args) {
