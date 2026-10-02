@@ -19,13 +19,39 @@ public class Solution {
     public int solution(String word, String[] pages) {
         int n = pages.length;
 
+        word = word.toLowerCase();
+
         String[] urls = new String[n];
         int[] defaultScores = new int[n];
         int[] linkingScores = new int[n]; // 외부 링크 수
 
         // 파싱
         for (int i = 0; i < n; i++) {
-            // pages[i];
+            // url 파싱
+            int start = pages[i].indexOf("content=\"https://") + 17;// 17자
+            int end = pages[i].indexOf("\"/>", start);
+            urls[i] = pages[i].substring(start, end);
+
+            while ((start = pages[i].indexOf("<a href=\"", end)) != -1) {
+                start += 9;
+                end = pages[i].indexOf("\">", start);
+                linkingScores[i]++;
+            }
+
+            start = pages[i].indexOf("<body>") + 7;
+            end = pages[i].indexOf("</body>", start);
+            String body = pages[i].substring(start, end);
+            body.replaceAll("(<a href=).*?(</a>)", " ");
+            body.replaceAll("[^a-zA-Z0-9]", " ");
+            body.toLowerCase();
+
+            int idx = 0;
+            while ((idx = body.indexOf(word, idx)) != -1) {
+                idx += + word.length();
+                defaultScores[i]++;
+            }
+
+            System.out.println();
         }
 
         // 매칭 점수 산정
