@@ -7,7 +7,7 @@ public class Solution {
     웹 페이지 구성
         - 기본점수 : 웹페이지 내 검색어 등장 수 (대소 무시)
         - 외부 링크 수
-        - 링크점수 : 현 페이지로 링크가 존재하는 다른 페이지의 기본점수 / 다른 페이지 외부 점수
+        - 링크점수 : 현 페이지로 링크가 존재하는 다른 페이지의 기본점수 / 다른 페이지 외부 링크 수
         - 매칭점수 : 기본점수와 링크 점수의 합
 
     word와 pages(HTML )이 주어질때, 매칭 점수가 가장 높은 index를 구하라.
@@ -16,69 +16,77 @@ public class Solution {
     pages(node)는 20개이하 자연수
 
     */
+    class Page {
+        int defaultScore;
+        List<String> links = new ArrayList();
+    }
     public int solution(String word, String[] pages) {
         int n = pages.length;
 
         word = word.toLowerCase();
 
+        Map<String, Page> pageMap = new HashMap<>();
         String[] urls = new String[n];
-        int[] defaultScores = new int[n];
-        int[] linkingScores = new int[n]; // 외부 링크 수
 
         // 파싱
         for (int i = 0; i < n; i++) {
+            Page page = new Page();
+
             // url 파싱
-            int start = pages[i].indexOf("content=\"https://") + 17;// 17자
-            int end = pages[i].indexOf("\"/>", start);
+            int start = pages[i].indexOf("content=\"") + 9;// 17자
+            int end = pages[i].indexOf("\"", start);
             urls[i] = pages[i].substring(start, end);
+
+            pageMap.put(urls[i], page);
 
             while ((start = pages[i].indexOf("<a href=\"", end)) != -1) {
                 start += 9;
-                end = pages[i].indexOf("\">", start);
-                linkingScores[i]++;
+                end = pages[i].indexOf("\"", start);
+                page.links.add(pages[i].substring(start, end));
             }
 
             start = pages[i].indexOf("<body>") + 7;
             end = pages[i].indexOf("</body>", start);
             String body = pages[i].substring(start, end);
-            body.replaceAll("(<a href=).*?(</a>)", " ");
-            body.replaceAll("[^a-zA-Z0-9]", " ");
-            body.toLowerCase();
+            body = body.replaceAll("(<a href=).*?(</a>)", " ");
+            body = body.replaceAll("[^a-zA-Z]", " ");
+            body = body.toLowerCase();
 
-            int idx = 0;
-            while ((idx = body.indexOf(word, idx)) != -1) {
-                idx += + word.length();
-                defaultScores[i]++;
+            String[] tokens = body.split(" ");
+            for (String token : tokens) {
+                if (word.equals(token)){
+                    page.defaultScore++;
+                }
             }
-
-            System.out.println();
         }
 
-        // 매칭 점수 산정
-        double[] matchingScores = new double[n];
+        int answer = 0;
+        double maxScore = 0;
+
         for (int i = 0; i < n; i++) {
+            Page page = pageMap.get(urls[i]);
+
             double linkScore = 0;
-            matchingScores[i] = defaultScores[i] + linkScore;
-        }
 
+            for (int j = 0; j < n; j++) {
+                if (i == j) continue;
 
-        int idx = 0;
+                Page linkedPage = pageMap.get(urls[j]);
+                if (linkedPage.links.contains(urls[i])) {
+                    double temp = (double) linkedPage.defaultScore / linkedPage.links.size();
+                    linkScore += temp;
+                }
+            }
 
-        for (int i = 0; i < n; i++) {
-            if (matchingScores[i] < matchingScores[idx]) {
-                idx = i;
+            double matchingScore = page.defaultScore + linkScore;
+
+            if (matchingScore > maxScore) {
+                answer = i;
+                maxScore = matchingScore;
             }
         }
 
-        return idx; //
-    }
-
-    private int findWord(String body) {
-        return 0;
-    }
-
-    private String parseLink(String meta) {
-        return null;
+        return answer;
     }
 
     public static void main(String[] args) {
