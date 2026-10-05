@@ -32,13 +32,28 @@ public class Solution {
         for (int i = 0; i < n; i++) {
             Page page = new Page();
 
-            // url 파싱
-            int start = pages[i].indexOf("content=\"") + 9;// 17자
-            int end = pages[i].indexOf("\"", start);
-            urls[i] = pages[i].substring(start, end);
+            // meta url 파싱
+
+            int metaStart = pages[i].indexOf("<meta");
+
+            while (metaStart != -1) {
+                int metaEnd = pages[i].indexOf(">", metaStart);
+
+                String metaTag = pages[i].substring(metaStart, metaEnd + 1);
+                metaTag = metaTag.toLowerCase();
+                if (metaTag.contains("og:url")) {
+                    int start = metaTag.indexOf("content=\"") + 9;
+                    int end = metaTag.indexOf("\"", start);
+                    urls[i] = metaTag.substring(start, end);
+                    break;
+                }
+                metaStart = pages[i].indexOf("<meta", metaEnd + 1);
+            }
 
             pageMap.put(urls[i], page);
 
+            int start = 0;
+            int end = 0;
             while ((start = pages[i].indexOf("<a href=\"", end)) != -1) {
                 start += 9;
                 end = pages[i].indexOf("\"", start);
@@ -48,7 +63,8 @@ public class Solution {
             start = pages[i].indexOf("<body>") + 7;
             end = pages[i].indexOf("</body>", start);
             String body = pages[i].substring(start, end);
-            body = body.replaceAll("(<a href=).*?(</a>)", " ");
+            body = body.replaceAll("(<a href=).*?(>)", " ");
+            body = body.replaceAll("</a>", " ");
             body = body.replaceAll("[^a-zA-Z]", " ");
             body = body.toLowerCase();
 
@@ -72,9 +88,11 @@ public class Solution {
                 if (i == j) continue;
 
                 Page linkedPage = pageMap.get(urls[j]);
-                if (linkedPage.links.contains(urls[i])) {
-                    double temp = (double) linkedPage.defaultScore / linkedPage.links.size();
-                    linkScore += temp;
+
+                for (String link : linkedPage.links) {
+                    if (link.equals(urls[i])) {
+                        linkScore += (double) linkedPage.defaultScore / linkedPage.links.size();
+                    }
                 }
             }
 
