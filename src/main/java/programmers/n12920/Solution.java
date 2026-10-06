@@ -28,30 +28,42 @@ public class Solution {
 
         int len = cores.length;
 
-        if (n <= len) return n; // 주어진 코어내로 종료
+        int left = 0;
+        int right = n * 10_000;
+        int t = 0;
 
-        long l = 1;
-        long r = 10000 * n;
-        long t = 0;
+        while (left <= right) {
+            int mid = left + (right - left) / 2; // mid: t, 최종 정답
 
-        while(l <= r) {
-            long m = (l + r) / 2;
-            long cnt = len;
+            int cnt = len; // 0초에 모든 코어 사용
 
-            for (int i = 0; i < len; i++) {
-                cnt += m / cores[i];
+            for (int core : cores){
+                cnt += mid / core;
             }
 
-            if (cnt < n) {
-                l = m + 1;
+            if (cnt >= n) {
+                t = mid;
+                right = mid - 1;
             } else {
-                t = m;
-                r = m - 1;
+                left = mid + 1;
             }
         }
 
+        int cnt = len;
+        for (int core : cores) {
+            cnt += (t - 1) / core;
+        }
 
-        return answer;
+        for (int i = 0; i < len; i++) {
+            if (t % cores[i] == 0) {
+                cnt++;
+                if (cnt == n) {
+                    return i + 1;
+                }
+            }
+        }
+
+        return -1;
     }
 
 
@@ -59,7 +71,7 @@ public class Solution {
 
     public static void main(String[] args) {
         Solution sol = new Solution();
-        System.out.println(sol.solution(6, new int[]{1, 2, 3}));
+        System.out.println(sol.solution(6, new int[]{1, 2, 3})); // 2
         System.out.println(sol.solution(14, new int[]{1, 2, 3}));
     }
 }
