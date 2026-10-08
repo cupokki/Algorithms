@@ -33,14 +33,27 @@ public class Solution {
 
         Collections.sort(puzzles, Comparator.comparingInt(a -> a.pos.size()));
 
-
-
         return answer;
     }
 
     static int[] dr = new int[]{0, 0, -1, 1};
     static int[] dc = new int[]{-1, 1, 0, 0};
 
+    void dfs(int depth, int n, int[][] game_board, Puzzle[] puzzles) {
+        if (depth == n) {
+            return;
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (game_board[i][j] == 1) continue;
+                for (int d = 0; d < 4; d++) {
+                    Puzzle puzzle = new Puzzle();
+                    // put the puzzle in game board.
+                }
+            }
+        }
+    }
     Puzzle getPuzzle(int n, int[][] table, int r, int c) {
         Puzzle puzzle = new Puzzle();
         puzzle.pos.add(new int[]{0, 0});
