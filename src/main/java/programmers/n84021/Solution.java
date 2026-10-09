@@ -47,11 +47,30 @@ public class Solution {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (game_board[i][j] == 1) continue;
+//                if (bfs(i, j))
                 for (int d = 0; d < 4; d++) {
                     Puzzle puzzle = new Puzzle();
                     // put the puzzle in game board.
+                    for (int[] pos: puzzle.pos) {
+                        game_board[pos[0]][pos[1]] = 1;
+                    }
+                    dfs(depth + 1, n, game_board, puzzles);
+                    for (int[] pos: puzzle.pos) {
+                        game_board[pos[0]][pos[1]] = 0;
+                    }
                 }
             }
+        }
+    }
+
+    void bfs(int[][] game_board, int r, int c) {
+        boolean[][] visited = new boolean[game_board.length][game_board[0].length];
+        visited[r][c] = true;
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{r, c});
+        while (!q.isEmpty()) {
+            int[] state = q.poll();
+
         }
     }
     Puzzle getPuzzle(int n, int[][] table, int r, int c) {
