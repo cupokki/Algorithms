@@ -24,7 +24,7 @@ public class Solution {
 
         int n = game_board.length; // 항상 정사각형 격자
 
-        int[][] puzzles;
+        List<int[][]> puzzles = new ArrayList<>();
         List<int[][]> blanks = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
@@ -38,13 +38,18 @@ public class Solution {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (table[i][j] == 1) {
-//                    puzzles.add(getPuzzle(n, table, i, j));
+                    puzzles.add(getPuzzle(n, table, i, j));
                 }
             }
         }
 
-
-//        Collections.sort(puzzles, Comparator.comparingInt(a -> a.pos.size()));
+        for (int i = 0; i < blanks.size(); i++) {
+            for (int j = 0; j < puzzles.size(); j++) {
+                for (int d = 0; d < 4; d++) { // rotate
+                    // compare with puzzle(blank) size.
+                }
+            }
+        }
 
         return answer;
     }
@@ -55,11 +60,15 @@ public class Solution {
     int[][] getBlank(int[][] game_board, int n, int r, int c) {
         int w = 0;
         int h = 0;
+
         boolean[][] visited = new boolean[n][n];
+        visited[r][c] = true;
+
         Queue<int[]> q = new LinkedList<>();
         q.offer(new int[]{r, c});
 
         List<int[]> coords  = new ArrayList<>();
+
         while (!q.isEmpty()) {
             int[] pos = q.poll();
             for (int d = 0; d < 4; d++) {
@@ -70,7 +79,7 @@ public class Solution {
                     visited[nr][nc] = true;
                     h = Math.max(h, nr);
                     w = Math.max(w, nc);
-                    coords.add(new int[]{nr, nc});
+                    coords.add(new int[]{nr - r, nc - c});
                     q.offer(new int[]{nr, nc});
                 }
 
@@ -78,21 +87,25 @@ public class Solution {
         }
 
         int[][] blank = new int[w][h];
-
+        blank[0][0] = 1;
         for (int[] coordinate : coords) {
             blank[coordinate[0]][coordinate[1]] = 1;
         }
         return blank;
     }
 
-    Puzzle getPuzzle(int n, int[][] table, int r, int c) {
-        Puzzle puzzle = new Puzzle();
-        puzzle.pos.add(new int[]{0, 0});
+    int[][] getPuzzle(int n, int[][] table, int r, int c) {
+        int w = 0;
+        int h = 0;
+
         boolean[][] visited = new boolean[n][n];
         visited[r][c] = true;
 
         Queue<int[]> q = new LinkedList<>();
         q.offer(new int[]{r, c});
+
+        List<int[]> coords  = new ArrayList<>();
+
         while (!q.isEmpty()) {
             int[] pos = q.poll();
 
@@ -102,10 +115,18 @@ public class Solution {
                 if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
                 if (!visited[nr][nc] && table[nr][nc] == 1) {
                     visited[nr][nc] = true;
-                    puzzle.pos.add(new int[]{nr - r, nc - c});
+                    h = Math.max(h, nr);
+                    w = Math.max(w, nc);
+                    coords.add(new int[]{nr - r, nc - c});
                     q.offer(new int[]{nr, nc});
                 }
             }
+        }
+
+        int[][] puzzle = new int[w][h];
+        puzzle[0][0] = 1;
+        for (int[] coordinate : coords) {
+            puzzle[coordinate[0]][coordinate[1]] = 1;
         }
         return puzzle;
     }
