@@ -24,14 +24,14 @@ public class Solution {
             this.w = w;
             this.h = h;
             this.size = size;
-            this.shape = new int[w][h];
+            this.shape = new int[h][w];
         }
 
         void rotate90DegreeClockwise() {
-            int[][] rotated = new int[h][w];
+            int[][] rotated = new int[w][h];
             for (int i = 0; i < h; i++) {
                 for (int j = 0; j < w; j++) {
-                    rotated[h - j][w - i] = shape[i][j];
+                    rotated[w - 1 - j][h - 1 - i] = shape[i][j];
                 }
             }
 
@@ -50,12 +50,12 @@ public class Solution {
             this.w = w;
             this.h = h;
             this.size = size;
-            this.shape = new int[w][h];
+            this.shape = new int[h][w];
         }
     }
 
     public int solution(int[][] game_board, int[][] table) {
-        int answer = -1;
+        int answer = 0;
 
         int n = game_board.length; // 항상 정사각형 격자
 
@@ -81,8 +81,10 @@ public class Solution {
         for (int i = 0; i < blanks.size(); i++) {
             for (int j = 0; j < puzzles.size(); j++) {
                 for (int d = 0; d < 4; d++) { // rotate
-                    if (compareBlankToPuzzle(blanks.get(i), puzzles.get(j)))
+                    if (compareBlankToPuzzle(blanks.get(i), puzzles.get(j))){
                         answer++;
+                        break;
+                    }
                     puzzles.get(j).rotate90DegreeClockwise();
                 }
             }
@@ -110,10 +112,12 @@ public class Solution {
     static int[] dc = new int[]{-1, 1, 0, 0};
 
     Blank getBlank(int[][] game_board, int n, int r, int c) {
-        int r1 = n, r2 = n, c1 = 0, c2 = 0;
+        int r1 = Math.max(0, r);
+        int r2 = Math.min(n, r);
+        int c1 = Math.max(0, c);
+        int c2 = Math.min(n, c);
 
-        boolean[][] visited = new boolean[n][n];
-        visited[r][c] = true;
+        game_board[r][c] = 1;
 
         Queue<int[]> q = new LinkedList<>();
         q.offer(new int[]{r, c});
@@ -126,8 +130,8 @@ public class Solution {
                 int nr = pos[0] + dr[d];
                 int nc = pos[1] + dc[d];
                 if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
-                if (!visited[nr][nc] && game_board[nr][nc] == 0) {
-                    visited[nr][nc] = true;
+                if (game_board[nr][nc] == 0) {
+                    game_board[nr][nc] = 1;
                     r1 = Math.min(r1, nr); c1 = Math.min(c1, nc);
                     r2 = Math.max(r2, nr); c2 = Math.max(c2, nc);
                     coords.add(new int[]{nr, nc});
@@ -137,20 +141,23 @@ public class Solution {
             }
         }
 
-        int w = c2 - c1;
-        int h = r2 - r1;
+        int w = c2 - c1 + 1;
+        int h = r2 - r1 + 1;
         Blank blank = new Blank(w, h, coords.size());
+        coords.add(new int[]{r, c});
         for (int[] coordinate : coords) {
             blank.shape[coordinate[0] - r1][coordinate[1] - c1] = 1;
         }
         return blank;
     }
 
-    Puzzle getPuzzle(int n, int[][] table, int r, int c) {        int r1 = n, r2 = n, c1 = 0, c2 = 0;
+    Puzzle getPuzzle(int n, int[][] table, int r, int c) {
+        int r1 = Math.max(0, r);
+        int r2 = Math.min(n, r);
+        int c1 = Math.max(0, c);
+        int c2 = Math.min(n, c);
 
-
-        boolean[][] visited = new boolean[n][n];
-        visited[r][c] = true;
+        table[r][c] = 0;
 
         Queue<int[]> q = new LinkedList<>();
         q.offer(new int[]{r, c});
@@ -164,19 +171,20 @@ public class Solution {
                 int nr = pos[0] + dr[d];
                 int nc = pos[1] + dc[d];
                 if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
-                if (!visited[nr][nc] && table[nr][nc] == 1) {
-                    visited[nr][nc] = true;
+                if (table[nr][nc] == 1) {
+                    table[nr][nc] = 0;
                     r1 = Math.min(r1, nr); c1 = Math.min(c1, nc);
                     r2 = Math.max(r2, nr); c2 = Math.max(c2, nc);
-                    coords.add(new int[]{nr - r, nc - c});
+                    coords.add(new int[]{nr, nc});
                     q.offer(new int[]{nr, nc});
                 }
             }
         }
 
-        int w = c2 - c1;
-        int h = r2 - r1;
+        int w = c2 - c1 + 1;
+        int h = r2 - r1 + 1;
         Puzzle puzzle = new Puzzle(w, h, coords.size());
+        coords.add(new int[]{r, c});
         for (int[] coordinate : coords) {
             puzzle.shape[coordinate[0] - r1][coordinate[1] - c1] = 1;
         }
