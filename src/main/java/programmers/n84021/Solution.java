@@ -31,7 +31,7 @@ public class Solution {
             int[][] rotated = new int[w][h];
             for (int i = 0; i < h; i++) {
                 for (int j = 0; j < w; j++) {
-                    rotated[w - 1 - j][h - 1 - i] = shape[i][j];
+                    rotated[j][h - 1 - i] = shape[i][j];
                 }
             }
 
@@ -78,14 +78,23 @@ public class Solution {
             }
         }
 
+        boolean[] filled = new boolean[blanks.size()];
+        boolean[] used = new boolean[puzzles.size()];
+
         for (int i = 0; i < blanks.size(); i++) {
+            Blank blank =  blanks.get(i);
             for (int j = 0; j < puzzles.size(); j++) {
+                Puzzle puzzle = puzzles.get(j);
+                if (filled[i]) break;
+                if (used[j]) continue;
+                if (blank.size != puzzle.size) continue;
                 for (int d = 0; d < 4; d++) { // rotate
                     if (compareBlankToPuzzle(blanks.get(i), puzzles.get(j))){
-                        answer++;
+                        answer += blank.size;
+                        filled[i] = used[j] = true;
                         break;
                     }
-                    puzzles.get(j).rotate90DegreeClockwise();
+                    puzzle.rotate90DegreeClockwise();
                 }
             }
         }
@@ -94,11 +103,10 @@ public class Solution {
     }
 
     boolean compareBlankToPuzzle(Blank blank, Puzzle puzzle) {
-        if (blank.size != puzzle.size) return false;
-        if (blank.w != puzzle.w || blank.h != puzzle.h) return false;
-
         int w =  puzzle.w;
         int h = puzzle.h;
+        if (blank.w != puzzle.w || blank.h != puzzle.h) return false;
+
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
                 if (blank.shape[i][j] != puzzle.shape[i][j]) return false;
@@ -143,8 +151,8 @@ public class Solution {
 
         int w = c2 - c1 + 1;
         int h = r2 - r1 + 1;
-        Blank blank = new Blank(w, h, coords.size());
         coords.add(new int[]{r, c});
+        Blank blank = new Blank(w, h, coords.size());
         for (int[] coordinate : coords) {
             blank.shape[coordinate[0] - r1][coordinate[1] - c1] = 1;
         }
@@ -183,8 +191,8 @@ public class Solution {
 
         int w = c2 - c1 + 1;
         int h = r2 - r1 + 1;
-        Puzzle puzzle = new Puzzle(w, h, coords.size());
         coords.add(new int[]{r, c});
+        Puzzle puzzle = new Puzzle(w, h, coords.size());
         for (int[] coordinate : coords) {
             puzzle.shape[coordinate[0] - r1][coordinate[1] - c1] = 1;
         }
