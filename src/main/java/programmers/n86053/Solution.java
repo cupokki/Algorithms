@@ -1,5 +1,8 @@
 package programmers.n86053;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 public class Solution {
     /*
 
@@ -16,23 +19,30 @@ public class Solution {
     금과 은은 각각 10억개 이하의 자연수
     도시는 최대 10만개 있다.
 
-    가장 가깝고 가져올 수 있는 광물의 양이 많은 도시로 부터
-    광물의 양이 변동되므로, 우선순위큐?
-
-    냅색문제와 유사하다. 시간이 비용이고, 물건이 gold와 silver이다.
-    복잡한 점은, 광물의 잔량이 고려되어야한다?
-
-    answer = dp(a, b, t);?
+    - 계속 광물의 양이 변동된다.
+    - 광물을 가져가는 비율도 고려되어야한다.
     */
     public long solution(int a, int b, int[] g, int[] s, int[] w, int[] t) {
-        long answer = -1; // time
+        long answer = 0; // time
 
         int n = g.length;
 
-        int[][] dp = new int[a + 1][];
+        PriorityQueue<Integer> pq = new  PriorityQueue<>();
 
-        for (int i = 0; i <= n; i++) {
+        int idx;
+        while (a <= 0 && b <= 0) {
+            idx = pq.poll();
 
+            int load = w[idx];
+            if (a > 0 && load > 0) {
+                load -= g[idx];
+            }
+
+            if (b > 0 && load > 0) {
+                load -= s[idx];
+            }
+
+            answer += t[idx];
         }
         return answer;
     }
