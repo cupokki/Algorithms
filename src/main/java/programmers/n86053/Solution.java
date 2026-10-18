@@ -27,23 +27,15 @@ public class Solution {
 
         int n = g.length;
 
-        PriorityQueue<Integer> pq = new  PriorityQueue<>();
+        long left = 0;
+        long right = 100_000L * (a + b); // 최대 시간: t_i의 최대시간 * (a + b)
 
-        int idx;
-        while (a <= 0 && b <= 0) {
-            idx = pq.poll();
+        while (right <= left) {
+            long mid = left + (left + right) / 2;
 
-            int load = w[idx];
-            if (a > 0 && load > 0) {
-                load -= g[idx];
-            }
-
-            if (b > 0 && load > 0) {
-                load -= s[idx];
-            }
-
-            answer += t[idx];
         }
+
+
         return answer;
     }
 
