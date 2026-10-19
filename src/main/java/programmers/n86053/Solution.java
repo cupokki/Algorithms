@@ -33,10 +33,21 @@ public class Solution {
         while (right <= left) {
             long mid = left + (left + right) / 2;
 
+            long temp = func();
+            if (mid < temp) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
         }
 
 
         return answer;
+    }
+
+    long func() {
+
+        return 0L;
     }
 
     public static void main(String[] args) {
