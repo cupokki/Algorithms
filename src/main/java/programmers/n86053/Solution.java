@@ -1,8 +1,5 @@
 package programmers.n86053;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
-
 public class Solution {
     /*
 
@@ -25,29 +22,46 @@ public class Solution {
     public long solution(int a, int b, int[] g, int[] s, int[] w, int[] t) {
         long answer = 0; // time
 
-        int n = g.length;
-
         long left = 0;
-        long right = 100_000L * (a + b); // 최대 시간: t_i의 최대시간 * (a + b)
+        long right = (100_000L * 2) * (2 * 1_000_000_000L);// 최대 왕복시간 * 광물 총량
 
-        while (right <= left) {
-            long mid = left + (left + right) / 2;
+        while (left <= right) {
+            long mid = left + (right - left) / 2;
 
-            long temp = func();
-            if (mid < temp) {
+            if (isEnough(mid, a, b, g, s, w, t)) {
+                answer = mid;
                 right = mid - 1;
             } else {
                 left = mid + 1;
             }
         }
 
-
         return answer;
     }
 
-    long func() {
+    //time이 가용한 만큼 전달가능한지 확인?
+    boolean isEnough(long time, int a, int b, int[] g, int[] s, int[] w, int[] t) {
 
-        return 0L;
+        long totalGold = 0;
+        long totalSilver = 0;
+        long totalMineral = 0;
+
+        for (int i = 0; i < t.length; i++) {
+            long roundCnt = time / (t[i] * 2L); // 왕복 횟수
+
+            if (time % (t[i] * 2L) >= t[i])
+                roundCnt++; // 나머지 편도 (복귀필요x)
+
+            long maxTransferWeight = roundCnt * w[i]; // 최대 운송량
+
+            totalGold += Math.min(g[i], maxTransferWeight); // 한 도시에서 가져갈 수 있는 최대의 양
+            totalSilver += Math.min(s[i], maxTransferWeight);
+            totalMineral += Math.min((long)g[i] + s[i], maxTransferWeight);
+
+        }
+
+        // 목표만큼 조달이 가능한가
+        return totalGold >= a && totalSilver >= b && totalMineral >= (long) a + b;
     }
 
     public static void main(String[] args) {
