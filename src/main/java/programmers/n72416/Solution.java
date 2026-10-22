@@ -15,38 +15,15 @@ public class Solution {
 
     직원은 [2, 300_000]
     매출액 최대는 10000
-
-    -   예제 2에서 매출액을 고려하지않고 직원을 선택하는 방법
-        ceo(1번)을 제외한 팀장을 뽑는다.
-
     */
     public int solution(int[] sales, int[][] links) {
         int answer = 0;
 
         int n = sales.length;
 
-        int right = 0;
-        int left = n * 10_000;
-
-        while (right <= left) {
-            int mid = right + (left - right) / 2;
-
-            if (isEnough(mid, sales, links)) {
-                mid = answer;
-                right = mid - 1;
-            } else {
-                left = mid + 1;
-            }
-        }
+//       += sales[마지막 - 1] + min(dp(마지막, 참석), dp(마지막, 미참석))
 
         return answer;
-    }
-
-    // 선택가능한 모든경우로, money이하로 만들 수 있는가?
-    boolean isEnough(int money, int[] sales, int[][] links) {
-
-
-        return false;
     }
 
     public static void main(String[] args) {
