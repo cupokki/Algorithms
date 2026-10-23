@@ -22,8 +22,26 @@ public class Solution {
         int n = sales.length;
 
 //       += sales[마지막 - 1] + min(dp(마지막, 참석), dp(마지막, 미참석))
+        // dp[i][0]은 선택x
+        // dp[i][1]은 선택o
+        int[][] dp = new int[n][2];
+
+        dfs(0, n, sales, dp);
+
 
         return answer;
+    }
+
+    void dfs(int depth, int n, int[] sales, int[][] dp) {
+        if (depth == n) {
+            return;
+        }
+
+        for (int i = 0; i < n; i++) {
+//            dp[i][0] = Math.min(dp[i][0], sales[i]);
+//            dp[i][1] =
+            dfs(depth + 1, n, sales, dp);
+        }
     }
 
     public static void main(String[] args) {
