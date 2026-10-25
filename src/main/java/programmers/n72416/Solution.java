@@ -1,5 +1,8 @@
 package programmers.n72416;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Solution {
     /*
     조직도를 구성한다.
@@ -16,31 +19,45 @@ public class Solution {
     직원은 [2, 300_000]
     매출액 최대는 10000
     */
+
     public int solution(int[] sales, int[][] links) {
-        int answer = 0;
 
         int n = sales.length;
+
+        List<List<Integer>> tree = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            tree.add(new  ArrayList<>());
+        }
+
+        for (int[] link : links) {
+            tree.get(link[0]).add(link[1]);
+        }
 
 //       += sales[마지막 - 1] + min(dp(마지막, 참석), dp(마지막, 미참석))
         // dp[i][0]은 선택x
         // dp[i][1]은 선택o
-        int[][] dp = new int[n][2];
+        int[][] dp = new int[n + 1][2];
 
-        dfs(0, n, sales, dp);
+        dfs(1, n, sales, dp, tree); //ceo부터 후위
 
-
-        return answer;
+        //
+        return Math.min(dp[1][0], dp[1][1]);
     }
 
-    void dfs(int depth, int n, int[] sales, int[][] dp) {
-        if (depth == n) {
+    void dfs(int depth, int n, int[] sales, int[][] dp, List<List<Integer>> tree) {
+        if (tree.get(depth).isEmpty()) { //말단노드
             return;
         }
 
-        for (int i = 0; i < n; i++) {
+        for (int next : tree.get(depth)) {
+            dfs(next, n, sales, dp, tree);
+
 //            dp[i][0] = Math.min(dp[i][0], sales[i]);
-//            dp[i][1] =
-            dfs(depth + 1, n, sales, dp);
+            if (dp[next][0] < dp[next][1]) { // depth 불참
+
+            } else { // 참석
+
+            }
         }
     }
 
