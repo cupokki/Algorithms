@@ -9,46 +9,65 @@ class Solution {
     격자의 각 변의 길이는 10이하
 
     */
-    int[][] b;
     int[][] targetTable;
+    int min;
+
     public int solution(int[][] beginning, int[][] target) {
-        int answer = -1;
+        min = Integer.MAX_VALUE;
         int n = beginning.length;
         int m = beginning[0].length;
 
         targetTable = target;
-        int cnt = 0;
 
-        dfs(0, 0, n, m, beginning);
+        dfs(0, 0, n, m, beginning, 0);
 
-        return answer;
-    }
-
-    void dfs(int r, int c, int n, int m, int[][] table) {
-        if (r == n && c == m) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (table[i][j] == targetTable[i][j]) {
-                        // false
-                    }
-                }
-            }
-            return; // true
+        if (min == Integer.MAX_VALUE) {
+            return -1;
         }
 
-        for (int i = r; i < n ;i++) {
+        return min;
+    }
+
+    void dfs(int r, int c, int n, int m, int[][] table, int depth) {
+        // 더이상 반전하지 않아도 된다면.
+        if (r == n && c == m) {
+            min = Math.min(min, depth);
+            return;
+        }
+
+        if (depth > min) {
+            return;
+        }
+
+        for (int i = r; i < n; i++) {
+            // 한번 열을 뒤집었을때, 각 행이 목표와 다르면 그 열은 반드시 뒤집어야한다.
             for (int j = 0; j < m; j++) {
-                table[i][j] = (table[i][j] + 1) % 2;
-                dfs(r+1, c+1, n, m, table);
-                table[i][j] = (table[i][j] + 1) % 2;
+                table[i][j] = (table[i][j] + 1) % 2; // 반전
+            }
+
+            for (int j = 0; j < m; j++) {
+                if (targetTable[i][j] != table[i][j]) {
+                    dfs(r + 1, c + 1, n, m, table, depth + 1);
+                }
+            }
+
+            for (int j = 0; j < m; j++) {
+                table[i][j] = (table[i][j] + 1) % 2; // 복구
             }
         }
 
         for (int i = c; i < m; i++) {
             for (int j = 0; j < m; j++) {
-                table[j][i] = (table[i][j] + 1) % 2;
-                dfs(r+1, c+1, n, m, table);
-                table[j][i] = (table[i][j] + 1) % 2;
+                table[j][i] = (table[i][j] + 1) % 2; // 반전
+            }
+            for (int j = 0; j < m; j++) {
+                // 한번 행을 뒤집었을때, 각 열이 목표와 다르면 그 열은 반드시 뒤집어야한다.
+                if (targetTable[j][i] != table[j][i]) {
+                    dfs(r + 1, c + 1, n, m, table, depth + 1);
+                }
+            }
+            for (int j = 0; j < m; j++) {
+                table[j][i] = (table[i][j] + 1) % 2; // 복구
             }
         }
     }
@@ -65,7 +84,7 @@ class Solution {
                         {1, 0, 1, 1, 0},
                         {0, 1, 0, 1, 0}
                 },
-                new int[][] {
+                new int[][]{
                         {0, 0, 0, 1, 1},
                         {9, 0, 0, 0, 1},
                         {0, 0, 1, 0, 1},
@@ -81,7 +100,7 @@ class Solution {
                         {0, 0, 0},
                         {0, 0, 0}
                 },
-                new int[][] {
+                new int[][]{
                         {1, 0, 1},
                         {0, 0, 0},
                         {0, 0, 0},
