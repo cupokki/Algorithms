@@ -39,35 +39,27 @@ class Solution {
             return;
         }
 
+
         for (int i = r; i < n; i++) {
             // 한번 열을 뒤집었을때, 각 행이 목표와 다르면 그 열은 반드시 뒤집어야한다.
-            for (int j = 0; j < m; j++) {
-                table[i][j] = (table[i][j] + 1) % 2; // 반전
-            }
 
             for (int j = 0; j < m; j++) {
                 if (targetTable[i][j] != table[i][j]) {
-                    dfs(r + 1, c + 1, n, m, table, depth + 1);
+                    table[i][j] = (table[i][j] + 1) % 2; // 반전
+                    dfs(r + 1, c, n, m, table, depth + 1);
+                    table[i][j] = (table[i][j] + 1) % 2; // 복구
                 }
-            }
-
-            for (int j = 0; j < m; j++) {
-                table[i][j] = (table[i][j] + 1) % 2; // 복구
             }
         }
 
         for (int i = c; i < m; i++) {
             for (int j = 0; j < m; j++) {
-                table[j][i] = (table[i][j] + 1) % 2; // 반전
-            }
-            for (int j = 0; j < m; j++) {
                 // 한번 행을 뒤집었을때, 각 열이 목표와 다르면 그 열은 반드시 뒤집어야한다.
                 if (targetTable[j][i] != table[j][i]) {
-                    dfs(r + 1, c + 1, n, m, table, depth + 1);
+                    table[j][i] = (table[i][j] + 1) % 2; // 반전
+                    dfs(r , c + 1, n, m, table, depth + 1);
+                    table[j][i] = (table[i][j] + 1) % 2; // 복구
                 }
-            }
-            for (int j = 0; j < m; j++) {
-                table[j][i] = (table[i][j] + 1) % 2; // 복구
             }
         }
     }
