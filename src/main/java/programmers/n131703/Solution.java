@@ -28,19 +28,21 @@ class Solution {
         return min;
     }
 
-    boolean compare(int n, int m, int[][] table, int[][] targetTable) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (table[i][j] != targetTable[i][j]) return false;
-            }
+    void invertColumn(int[][] table, int c, int m) {
+        for (int i = 0; i < m; i++) {
+            table[i][c] = (table[i][c] + 1) % 2;
         }
-        return true;
     }
+
+    void invertHorizontal(int[][] table, int r, int n) {
+        for (int i = 0; i < n; i++) {
+            table[r][i] = (table[r][i] + 1) % 2;
+        }
+    }
+
     void dfs(int r, int c, int n, int m, int[][] table, int cnt) {
         // 더이상 반전하지 않아도 된다면.
-        if (r == n || c == m) return;
-        if (compare(n, m, table, targetTable)) {
-//        if (r == n && c == m) {
+        if (r == n && c == m) {
             min = Math.min(min, cnt);
             return;
         }
@@ -49,32 +51,25 @@ class Solution {
             return;
         }
 
-        for (int i = r; i < n; i++) {
-            // 한번 행을 뒤집었을때, 각 열이 목표와 다르면 그 열은 반드시 뒤집어야한다.
-            if (targetTable[i][c] != table[i][c]) {
-                for (int j = 0; j < m; j++) {
-                    table[i][j] = (table[i][j] + 1) % 2; // 반전
-                }
+        if (r < n && c < m) {
+            if (table[r][c] != targetTable[r][c]) {
+                invertHorizontal(table, r, n);
                 dfs(r + 1, c, n, m, table, cnt + 1);
-                for (int j = 0; j < m; j++) {
-                    table[i][j] = (table[i][j] + 1) % 2; // 복구
-                }
+                invertHorizontal(table, r, n);
+            } else {
+                dfs(r + 1, c, n, m, table, cnt + 1);
             }
-        }
 
-        for (int i = c; i < m; i++) {
-            // 한번 열을 뒤집었을때, 각 행이 목표와 다르면 그 열은 반드시 뒤집어야한다.
-            if (targetTable[r][i] != table[r][i]) {
-                for (int j = 0; j < m; j++) {
-                    table[j][i] = (table[j][i] + 1) % 2; // 반전
-                }
+            if (table[r][c] != targetTable[r][c]) {
+                invertColumn(table, c, m); // 반전
                 dfs(r, c + 1, n, m, table, cnt + 1);
-                for (int j = 0; j < m; j++) {
-                    table[j][i] = (table[j][i] + 1) % 2; // 복구
-                }
+                invertColumn(table, c, m); // 복구
+            } else {
+                dfs(r, c + 1, n, m, table, cnt + 1);
             }
         }
     }
+
 
     public static void main(String[] args) {
         Solution sol = new Solution();
