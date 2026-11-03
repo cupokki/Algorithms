@@ -42,6 +42,7 @@ class Solution {
 
     void dfs(int r, int c, int n, int m, int[][] table, int cnt) {
         // 더이상 반전하지 않아도 된다면.
+//        if ((r == n - 1 && c == m) || (r == n && c == m - 1)) {
         if (r == n && c == m) {
             min = Math.min(min, cnt);
             return;
@@ -56,17 +57,15 @@ class Solution {
                 invertHorizontal(table, r, n);
                 dfs(r + 1, c, n, m, table, cnt + 1);
                 invertHorizontal(table, r, n);
-            } else {
-                dfs(r + 1, c, n, m, table, cnt + 1);
             }
+            dfs(r + 1, c, n, m, table, cnt);
 
             if (table[r][c] != targetTable[r][c]) {
                 invertColumn(table, c, m); // 반전
                 dfs(r, c + 1, n, m, table, cnt + 1);
                 invertColumn(table, c, m); // 복구
-            } else {
-                dfs(r, c + 1, n, m, table, cnt + 1);
             }
+            dfs(r, c + 1, n, m, table, cnt);
         }
     }
 
