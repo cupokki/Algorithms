@@ -19,7 +19,7 @@ class Solution {
 
         targetTable = target;
 
-        dfs(0, 0, n, m, beginning, 0);
+        dfs(0, n, m, beginning, 0);
 
         if (min == Integer.MAX_VALUE) {
             return -1;
@@ -28,11 +28,6 @@ class Solution {
         return min;
     }
 
-    void invertColumn(int[][] table, int c, int m) {
-        for (int i = 0; i < m; i++) {
-            table[i][c] = (table[i][c] + 1) % 2;
-        }
-    }
 
     void invertHorizontal(int[][] table, int r, int n) {
         for (int i = 0; i < n; i++) {
@@ -40,11 +35,37 @@ class Solution {
         }
     }
 
-    void dfs(int r, int c, int n, int m, int[][] table, int cnt) {
+    void check (int n, int m, int[][] table, int[][] targetTable, int cnt) {
+        int colFlipCount = 0;
+
+        // 각 열마다 첫 번째 행의 상태를 보고 이 열을 뒤집어야 할지 결정
+        for (int j = 0; j < m; j++) {
+            boolean needFlip = (table[0][j] != targetTable[0][j]);
+            if (needFlip) {
+                colFlipCount++;
+            }
+
+            // 해당 열의 모든 행이 target과 일치하는지 검증
+            for (int i = 0; i < n; i++) {
+                int current = table[i][j];
+                if (needFlip) {
+                    current = (current + 1) % 2;
+                }
+                if (current != targetTable[i][j]) {
+                    return; // 목표 상태를 만들 수 없는 경우 검증 중단
+                }
+            }
+        }
+
+        // 모든 검증을 통과했다면 최소 횟수 갱신
+        min = Math.min(min, cnt + colFlipCount);
+    }
+
+    void dfs(int r, int n, int m, int[][] table, int cnt) {
         // 더이상 반전하지 않아도 된다면.
 //        if ((r == n - 1 && c == m) || (r == n && c == m - 1)) {
-        if (r == n && c == m) {
-            min = Math.min(min, cnt);
+        if (r == n) {
+            check(n, m, table, table, cnt);
             return;
         }
 
@@ -52,21 +73,11 @@ class Solution {
             return;
         }
 
-        if (r < n && c < m) {
-            if (table[r][c] != targetTable[r][c]) {
-                invertHorizontal(table, r, n);
-                dfs(r + 1, c, n, m, table, cnt + 1);
-                invertHorizontal(table, r, n);
-            }
-            dfs(r + 1, c, n, m, table, cnt);
+        invertHorizontal(table, r + 1, m);
+        dfs(r + 1, n, m, table, cnt + 1);
+        invertHorizontal(table, r + 1, m);
 
-            if (table[r][c] != targetTable[r][c]) {
-                invertColumn(table, c, m); // 반전
-                dfs(r, c + 1, n, m, table, cnt + 1);
-                invertColumn(table, c, m); // 복구
-            }
-            dfs(r, c + 1, n, m, table, cnt);
-        }
+        dfs(r + 1, n, m, table, cnt );
     }
 
 
