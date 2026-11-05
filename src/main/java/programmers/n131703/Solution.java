@@ -35,24 +35,27 @@ class Solution {
         }
     }
 
+    // check the validation that it must to filp.
     void check (int n, int m, int[][] table, int[][] targetTable, int cnt) {
         int colFlipCount = 0;
 
         // 각 열마다 첫 번째 행의 상태를 보고 이 열을 뒤집어야 할지 결정
         for (int j = 0; j < m; j++) {
-            boolean needFlip = (table[0][j] != targetTable[0][j]);
-            if (needFlip) {
+            boolean flip = false;
+            if (table[0][j] != targetTable[0][j]) {
+                flip = true;
                 colFlipCount++;
             }
 
             // 해당 열의 모든 행이 target과 일치하는지 검증
             for (int i = 0; i < n; i++) {
-                int current = table[i][j];
-                if (needFlip) {
-                    current = (current + 1) % 2;
+                int coin = table[i][j];
+                if (flip) {
+                    coin = (coin + 1) % 2;
                 }
-                if (current != targetTable[i][j]) {
-                    return; // 목표 상태를 만들 수 없는 경우 검증 중단
+
+                if (coin != targetTable[i][j]) {
+                    return; // 목표 상태를 만들 수 없는 경우 중단
                 }
             }
         }
@@ -62,10 +65,8 @@ class Solution {
     }
 
     void dfs(int r, int n, int m, int[][] table, int cnt) {
-        // 더이상 반전하지 않아도 된다면.
-//        if ((r == n - 1 && c == m) || (r == n && c == m - 1)) {
         if (r == n) {
-            check(n, m, table, table, cnt);
+            check(n, m, table, targetTable, cnt);
             return;
         }
 
@@ -73,9 +74,9 @@ class Solution {
             return;
         }
 
-        invertHorizontal(table, r + 1, m);
+        invertHorizontal(table, r, m);
         dfs(r + 1, n, m, table, cnt + 1);
-        invertHorizontal(table, r + 1, m);
+        invertHorizontal(table, r, m);
 
         dfs(r + 1, n, m, table, cnt );
     }
