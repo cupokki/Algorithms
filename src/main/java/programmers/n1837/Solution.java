@@ -17,7 +17,13 @@ public class Solution {
         - k: 로그 수
         - 시작과 끝은 바뀔 수 없음    
 
+    결선: 다음 로그와 현재 로그 위치가 직접 연결 되어있지않다
+        1) 현재로그가 오류이다.
+        2) 다음로그가 오류이다.
+        3) 둘다 아니라면, 전로그(i - 1) 기준으로 탐색 수행
+            ㄴ 더이상 수행 불가면 return -1;
 
+    한 지점을 수정하여 수정횟수를 소모했는데, 다음 나오는 결선구간에 수정시 불가능한 경우?
     */
     final int INF = 222;
     public int solution(int n, int m, int[][] edge_list, int k, int[] gps_log) {
@@ -58,35 +64,7 @@ public class Solution {
             }
         }
 
-//        for (int i = 0; i < k; i++) {
-//            for (int j = 0; j < k; j++) {
-//                // 이방법은 손실구간이 하나로, 두개의 경로가 존재하는경우만 고려된다.
-//                // 손실로 발생한 구간이 3개 이상인 경우?
-//            }
-//        }
-
-
-        // gps_log[i + 1]까지 닿지 못하면 i, i + 1까지 최단경로를 덧댄다.
-        // i + 1까지 최단경로가 없다면? i + 2, i + 3 ... i + a, (a < k - i)
-//            if (dist[a][b] == INF) {
-//                return -1;
-//            }
-
-        //time start
         for (int ts = 1; ts <= n ;ts++) {
-            int cost = 1;
-            int te = ts + cost; // time end
-            while (te <= k) {
-                // 오류 발견: ts -> te 까지 cost인 거리가 없음
-                // ㄴ 이건 잘 못된 듯, cost를 늘리는게 아니라. ts 다음 위치를 바꾸어야함
-                if (dist[gps_log[ts]][gps_log[te]] > cost) {
-                    cost++;
-                } else {
-
-                    break;
-                }
-            }
-
         }
 
 
