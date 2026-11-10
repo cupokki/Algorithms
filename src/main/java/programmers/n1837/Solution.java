@@ -25,7 +25,7 @@ public class Solution {
 
     한 지점을 수정하여 수정횟수를 소모했는데, 다음 나오는 결선구간에 수정시 불가능한 경우?
     */
-    final int INF = 222;
+    final int INF = Integer.MAX_VALUE / 2;
     public int solution(int n, int m, int[][] edge_list, int k, int[] gps_log) {
         int answer = 0;
 
@@ -64,9 +64,20 @@ public class Solution {
             }
         }
 
-        for (int ts = 1; ts <= n ;ts++) {
+        // dp[][] k번 변경가능할때, i번 로그까지 최소변경
+        int[] dp = new  int[gps_log.length + 1]; // i까지 최소 변경
+
+        for (int i = 1; i <= gps_log.length; i++) {
+            for (int j = 0; j < Math.min(i - k, 0); j++) {
+                if (dist[i][j] != INF) {
+//                    dp[i] = Math.min(dp[i], dp[j] + dist[i][j]);
+                    dp[i] = Math.min(dp[i], dp[j] + 1);
+                    //
+                }
+            }
         }
 
+        answer = dp[gps_log.length];
 
         return answer;
     }
