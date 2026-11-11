@@ -25,69 +25,45 @@ public class Solution {
 
     한 지점을 수정하여 수정횟수를 소모했는데, 다음 나오는 결선구간에 수정시 불가능한 경우?
     */
-    final int INF = Integer.MAX_VALUE / 2;
     public int solution(int n, int m, int[][] edge_list, int k, int[] gps_log) {
         int answer = 0;
 
-        boolean[][] adjacentMatrix = new boolean[n + 1][n + 1];
-
-        for (int i = 1; i <= n; i++) {
-            adjacentMatrix[i][i] = true;
-        }
-
-        int[][] dist = new int[n + 1][n + 1];
-
-        for (int i = 0; i <= n; i++) {
-            for (int j = 0; j <= n; j++) {
-                dist[i][j] = INF;
-            }
-        }
-
-        for (int i = 1; i <= n; i++) {
-            dist[i][i] = 1; // 제자리 이동도 1시간 만큼 소요
-        }
-
+        boolean[][] adjMatrix = new boolean[n + 1][n + 1];
         for (int[] edge : edge_list) {
-            adjacentMatrix[edge[0]][edge[1]] = true;
-            adjacentMatrix[edge[1]][edge[0]] = true;
-
-            dist[edge[0]][edge[1]] = 1;
-            dist[edge[1]][edge[0]] = 1;
+            adjMatrix[edge[0]][edge[1]] = true;
+            adjMatrix[edge[1]][edge[0]] = true;
         }
-
 
         for (int i = 1; i <= n; i++) {
+            adjMatrix[i][i] = true;
+        }
+
+        // t시점에서 v에 도착했을때 최소오류 수정 횟수
+        int[][] dp = new int[k][n + 1];
+
+        for (int i = 0; i < k; i++) {
             for (int j = 0; j <= n; j++) {
-                for (int l = 0; l <= j; l++) {
-                    dist[i][j] = Math.min(dist[i][j], dist[i][l] + dist[l][j]);
-                }
+                dp[i][j] = Integer.MAX_VALUE / 2;
             }
         }
 
-        // dp[][] k번 변경가능할때, i번 로그까지 최소변경
-        int[] dp = new  int[gps_log.length + 1]; // i까지 최소 변경
+        dp[0][gps_log[0]] = 0;
 
-        for (int i = 1; i <= gps_log.length; i++) {
-            for (int j = 0; j < Math.min(i - k, 0); j++) {
-                if (dist[i][j] != INF) {
-//                    dp[i] = Math.min(dp[i], dp[j] + dist[i][j]);
-                    dp[i] = Math.min(dp[i], dp[j] + 1);
-                    //
-                }
+        for (int t = 0; t < k; t++) {
+            for (int v = 1; v < n; v++) {
+//                dp[t][v] = Math.min(dp[t - 1][u]) + (gps_log[t] != v ? 1 : 0);
             }
         }
 
-        answer = dp[gps_log.length];
+        answer = dp[k][n];
 
         return answer;
     }
 
 
-
-
-     public static void main(String[] args) {
-         Solution sol = new Solution();
-         System.out.println(sol.solution(7, 10, new int[][]{{1, 2}, {1, 3}, {2, 3}, {2, 4}, {3, 4}, {3, 5}, {4, 6}, {5, 6}, {5, 7}, {6, 7}}, 6, new int[]{1, 2, 3, 3, 6, 7})); //1
-         System.out.println(sol.solution(7, 10, new int[][]{{1, 2}, {1, 3}, {2, 3}, {2, 4}, {3, 4}, {3, 5}, {4, 6}, {5, 6}, {5, 7}, {6, 7}}, 6, new int[]{1, 2, 4, 6, 5, 7})); // 0
-     }
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        System.out.println(sol.solution(7, 10, new int[][]{{1, 2}, {1, 3}, {2, 3}, {2, 4}, {3, 4}, {3, 5}, {4, 6}, {5, 6}, {5, 7}, {6, 7}}, 6, new int[]{1, 2, 3, 3, 6, 7})); //1
+        System.out.println(sol.solution(7, 10, new int[][]{{1, 2}, {1, 3}, {2, 3}, {2, 4}, {3, 4}, {3, 5}, {4, 6}, {5, 6}, {5, 7}, {6, 7}}, 6, new int[]{1, 2, 4, 6, 5, 7})); // 0
+    }
 }
