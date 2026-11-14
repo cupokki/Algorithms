@@ -1,6 +1,7 @@
 package programmers.n389481;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class Solution {
     /*
@@ -17,35 +18,44 @@ public class Solution {
 
     n번째 문자열는 바로 알 수 있다.
     bans[i]의 문자열도 몇번째인지 유추가능하다.
-    bans
+
 
     이분 탐색?
      */
     public String solution(long n, String[] bans) {
         String answer = "";
 
-        Arrays.sort(bans);
-
+        Arrays.sort(bans, Comparator.comparing(String::length)
+                .thenComparing(String::compareTo));
+//
         long[] nums = new long[bans.length];
 
-        long targetIdx = 0;
+        long targetIdx = n;
+
         for (int i = 0; i < bans.length; i++) {
             int digit = bans[i].length() - 1;
             for (char c : bans[i].toCharArray()) {
                 nums[i] += (c - 'a' + 1) * (long) Math.pow(26, digit);
                 digit--;
             }
+
             if (nums[i] > n) {
-                targetIdx = n - i; // 인덱스 오류
+                targetIdx++; // 인덱스 오류
+                break;
+            } else {
+                targetIdx++; // 인덱스 오류
             }
         }
-        StringBuilder sb = new StringBuilder();
 
-        while (targetIdx > 26 && targetIdx % 26 != 0) {
-            sb.append((char) ('a' + (targetIdx / 26)));
+        StringBuilder sb = new StringBuilder();
+        while (targetIdx > 0) {
+            targetIdx--;
+            long remainder = targetIdx % 26;
+            sb.append((char) ('a' + remainder));
             targetIdx /= 26;
         }
-        sb.append((char)('a' + targetIdx));
+        sb.reverse();
+        answer = sb.toString();
 
         return answer;
     }
