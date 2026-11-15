@@ -19,15 +19,13 @@ public class Solution {
     n번째 문자열는 바로 알 수 있다.
     bans[i]의 문자열도 몇번째인지 유추가능하다.
 
-
-    이분 탐색?
      */
     public String solution(long n, String[] bans) {
         String answer = "";
 
         Arrays.sort(bans, Comparator.comparing(String::length)
                 .thenComparing(String::compareTo));
-//
+
         long[] nums = new long[bans.length];
 
         long targetIdx = n;
@@ -39,8 +37,7 @@ public class Solution {
                 digit--;
             }
 
-            if (nums[i] > n) {
-                targetIdx++; // 인덱스 오류
+            if (nums[i] > targetIdx) {
                 break;
             } else {
                 targetIdx++; // 인덱스 오류
@@ -54,6 +51,7 @@ public class Solution {
             sb.append((char) ('a' + remainder));
             targetIdx /= 26;
         }
+
         sb.reverse();
         answer = sb.toString();
 
@@ -61,12 +59,12 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        
+
         Solution sol = new Solution();
-        
+
         // ah
         System.out.println(sol.solution(30, new String[]{"d", "e", "bb", "aa", "ae"}));
-        
+
         // jxk
         System.out.println(sol.solution(7388, new String[]{"gqk", "kdn", "jxj", "jxi", "fug", "jxg", "ewq", "len", "bhc"}));
     }
