@@ -19,43 +19,76 @@ public class Solution {
     n번째 문자열는 바로 알 수 있다.
     bans[i]의 문자열도 몇번째인지 유추가능하다.
 
+    이분탐색 수행
+
+    일종의 26진수
      */
     public String solution(long n, String[] bans) {
         String answer = "";
 
-        Arrays.sort(bans, Comparator.comparing(String::length)
-                .thenComparing(String::compareTo));
+    //        Arrays.sort(bans, Comparator.comparing(String::length)
+    //                .thenComparing(String::compareTo));
+    //
+    //        long[] nums = new long[bans.length];
+    //
+    //        long targetIdx = n;
+    //
+    //        for (int i = 0; i < bans.length; i++) {
+    //            int digit = bans[i].length() - 1;
+    //            for (char c : bans[i].toCharArray()) {
+    //                nums[i] += (c - 'a' + 1) * (long) Math.pow(26, digit);
+    //                digit--;
+    //            }
+    //
+    //            if (nums[i] > targetIdx) {
+    //                break;
+    //            } else {
+    //                targetIdx++; // 인덱스 오류
+    //            }
+    //        }
+    //
+    //        StringBuilder sb = new StringBuilder();
+    //        while (targetIdx > 0) {
+    //            targetIdx--;
+    //            long remainder = targetIdx % 26;
+    //            sb.append((char) ('a' + remainder));
+    //            targetIdx /= 26;
+    //        }
+    //
+    //        sb.reverse();
+    //        answer = sb.toString();
 
-        long[] nums = new long[bans.length];
+        long low = 0, high = Long.MAX_VALUE;
+        while (low <= high) {
+            long mid = (low + high) / 2;
 
-        long targetIdx = n;
-
-        for (int i = 0; i < bans.length; i++) {
-            int digit = bans[i].length() - 1;
-            for (char c : bans[i].toCharArray()) {
-                nums[i] += (c - 'a' + 1) * (long) Math.pow(26, digit);
-                digit--;
-            }
-
-            if (nums[i] > targetIdx) {
-                break;
+            if (check(mid, bans, n)) {
+                low =  mid - 1;
             } else {
-                targetIdx++; // 인덱스 오류
+                high = mid + 1;
+            }
+        }
+        return answer;
+    }
+
+    //mid 번쨰 주문이 bans를 고려했을 때, 실제 주문서에서 몇번째이며 n 이상인가
+    boolean check(long number, String[] bans, long n) {
+
+
+        for (String spell : bans) {
+            long idx = 0;
+            int digit = spell.length();
+            for (char c : spell.toCharArray()) {
+                idx += digit * (c - 'a');
+                digit --;
+            }
+
+            if (idx > number) {
+                number++;
             }
         }
 
-        StringBuilder sb = new StringBuilder();
-        while (targetIdx > 0) {
-            targetIdx--;
-            long remainder = targetIdx % 26;
-            sb.append((char) ('a' + remainder));
-            targetIdx /= 26;
-        }
-
-        sb.reverse();
-        answer = sb.toString();
-
-        return answer;
+        return number >= n;
     }
 
     public static void main(String[] args) {
