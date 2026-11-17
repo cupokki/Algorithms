@@ -58,37 +58,55 @@ public class Solution {
     //        sb.reverse();
     //        answer = sb.toString();
 
+        Arrays.sort(bans, Comparator.comparingLong(String::length)
+                .thenComparing(String::compareTo));
+
         long low = 0, high = Long.MAX_VALUE;
+        long idx = 0;
         while (low <= high) {
-            long mid = (low + high) / 2;
+            long mid = low + (high - low) / 2;
 
             if (check(mid, bans, n)) {
-                low =  mid - 1;
+                idx = mid;
+                high =  mid - 1;
             } else {
-                high = mid + 1;
+                low = mid + 1;
             }
         }
+        answer= numberToString(idx);
         return answer;
     }
 
     //mid 번쨰 주문이 bans를 고려했을 때, 실제 주문서에서 몇번째이며 n 이상인가
-    boolean check(long number, String[] bans, long n) {
+    boolean check(long num, String[] bans, long n) {
+        String target = numberToString(num);
 
-
-        for (String spell : bans) {
-            long idx = 0;
-            int digit = spell.length();
-            for (char c : spell.toCharArray()) {
-                idx += digit * (c - 'a');
-                digit --;
-            }
-
-            if (idx > number) {
-                number++;
+        int cnt = 0;
+        int low = 0, high = bans.length - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            // bans[mid]가 target보다 작거나 같으면, mid까지의 개수를 카운트하고 더 오른쪽을 탐색
+            if (bans[mid].length() < target.length() ||
+                    (bans[mid].length() == target.length() && bans[mid].compareTo(target) <= 0)) {
+                cnt = mid + 1;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
             }
         }
 
-        return number >= n;
+        return (num - cnt) >= n;
+    }
+
+    String numberToString(long num) {
+        StringBuilder sb = new StringBuilder();
+        while (num > 0) {
+            num--;
+            long remainder = num % 26;
+            sb.append((char) ('a' + remainder));
+            num /= 26;
+        }
+        return sb.reverse().toString();
     }
 
     public static void main(String[] args) {
