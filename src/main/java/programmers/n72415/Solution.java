@@ -23,40 +23,80 @@ public class Solution {
 
     */
     int min;
-    int[] order;
-    boolean[] visited;
+    int cardCnt;
+    boolean[] used;
+    List<int[]>[] pos; // 모든 카드의 위치
     public int solution(int[][] board, int r, int c) {
         int answer = 0;
         min = Integer.MAX_VALUE;
-        order = new int[8];
-        visited = new boolean[8];
-        dfs(board, 0, r, c);
+        cardCnt = -1;
+
+        pos = new ArrayList[9];
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                cardCnt = Math.max(cardCnt, board[i][j]);
+                pos[cardCnt].add(new int[]{i, j});
+            }
+        }
+        used = new boolean[cardCnt + 1];
+
+        dfs(board, 0, r, c, 0);
 
         return answer;
     }
 
-    void dfs (int[][] board, int depth, int r, int c) {
-        if (depth == order.length)  {
-            min = Math.min(getCost(board, r, c), min);
+    void dfs (int[][] board, int depth, int r, int c, int cost) {
+        if (depth == cardCnt)  {
+            min = Math.min(cost, min);
             return;
         }
 
-        for (int i = 0; i < 8; i++) {
-            if (!visited[i]) {
-                visited[i] = true;
-                order[depth] = i;
-                dfs(board, depth + 1, r, c);
-                visited[i] = false;
+        for (int i = 1; i < cardCnt; i++) {
+            if (!used[i]) {
+                used[i] = true;
+
+                int[] nextPosA = pos[i].get(0);
+                int[] nextPosB = pos[i].get(1);
+
+                // r,c에서 i1카드->i2카드로 이동하는 경우
+                int costA = getCost(board, r, c, nextPosA[0], nextPosA[1]) + getCost(board, nextPosA[0], nextPosA[1], nextPosB[0], nextPosB[1]);
+                // r,c에서 i2카드->i1카드로 이동하는 경우
+                int costB = getCost(board, r, c, nextPosB[0], nextPosB[1]) + getCost(board, nextPosB[0], nextPosB[1], nextPosA[0], nextPosA[1]);
+
+                dfs(board, depth + 1, nextPosA[0], nextPosA[1], cost + costA);
+                dfs(board, depth + 1, nextPosB[0], nextPosB[1], cost + costB);
+
+                used[i] = false;
             }
         }
     }
 
-    int getCost(int[][] board, int r, int c) {
-        int cost = 2; // 기본 두번의 엔터
+    int[] dr = new int[]{1, -1, 0, 0};
+    int[] dc = new int[]{0, 0, 1, -1};
 
+    int getCost(int[][] board, int sr, int sc, int er, int ec) {
+        int cost = Integer.MAX_VALUE; // 기본 두번의 엔터
 
+        if (sr == er && er == ec) return 1;
 
-        return cost;
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{sr, sc, 0}); // cur Row, cur column, cur cost
+        boolean[][] visited = new  boolean[4][4];
+        while (!q.isEmpty()) {
+            int[] cur = q.poll();
+            for (int d = 0; d < 4; d++) {
+                int nr = cur[0] +  dr[d];
+                int nc = cur[1] +  dc[d];
+
+                if (nr < 0 || nr >=  4 || nc < 0 || nc >= 4) continue;
+                if (visited[nr][nc]) continue;
+                visited[nr][nc] = true;
+                q.offer(new int[]{nr, nc, cur[2] + 1});
+                cost = Math.min(cost, cur[2] + 1);
+            }
+        }
+
+        return cost + 1;
     }
 
     public static void main(String[] args) {
