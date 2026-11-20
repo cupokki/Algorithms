@@ -26,27 +26,41 @@ public class Solution {
     int cardCnt;
     boolean[] used;
     List<int[]>[] pos; // 모든 카드의 위치
+
     public int solution(int[][] board, int r, int c) {
         int answer = 0;
         min = Integer.MAX_VALUE;
         cardCnt = -1;
 
-        pos = new ArrayList[9];
-        for (int i = 0; i < r; i++) {
-            for (int j = 0; j < c; j++) {
-                cardCnt = Math.max(cardCnt, board[i][j]);
-                pos[cardCnt].add(new int[]{i, j});
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (board[i][j] != 0) {
+                    cardCnt = Math.max(cardCnt, board[i][j]);
+                }
+            }
+        }
+
+        pos = new ArrayList[cardCnt + 1];
+        for (int i = 0; i <= cardCnt; i++) {
+            pos[i] = new ArrayList<>();
+        }
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (board[i][j] != 0) {
+                    pos[board[i][j]].add(new int[]{i, j});
+                }
             }
         }
         used = new boolean[cardCnt + 1];
 
         dfs(board, 0, r, c, 0);
 
-        return answer;
+        return min;
     }
 
-    void dfs (int[][] board, int depth, int r, int c, int cost) {
-        if (depth == cardCnt)  {
+    void dfs(int[][] board, int depth, int r, int c, int cost) {
+        if (depth == cardCnt) {
             min = Math.min(cost, min);
             return;
         }
@@ -59,9 +73,13 @@ public class Solution {
                 int[] nextPosB = pos[i].get(1);
 
                 // r,c에서 i1카드->i2카드로 이동하는 경우
-                int costA = getCost(board, r, c, nextPosA[0], nextPosA[1]) + getCost(board, nextPosA[0], nextPosA[1], nextPosB[0], nextPosB[1]);
+                int costA = getCost(board, r, c, nextPosA[0], nextPosA[1]) +
+                        getCost(board, nextPosA[0], nextPosA[1], nextPosB[0], nextPosB[1]) +
+                        2;
                 // r,c에서 i2카드->i1카드로 이동하는 경우
-                int costB = getCost(board, r, c, nextPosB[0], nextPosB[1]) + getCost(board, nextPosB[0], nextPosB[1], nextPosA[0], nextPosA[1]);
+                int costB = getCost(board, r, c, nextPosB[0], nextPosB[1]) +
+                        getCost(board, nextPosB[0], nextPosB[1], nextPosA[0], nextPosA[1]) +
+                        2;
 
                 dfs(board, depth + 1, nextPosA[0], nextPosA[1], cost + costA);
                 dfs(board, depth + 1, nextPosB[0], nextPosB[1], cost + costB);
@@ -75,28 +93,48 @@ public class Solution {
     int[] dc = new int[]{0, 0, 1, -1};
 
     int getCost(int[][] board, int sr, int sc, int er, int ec) {
-        int cost = Integer.MAX_VALUE; // 기본 두번의 엔터
-
-        if (sr == er && er == ec) return 1;
-
         Queue<int[]> q = new LinkedList<>();
         q.offer(new int[]{sr, sc, 0}); // cur Row, cur column, cur cost
-        boolean[][] visited = new  boolean[4][4];
+        boolean[][] visited = new boolean[4][4];
         while (!q.isEmpty()) {
             int[] cur = q.poll();
+            if (cur[0] == er && cur[1] == ec) {
+                return cur[2];
+            }
             for (int d = 0; d < 4; d++) {
-                int nr = cur[0] +  dr[d];
-                int nc = cur[1] +  dc[d];
+                int nr = cur[0] + dr[d];
+                int nc = cur[1] + dc[d];
 
-                if (nr < 0 || nr >=  4 || nc < 0 || nc >= 4) continue;
+                if (nr < 0 || nr >= 4 || nc < 0 || nc >= 4) continue;
                 if (visited[nr][nc]) continue;
+
                 visited[nr][nc] = true;
                 q.offer(new int[]{nr, nc, cur[2] + 1});
-                cost = Math.min(cost, cur[2] + 1);
+            }
+
+            for (int d = 0; d < 2; d++) {
+                int nr = cur[0] + dr[d];
+                while (nr >= 0 && nr < 4) {
+                    if (!visited[nr][cur[1]] && board[nr][cur[1]] != 0) {
+                        visited[nr][cur[1]] = true;
+                        q.offer(new int[]{nr, cur[1], cur[2] + 1});
+                    }
+                    nr += dr[d];
+                }
+            }
+            for (int d = 2; d < 4; d++) {
+                int nc = cur[1] + dc[d];
+                while (nc >= 0 && nc < 4) {
+                    if (!visited[cur[0]][nc] && board[cur[0]][nc] != 0) {
+                        visited[cur[0]][nc] = true;
+                        q.offer(new int[]{cur[0], nc, cur[2] + 1});
+                    }
+                    nc += dc[d];
+                }
             }
         }
 
-        return cost + 1;
+        return -1;
     }
 
     public static void main(String[] args) {
