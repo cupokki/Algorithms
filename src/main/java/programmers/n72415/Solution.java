@@ -65,7 +65,7 @@ public class Solution {
             return;
         }
 
-        for (int i = 1; i < cardCnt; i++) {
+        for (int i = 1; i <= cardCnt; i++) {
             if (!used[i]) {
                 used[i] = true;
 
@@ -81,8 +81,13 @@ public class Solution {
                         getCost(board, nextPosB[0], nextPosB[1], nextPosA[0], nextPosA[1]) +
                         2;
 
+
+                board[nextPosA[0]][nextPosA[1]] = 0;
+                board[nextPosB[0]][nextPosB[1]] = 0;
                 dfs(board, depth + 1, nextPosA[0], nextPosA[1], cost + costA);
                 dfs(board, depth + 1, nextPosB[0], nextPosB[1], cost + costB);
+                board[nextPosA[0]][nextPosA[1]] = i;
+                board[nextPosB[0]][nextPosB[1]] = i;
 
                 used[i] = false;
             }
@@ -118,6 +123,7 @@ public class Solution {
                     if (!visited[nr][cur[1]] && board[nr][cur[1]] != 0) {
                         visited[nr][cur[1]] = true;
                         q.offer(new int[]{nr, cur[1], cur[2] + 1});
+                        break;
                     }
                     nr += dr[d];
                 }
@@ -128,6 +134,7 @@ public class Solution {
                     if (!visited[cur[0]][nc] && board[cur[0]][nc] != 0) {
                         visited[cur[0]][nc] = true;
                         q.offer(new int[]{cur[0], nc, cur[2] + 1});
+                        break;
                     }
                     nc += dc[d];
                 }
