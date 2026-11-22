@@ -98,9 +98,11 @@ public class Solution {
     int[] dc = new int[]{0, 0, 1, -1};
 
     int getCost(int[][] board, int sr, int sc, int er, int ec) {
+        if (sr == er && sc == ec) return 0;
         Queue<int[]> q = new LinkedList<>();
         q.offer(new int[]{sr, sc, 0}); // cur Row, cur column, cur cost
         boolean[][] visited = new boolean[4][4];
+        visited[sr][sc] = true;
         while (!q.isEmpty()) {
             int[] cur = q.poll();
             if (cur[0] == er && cur[1] == ec) {
@@ -117,26 +119,25 @@ public class Solution {
                 q.offer(new int[]{nr, nc, cur[2] + 1});
             }
 
-            for (int d = 0; d < 2; d++) {
-                int nr = cur[0] + dr[d];
-                while (nr >= 0 && nr < 4) {
-                    if (!visited[nr][cur[1]] && board[nr][cur[1]] != 0) {
-                        visited[nr][cur[1]] = true;
-                        q.offer(new int[]{nr, cur[1], cur[2] + 1});
+            for (int d = 0; d < 4; d++) {
+                int nr = cur[0];
+                int nc = cur[1];
+
+                while (true) {
+                    if (nr + dr[d] < 0 || nr + dr[d] >= 4 || nc + dc[d] < 0 || nc + dc[d] >= 4) {
                         break;
                     }
+
                     nr += dr[d];
-                }
-            }
-            for (int d = 2; d < 4; d++) {
-                int nc = cur[1] + dc[d];
-                while (nc >= 0 && nc < 4) {
-                    if (!visited[cur[0]][nc] && board[cur[0]][nc] != 0) {
-                        visited[cur[0]][nc] = true;
-                        q.offer(new int[]{cur[0], nc, cur[2] + 1});
+                    nc += dc[d];
+
+                    if (board[nr][nc] != 0) {
                         break;
                     }
-                    nc += dc[d];
+                }
+                if ((nr != cur[0] || nc != cur[1]) && !visited[nr][nc]) {
+                    visited[nr][nc] = true;
+                    q.offer(new int[]{nr, nc, cur[2] + 1});
                 }
             }
         }
