@@ -23,36 +23,23 @@ public class Solution {
 
     */
     int min;
-    int cardCnt;
-    boolean[] used;
-    List<int[]>[] pos; // 모든 카드의 위치
+    Set<Integer> used;
+    Map<Integer, List<int[]>> pos; // 모든 카드의 위치
 
     public int solution(int[][] board, int r, int c) {
         int answer = 0;
         min = Integer.MAX_VALUE;
-        cardCnt = -1;
+
+        pos = new HashMap<>();
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (board[i][j] != 0) {
-                    cardCnt = Math.max(cardCnt, board[i][j]);
+                    pos.computeIfAbsent(board[i][j], ArrayList::new).add(new int[]{i, j});
                 }
             }
         }
-
-        pos = new ArrayList[cardCnt + 1];
-        for (int i = 0; i <= cardCnt; i++) {
-            pos[i] = new ArrayList<>();
-        }
-
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (board[i][j] != 0) {
-                    pos[board[i][j]].add(new int[]{i, j});
-                }
-            }
-        }
-        used = new boolean[cardCnt + 1];
+        used = new HashSet<>();
 
         dfs(board, 0, r, c, 0);
 
@@ -60,36 +47,41 @@ public class Solution {
     }
 
     void dfs(int[][] board, int depth, int r, int c, int cost) {
-        if (depth == cardCnt) {
+        if (depth == pos.size()) {
             min = Math.min(cost, min);
             return;
         }
 
-        for (int i = 1; i <= cardCnt; i++) {
-            if (!used[i]) {
-                used[i] = true;
+        for (int i = 1; i <= pos.size(); i++) {
+            if (!used.contains(i)) {
+                used.add(i);
 
-                int[] nextPosA = pos[i].get(0);
-                int[] nextPosB = pos[i].get(1);
+                int[] nextPosA = pos.get(i).get(0);
+                int[] nextPosB = pos.get(i).get(1);
 
                 // r,c에서 i1카드->i2카드로 이동하는 경우
-                int costA = getCost(board, r, c, nextPosA[0], nextPosA[1]) +
-                        getCost(board, nextPosA[0], nextPosA[1], nextPosB[0], nextPosB[1]) +
-                        2;
-                // r,c에서 i2카드->i1카드로 이동하는 경우
-                int costB = getCost(board, r, c, nextPosB[0], nextPosB[1]) +
-                        getCost(board, nextPosB[0], nextPosB[1], nextPosA[0], nextPosA[1]) +
-                        2;
-
-
+                int costA = 2;
+                costA += getCost(board, r, c, nextPosA[0], nextPosA[1]);
                 board[nextPosA[0]][nextPosA[1]] = 0;
+                costA += getCost(board, nextPosA[0], nextPosA[1], nextPosB[0], nextPosB[1]);
                 board[nextPosB[0]][nextPosB[1]] = 0;
+
                 dfs(board, depth + 1, nextPosA[0], nextPosA[1], cost + costA);
+                board[nextPosA[0]][nextPosA[1]] = i;
+                board[nextPosB[0]][nextPosB[1]] = i;
+
+                // r,c에서 i2카드->i1카드로 이동하는 경우
+                int costB = 2;
+                costB += getCost(board, r, c, nextPosB[0], nextPosB[1]);
+                board[nextPosB[0]][nextPosB[1]] = 0;
+                costB += getCost(board, nextPosB[0], nextPosB[1], nextPosA[0], nextPosA[1]);
+                board[nextPosA[0]][nextPosA[1]] = 0;
+
                 dfs(board, depth + 1, nextPosB[0], nextPosB[1], cost + costB);
                 board[nextPosA[0]][nextPosA[1]] = i;
                 board[nextPosB[0]][nextPosB[1]] = i;
 
-                used[i] = false;
+                used.remove(i);
             }
         }
     }
