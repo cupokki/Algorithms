@@ -66,7 +66,7 @@ public class Solution {
                 costA += getCost(board, nextPosA[0], nextPosA[1], nextPosB[0], nextPosB[1]);
                 board[nextPosB[0]][nextPosB[1]] = 0;
 
-                dfs(board, depth + 1, nextPosA[0], nextPosA[1], cost + costA);
+                dfs(board, depth + 1, nextPosB[0], nextPosB[1], cost + costA);
                 board[nextPosA[0]][nextPosA[1]] = i;
                 board[nextPosB[0]][nextPosB[1]] = i;
 
@@ -77,7 +77,7 @@ public class Solution {
                 costB += getCost(board, nextPosB[0], nextPosB[1], nextPosA[0], nextPosA[1]);
                 board[nextPosA[0]][nextPosA[1]] = 0;
 
-                dfs(board, depth + 1, nextPosB[0], nextPosB[1], cost + costB);
+                dfs(board, depth + 1, nextPosA[0], nextPosA[1], cost + costB);
                 board[nextPosA[0]][nextPosA[1]] = i;
                 board[nextPosB[0]][nextPosB[1]] = i;
 
